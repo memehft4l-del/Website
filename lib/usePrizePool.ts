@@ -17,6 +17,11 @@ export function usePrizePool() {
         setIsLoading(true);
         setError(null);
 
+        // Check if RPC endpoint is configured
+        if (!RPC_ENDPOINT || RPC_ENDPOINT.includes("placeholder")) {
+          throw new Error("RPC endpoint not configured");
+        }
+
         const connection = new Connection(RPC_ENDPOINT, "confirmed");
         const publicKey = new PublicKey(DEV_WALLET);
         const balance = await connection.getBalance(publicKey);

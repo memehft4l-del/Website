@@ -7,7 +7,11 @@ if (!supabaseUrl || !supabaseAnonKey) {
   console.warn("Supabase URL or Anon Key is missing. Please check your .env.local file.");
 }
 
-export const supabase = createClient(supabaseUrl, supabaseAnonKey);
+// Always create a client, even if env vars are missing (will fail gracefully)
+export const supabase = createClient(
+  supabaseUrl || "https://placeholder.supabase.co",
+  supabaseAnonKey || "placeholder-key"
+);
 
 // Tournament signups table type
 export interface TournamentSignup {

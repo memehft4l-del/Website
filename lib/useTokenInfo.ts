@@ -30,6 +30,12 @@ export function useTokenInfo() {
         setIsLoading(true);
         setError(null);
 
+        // Check if Supabase is configured
+        const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+        if (!supabaseUrl || supabaseUrl.includes("placeholder")) {
+          throw new Error("Supabase not configured");
+        }
+
         const { data, error: supabaseError } = await supabase
           .from("token_info")
           .select("*")
