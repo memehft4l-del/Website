@@ -56,24 +56,24 @@ export function MobileMenu({ activeTab, onTabChange, connected }: MobileMenuProp
               animate={{ x: 0 }}
               exit={{ x: "100%" }}
               transition={{ type: "spring", damping: 25, stiffness: 200 }}
-              className="fixed top-0 right-0 h-full w-full max-w-sm glass border-l border-white/10 z-50 md:hidden overflow-y-auto"
+              className="fixed top-0 right-0 h-screen w-screen sm:w-96 glass border-l border-white/10 z-50 md:hidden overflow-y-auto"
             >
-              <div className="p-6 pt-8 min-h-full">
-                <div className="flex items-center justify-between mb-8">
+              <div className="p-4 sm:p-6 pt-12 sm:pt-8 pb-20 min-h-screen flex flex-col">
+                <div className="flex items-center justify-between mb-6 sm:mb-8 flex-shrink-0">
                   <div className="flex flex-col leading-tight">
-                    <span className="text-sm font-semibold text-white/80">Elixir Pump</span>
-                    <span className="text-2xl font-bold gradient-text-gold">$ELIXIR</span>
+                    <span className="text-xs sm:text-sm font-semibold text-white/80">Elixir Pump</span>
+                    <span className="text-xl sm:text-2xl font-bold gradient-text-gold">$ELIXIR</span>
                   </div>
                   <button
                     onClick={() => setIsOpen(false)}
-                    className="glass rounded-lg p-3 hover:bg-white/10 transition-colors touch-manipulation"
+                    className="glass rounded-lg p-2.5 sm:p-3 hover:bg-white/10 transition-colors touch-manipulation flex-shrink-0"
                     aria-label="Close menu"
                   >
-                    <X className="w-6 h-6 text-white" />
+                    <X className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
                   </button>
                 </div>
 
-                <nav className="space-y-3 pb-8">
+                <nav className="space-y-2.5 sm:space-y-3 pb-8 flex-1">
                   {menuItems.map((item) => {
                     const Icon = item.icon;
                     const isActive = activeTab === item.id;
@@ -85,7 +85,7 @@ export function MobileMenu({ activeTab, onTabChange, connected }: MobileMenuProp
                           setIsOpen(false);
                         }}
                         className={`
-                          w-full flex items-center gap-4 px-5 py-4 rounded-xl font-semibold text-base transition-all touch-manipulation
+                          w-full flex items-center gap-3 sm:gap-4 px-4 sm:px-5 py-3.5 sm:py-4 rounded-xl font-semibold text-sm sm:text-base transition-all touch-manipulation min-h-[56px]
                           ${
                             isActive
                               ? "bg-purple-600 text-white shadow-lg shadow-purple-600/20"
@@ -93,7 +93,7 @@ export function MobileMenu({ activeTab, onTabChange, connected }: MobileMenuProp
                           }
                         `}
                       >
-                        <Icon className="w-6 h-6 flex-shrink-0" />
+                        <Icon className="w-5 h-5 sm:w-6 sm:h-6 flex-shrink-0" />
                         <span className="flex-1 text-left">{item.label}</span>
                       </button>
                     );
@@ -101,9 +101,9 @@ export function MobileMenu({ activeTab, onTabChange, connected }: MobileMenuProp
                   <Link
                     href="/rules"
                     onClick={() => setIsOpen(false)}
-                    className="w-full flex items-center gap-4 px-5 py-4 rounded-xl font-semibold text-base transition-all text-slate-300 hover:text-white hover:bg-white/10 active:bg-white/5 touch-manipulation"
+                    className="w-full flex items-center gap-3 sm:gap-4 px-4 sm:px-5 py-3.5 sm:py-4 rounded-xl font-semibold text-sm sm:text-base transition-all text-slate-300 hover:text-white hover:bg-white/10 active:bg-white/5 touch-manipulation min-h-[56px]"
                   >
-                    <BookOpen className="w-6 h-6 flex-shrink-0" />
+                    <BookOpen className="w-5 h-5 sm:w-6 sm:h-6 flex-shrink-0" />
                     <span className="flex-1 text-left">Rules</span>
                   </Link>
                 </nav>
