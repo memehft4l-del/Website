@@ -1,6 +1,6 @@
-# $ELIXIR Tournament Platform
+# Elixir Pump - $ELIXIR Tournament Platform
 
-A Next.js-based tournament platform for Clash Royale tournaments powered by Solana and $ELIXIR token.
+A Next.js-based tournament platform for Clash Royale tournaments powered by Solana and the $ELIXIR token. **Elixir Pump** is the home to competitive Clash Royale tournaments.
 
 ## Features
 

@@ -3,7 +3,9 @@
 import { useWallet } from "@solana/wallet-adapter-react";
 import { Home, LayoutDashboard, Trophy, Users, Rocket, BookOpen } from "lucide-react";
 import { DynamicWalletButton } from "./DynamicWalletButton";
+import { MobileMenu } from "./MobileMenu";
 import Link from "next/link";
+import { motion } from "framer-motion";
 
 interface NavigationProps {
   activeTab: "overview" | "dashboard" | "tournaments" | "tge";
@@ -16,16 +18,25 @@ export function Navigation({ activeTab, onTabChange }: NavigationProps) {
 
   return (
     <nav className="sticky top-0 z-50 glass border-b border-white/10 backdrop-blur-xl">
-      <div className="container mx-auto px-4">
-        <div className="flex items-center justify-between h-16">
+      <div className="container mx-auto px-3 sm:px-4">
+        <div className="flex items-center justify-between h-14 md:h-16">
           {/* Logo/Brand */}
           <div className="flex items-center gap-2">
-            <Trophy className="w-6 h-6 text-game-gold" />
-            <span className="text-xl font-bold text-white">$ELIXIR</span>
+            <motion.div
+              animate={{ rotate: [0, 10, -10, 0] }}
+              transition={{ duration: 3, repeat: Infinity, repeatDelay: 2 }}
+              className="hidden sm:block"
+            >
+              <Trophy className="w-5 h-5 md:w-6 md:h-6 text-game-gold drop-shadow-[0_0_10px_rgba(255,215,0,0.5)]" />
+            </motion.div>
+            <span className="text-lg md:text-xl font-bold gradient-text-gold">$ELIXIR</span>
           </div>
 
-          {/* Navigation Tabs */}
-          <div className="flex items-center gap-2">
+          {/* Mobile Menu */}
+          <MobileMenu activeTab={activeTab} onTabChange={onTabChange} connected={connected} />
+
+          {/* Desktop Navigation Tabs */}
+          <div className="hidden md:flex items-center gap-2">
             <button
               onClick={() => onTabChange("overview")}
               className={`
@@ -93,9 +104,9 @@ export function Navigation({ activeTab, onTabChange }: NavigationProps) {
             </Link>
           </div>
 
-          {/* Wallet Button */}
-          <div>
-            <DynamicWalletButton className="!bg-gradient-to-r !from-purple-600 !to-yellow-600 hover:!from-purple-700 hover:!to-yellow-700 !rounded-lg !px-6 !py-3 !font-semibold !transition-all !border !border-white/10" />
+          {/* Wallet Button - Desktop */}
+          <div className="hidden md:block">
+            <DynamicWalletButton className="!bg-gradient-to-r !from-purple-600 !to-yellow-600 hover:!from-purple-700 hover:!to-yellow-700 !rounded-lg !px-4 !py-2 md:!px-6 md:!py-3 !font-semibold !text-sm md:!text-base !transition-all !border !border-white/10" />
           </div>
         </div>
       </div>

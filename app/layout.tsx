@@ -11,8 +11,14 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "$ELIXIR - Token-Gated Tournament",
-  description: "Hold $ELIXIR tokens to unlock exclusive tournament access",
+  title: "Elixir Pump - Home to Clash Royale Tournaments",
+  description: "Elixir Pump: Hold $ELIXIR tokens to unlock exclusive Clash Royale tournament access and compete for prize pools",
+};
+
+export const viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 5,
 };
 
 export default function RootLayout({

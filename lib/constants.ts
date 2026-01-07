@@ -18,6 +18,9 @@ export const TIER_THRESHOLDS = {
   WHALE: 2_500_000,
 } as const;
 
+// Maximum tokens for Elixir Bar (15 million)
+export const MAX_ELIXIR_TOKENS = 15_000_000;
+
 // Tournament Configuration
 export interface TournamentConfig {
   squireArena: {

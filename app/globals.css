@@ -25,9 +25,14 @@ body {
   min-height: 100vh;
   margin: 0;
   padding: 0;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  /* Mobile optimizations */
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
 }
 
-/* Enhanced background gradient with more depth */
+/* Enhanced background gradient with more depth and modern effects */
 body::before {
   content: '';
   position: fixed;
@@ -36,10 +41,11 @@ body::before {
   width: 100%;
   height: 100%;
   background: 
-    radial-gradient(circle at 20% 50%, rgba(139, 92, 246, 0.08) 0%, transparent 50%),
-    radial-gradient(circle at 80% 80%, rgba(168, 85, 247, 0.06) 0%, transparent 50%),
-    radial-gradient(circle at 40% 20%, rgba(147, 51, 234, 0.05) 0%, transparent 50%),
-    radial-gradient(circle at 60% 70%, rgba(255, 0, 255, 0.04) 0%, transparent 50%);
+    radial-gradient(circle at 20% 50%, rgba(139, 92, 246, 0.12) 0%, transparent 50%),
+    radial-gradient(circle at 80% 80%, rgba(168, 85, 247, 0.1) 0%, transparent 50%),
+    radial-gradient(circle at 40% 20%, rgba(147, 51, 234, 0.08) 0%, transparent 50%),
+    radial-gradient(circle at 60% 70%, rgba(255, 0, 255, 0.06) 0%, transparent 50%),
+    radial-gradient(circle at 50% 50%, rgba(255, 215, 0, 0.03) 0%, transparent 60%);
   background-size: 200% 200%;
   animation: subtle-float 30s ease-in-out infinite;
   pointer-events: none;
@@ -81,37 +87,77 @@ body::after {
   }
 }
 
-/* Enhanced Glassmorphism - Sharper and More Polished */
+/* Modern Glassmorphism - Ultra Polished with Better Depth */
 .glass {
-  background: linear-gradient(135deg, rgba(15, 23, 42, 0.75) 0%, rgba(30, 41, 59, 0.65) 100%);
-  backdrop-filter: blur(20px) saturate(180%);
-  -webkit-backdrop-filter: blur(20px) saturate(180%);
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: linear-gradient(135deg, 
+    rgba(15, 23, 42, 0.8) 0%, 
+    rgba(30, 41, 59, 0.7) 50%,
+    rgba(15, 23, 42, 0.8) 100%);
+  backdrop-filter: blur(24px) saturate(200%);
+  -webkit-backdrop-filter: blur(24px) saturate(200%);
+  border: 1px solid rgba(255, 255, 255, 0.18);
   box-shadow: 
-    0 8px 32px rgba(0, 0, 0, 0.3),
-    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    0 8px 32px rgba(0, 0, 0, 0.4),
+    0 2px 8px rgba(0, 0, 0, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.15),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.2);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.glass:hover {
+  border-color: rgba(255, 255, 255, 0.25);
+  box-shadow: 
+    0 12px 48px rgba(0, 0, 0, 0.5),
+    0 4px 12px rgba(0, 0, 0, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
 }
 
 .glass-gold {
-  background: linear-gradient(135deg, rgba(15, 23, 42, 0.8) 0%, rgba(30, 41, 59, 0.7) 100%);
-  backdrop-filter: blur(20px) saturate(180%);
-  -webkit-backdrop-filter: blur(20px) saturate(180%);
-  border: 1.5px solid rgba(255, 215, 0, 0.3);
+  background: linear-gradient(135deg, 
+    rgba(15, 23, 42, 0.85) 0%, 
+    rgba(30, 25, 15, 0.75) 50%,
+    rgba(15, 23, 42, 0.85) 100%);
+  backdrop-filter: blur(24px) saturate(200%);
+  -webkit-backdrop-filter: blur(24px) saturate(200%);
+  border: 1.5px solid rgba(255, 215, 0, 0.4);
   box-shadow: 
-    0 8px 32px rgba(0, 0, 0, 0.4),
-    0 0 20px rgba(255, 215, 0, 0.1),
-    inset 0 1px 0 rgba(255, 255, 255, 0.15);
+    0 12px 40px rgba(0, 0, 0, 0.5),
+    0 0 30px rgba(255, 215, 0, 0.15),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.3);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.glass-gold:hover {
+  border-color: rgba(255, 215, 0, 0.5);
+  box-shadow: 
+    0 16px 56px rgba(0, 0, 0, 0.6),
+    0 0 40px rgba(255, 215, 0, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.25);
 }
 
 .glass-silver {
-  background: linear-gradient(135deg, rgba(15, 23, 42, 0.8) 0%, rgba(30, 41, 59, 0.7) 100%);
-  backdrop-filter: blur(20px) saturate(180%);
-  -webkit-backdrop-filter: blur(20px) saturate(180%);
-  border: 1.5px solid rgba(148, 163, 184, 0.3);
+  background: linear-gradient(135deg, 
+    rgba(15, 23, 42, 0.85) 0%, 
+    rgba(30, 30, 35, 0.75) 50%,
+    rgba(15, 23, 42, 0.85) 100%);
+  backdrop-filter: blur(24px) saturate(200%);
+  -webkit-backdrop-filter: blur(24px) saturate(200%);
+  border: 1.5px solid rgba(148, 163, 184, 0.4);
   box-shadow: 
-    0 8px 32px rgba(0, 0, 0, 0.4),
-    0 0 20px rgba(148, 163, 184, 0.1),
-    inset 0 1px 0 rgba(255, 255, 255, 0.15);
+    0 12px 40px rgba(0, 0, 0, 0.5),
+    0 0 30px rgba(148, 163, 184, 0.15),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.3);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.glass-silver:hover {
+  border-color: rgba(148, 163, 184, 0.5);
+  box-shadow: 
+    0 16px 56px rgba(0, 0, 0, 0.6),
+    0 0 40px rgba(148, 163, 184, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.25);
 }
 
 /* Subtle text stroke for readability */
@@ -127,17 +173,179 @@ body::after {
   paint-order: stroke fill;
 }
 
-/* Subtle gold glow - much more refined */
+/* Enhanced gold glow with animation */
 .gold-glow {
   text-shadow: 
-    0 0 8px rgba(255, 215, 0, 0.3),
-    0 0 16px rgba(255, 215, 0, 0.2);
+    0 0 10px rgba(255, 215, 0, 0.4),
+    0 0 20px rgba(255, 215, 0, 0.3),
+    0 0 30px rgba(255, 215, 0, 0.2);
+  animation: glow-pulse 3s ease-in-out infinite;
 }
 
 .gold-glow-box {
   box-shadow: 
-    0 0 20px rgba(255, 215, 0, 0.15),
-    0 0 40px rgba(255, 215, 0, 0.1);
+    0 0 30px rgba(255, 215, 0, 0.2),
+    0 0 60px rgba(255, 215, 0, 0.15),
+    0 0 90px rgba(255, 215, 0, 0.1);
+  animation: glow-pulse-box 4s ease-in-out infinite;
+}
+
+@keyframes glow-pulse-box {
+  0%, 100% {
+    box-shadow: 
+      0 0 30px rgba(255, 215, 0, 0.2),
+      0 0 60px rgba(255, 215, 0, 0.15),
+      0 0 90px rgba(255, 215, 0, 0.1);
+  }
+  50% {
+    box-shadow: 
+      0 0 40px rgba(255, 215, 0, 0.3),
+      0 0 80px rgba(255, 215, 0, 0.2),
+      0 0 120px rgba(255, 215, 0, 0.15);
+  }
+}
+
+/* Modern gradient text effects */
+.gradient-text {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  background-size: 200% 200%;
+  animation: gradient-shift 5s ease infinite;
+}
+
+.gradient-text-gold {
+  background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 50%, #d97706 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  background-size: 200% 200%;
+  animation: gradient-shift 4s ease infinite;
+}
+
+@keyframes gradient-shift {
+  0%, 100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+/* Modern card hover effects */
+.card-modern {
+  position: relative;
+  overflow: hidden;
+}
+
+.card-modern::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, 
+    transparent, 
+    rgba(255, 255, 255, 0.1), 
+    transparent);
+  transition: left 0.5s;
+}
+
+.card-modern:hover::before {
+  left: 100%;
+}
+
+/* Clash Royale Theme Enhancements */
+.clash-card {
+  background: linear-gradient(135deg, 
+    rgba(30, 41, 59, 0.95) 0%, 
+    rgba(15, 23, 42, 0.95) 100%);
+  border: 2px solid rgba(255, 215, 0, 0.3);
+  box-shadow: 
+    0 8px 32px rgba(0, 0, 0, 0.5),
+    0 0 20px rgba(255, 215, 0, 0.1),
+    inset 0 2px 4px rgba(255, 255, 255, 0.1);
+  position: relative;
+  overflow: hidden;
+}
+
+.clash-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, 
+    transparent, 
+    rgba(255, 215, 0, 0.8), 
+    transparent);
+  animation: shimmer-border 3s ease-in-out infinite;
+}
+
+@keyframes shimmer-border {
+  0%, 100% {
+    transform: translateX(-100%);
+  }
+  50% {
+    transform: translateX(100%);
+  }
+}
+
+/* Arena Badge Styles */
+.arena-badge {
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.2), rgba(168, 85, 247, 0.2));
+  border: 1px solid rgba(139, 92, 246, 0.4);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 4px 16px rgba(139, 92, 246, 0.2);
+}
+
+.arena-badge-gold {
+  background: linear-gradient(135deg, rgba(255, 215, 0, 0.2), rgba(255, 193, 7, 0.2));
+  border: 1px solid rgba(255, 215, 0, 0.4);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 4px 16px rgba(255, 215, 0, 0.2);
+}
+
+/* Clash Royale Button Style */
+.btn-clash {
+  background: linear-gradient(135deg, #8B5CF6 0%, #A855F7 100%);
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 
+    0 4px 0 rgba(0, 0, 0, 0.3),
+    0 8px 16px rgba(139, 92, 246, 0.4);
+  transition: all 0.2s;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-clash:hover {
+  transform: translateY(2px);
+  box-shadow: 
+    0 2px 0 rgba(0, 0, 0, 0.3),
+    0 4px 8px rgba(139, 92, 246, 0.4);
+}
+
+.btn-clash:active {
+  transform: translateY(4px);
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.3);
+}
+
+.btn-clash::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.5s;
+}
+
+.btn-clash:hover::before {
+  left: 100%;
 }
 
 @layer utilities {

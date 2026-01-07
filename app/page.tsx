@@ -12,5 +12,9 @@ const WalletStatus = dynamic(
 );
 
 export default function Home() {
-  return <WalletStatus />;
+  return (
+    <div className="min-h-screen bg-[#0F172A]">
+      <WalletStatus />
+    </div>
+  );
 }

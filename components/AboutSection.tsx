@@ -18,7 +18,7 @@ export function AboutSection() {
         <div className="flex items-center gap-3 mb-8">
           <Trophy className="w-8 h-8 text-game-gold" />
           <h2 className="text-3xl md:text-4xl font-bold text-white">
-            $ELIXIR Ecosystem
+            Elixir Pump Ecosystem
           </h2>
         </div>
 
@@ -30,7 +30,7 @@ export function AboutSection() {
               <h3 className="text-xl font-bold text-white">Token Utility</h3>
             </div>
             <p className="text-slate-300 leading-relaxed">
-              $ELIXIR is the core fuel for our Clash Royale tournament platform. High-tier holdings unlock exclusive 
+              <span className="text-game-gold font-semibold">$ELIXIR</span> is the core fuel for <span className="text-purple-400 font-semibold">Elixir Pump</span>, our Clash Royale tournament platform. High-tier holdings unlock exclusive 
               Arenas (Squire/Whale) with larger prize pools.
             </p>
           </div>
@@ -42,7 +42,7 @@ export function AboutSection() {
               <h3 className="text-xl font-bold text-white">The Vault</h3>
             </div>
             <p className="text-slate-300 leading-relaxed">
-              85% of all launch and trading fees fund the tournament Prize Pools. 15% is dedicated to automated Token Buybacks.
+              85% of all launch and trading fees fund the tournament Prize Pools. 15% is dedicated to automated <span className="text-game-gold font-semibold">$ELIXIR</span> Token Buybacks.
             </p>
           </div>
 

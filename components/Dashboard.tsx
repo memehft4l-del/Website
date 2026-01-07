@@ -2,7 +2,7 @@
 
 import { useWallet } from "@solana/wallet-adapter-react";
 import { useTokenBalance } from "@/lib/useTokenBalance";
-import { TOURNAMENT_CONFIG, TIER_THRESHOLDS } from "@/lib/constants";
+import { TOURNAMENT_CONFIG, TIER_THRESHOLDS, MAX_ELIXIR_TOKENS } from "@/lib/constants";
 import {
   Lock,
   Unlock,
@@ -15,7 +15,7 @@ import {
 import { motion } from "framer-motion";
 import { useEffect } from "react";
 import { TiltCard } from "./TiltCard";
-import { ElixirLoadingSpinner } from "./ElixirLoadingSpinner";
+import { ElixirBar } from "./ElixirBar";
 import { useSound } from "@/lib/useSound";
 import { DynamicWalletButton } from "./DynamicWalletButton";
 import { TournamentCountdown } from "./TournamentCountdown";
@@ -100,17 +100,17 @@ export function Dashboard() {
 
   return (
     <div className="min-h-screen relative z-10 bg-slate-900">
-      <div className="container mx-auto px-4 py-8">
+      <div className="container mx-auto px-3 sm:px-4 py-6 sm:py-8">
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           className="flex flex-col md:flex-row justify-between items-center mb-8 gap-4"
         >
-          <h1 className="text-4xl md:text-5xl font-bold text-white">
+          <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold gradient-text">
             Tournament Dashboard
           </h1>
-          <DynamicWalletButton className="!bg-gradient-to-r !from-purple-600 !to-yellow-600 hover:!from-purple-700 hover:!to-yellow-700 !rounded-lg !px-6 !py-3 !font-semibold !transition-all !border !border-white/10" />
+          <DynamicWalletButton className="!bg-gradient-to-r !from-purple-600 !to-yellow-600 hover:!from-purple-700 hover:!to-yellow-700 !rounded-lg !px-4 !py-2 sm:!px-6 sm:!py-3 !font-semibold !text-sm sm:!text-base !transition-all !border !border-white/10 !w-full sm:!w-auto" />
         </motion.div>
 
         {/* Live Arena Status Card */}
@@ -118,16 +118,16 @@ export function Dashboard() {
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ delay: 0.1 }}
-          className="glass-gold rounded-2xl p-6 md:p-8 mb-8 gold-glow-box"
+          className="glass-gold rounded-2xl p-4 sm:p-6 md:p-8 mb-6 sm:mb-8 gold-glow-box card-modern"
         >
-          <div className="flex items-center gap-3 mb-6">
-            <Shield className="w-6 h-6 text-game-gold" />
-            <h2 className="text-2xl md:text-3xl font-bold text-white">
+          <div className="flex items-center gap-2 sm:gap-3 mb-4 sm:mb-6">
+            <Shield className="w-5 h-5 sm:w-6 sm:h-6 text-game-gold" />
+            <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-white">
               Live Arena Status
             </h2>
           </div>
 
-          <div className="grid md:grid-cols-2 gap-6 mb-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 mb-4 sm:mb-6">
             <div>
               <div className="text-slate-400 text-sm mb-2 font-medium">Current $ELIXIR Balance</div>
               <div className="text-3xl font-bold text-white mb-4">
@@ -156,15 +156,21 @@ export function Dashboard() {
             </div>
           </div>
 
-          {/* Progress Bar */}
+          {/* Elixir Bar */}
           <div className="mb-6">
-            <div className="flex justify-between items-center mb-4">
-              <span className="text-slate-400 text-sm font-medium">
+            <ElixirBar 
+              current={balance} 
+              max={MAX_ELIXIR_TOKENS}
+              showLabel={true}
+              size="lg"
+            />
+            <div className="flex justify-between items-center mt-3">
+              <span className="text-slate-400 text-xs font-medium">
                 {tier === "WHALE" 
                   ? "Maximum Tier Achieved" 
                   : `Progress to ${tier === "MINNOW" ? "Squire" : "Whale"} Tier`}
               </span>
-              <span className="text-slate-400 text-sm font-medium">
+              <span className="text-slate-400 text-xs font-medium">
                 {tier === "WHALE" 
                   ? "All Arenas Unlocked" 
                   : tokensNeeded() > 0
@@ -172,10 +178,6 @@ export function Dashboard() {
                   : "Unlocked!"}
               </span>
             </div>
-            <ElixirLoadingSpinner
-              progress={tier === "WHALE" ? 10 : getElixirProgress()}
-              showLabel={false}
-            />
           </div>
 
           {/* Next Tournament Countdown */}
