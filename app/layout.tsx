@@ -13,6 +13,15 @@ const inter = Inter({
 export const metadata: Metadata = {
   title: "Elixir Pump - Home to Clash Royale Tournaments",
   description: "Elixir Pump: Hold $ELIXIR tokens to unlock exclusive Clash Royale tournament access and compete for prize pools",
+  icons: {
+    icon: [
+      { url: "/elixir-icon.svg", type: "image/svg+xml" },
+      { url: "/favicon.ico", sizes: "any" },
+    ],
+    apple: [
+      { url: "/elixir-icon.svg", type: "image/svg+xml" },
+    ],
+  },
 };
 
 export const viewport = {
