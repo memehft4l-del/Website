@@ -50,11 +50,11 @@ export function Overview() {
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2, duration: 0.8 }}
-              className="text-6xl sm:text-7xl md:text-8xl lg:text-9xl font-bold mb-6 leading-tight"
+              className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-bold mb-4 sm:mb-6 leading-tight px-2"
             >
-              <span className="block text-white mb-2">#1 Place for</span>
-              <span className="block gradient-text-gold">Clash Royale</span>
-              <span className="block gradient-text">Tournaments</span>
+              <span className="block text-white mb-1 sm:mb-2">#1 Place for</span>
+              <span className="block gradient-text-gold break-words">Clash Royale</span>
+              <span className="block gradient-text break-words">Tournaments</span>
             </motion.h1>
 
             {/* Subtitle */}
@@ -62,7 +62,7 @@ export function Overview() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.4, duration: 0.8 }}
-              className="text-xl sm:text-2xl md:text-3xl text-slate-300 mb-8 max-w-3xl mx-auto font-light"
+              className="text-base sm:text-lg md:text-xl lg:text-2xl text-slate-300 mb-6 sm:mb-8 max-w-3xl mx-auto font-light px-4"
             >
               Token-gated competitive gaming. Hold <span className="text-game-gold font-semibold">$ELIXIR</span> to unlock exclusive tournaments and compete for prize pools.
             </motion.p>
@@ -94,17 +94,17 @@ export function Overview() {
           >
             <div className="glass rounded-3xl p-8 sm:p-12 md:p-16 border border-white/10 card-modern">
               <div className="text-center">
-                <h2 className="text-4xl sm:text-5xl md:text-6xl font-bold text-white mb-4">
+                <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-3 sm:mb-4 px-2">
                   Live Prize Pool
                 </h2>
                 <motion.p
-                  className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold gradient-text-gold mb-4"
+                  className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-bold gradient-text-gold mb-3 sm:mb-4 px-2 break-words"
                   animate={{ scale: [1, 1.02, 1] }}
                   transition={{ duration: 2, repeat: Infinity }}
                 >
                   {formatPrizePool()}
                 </motion.p>
-                <p className="text-lg sm:text-xl text-slate-400 mb-2">Funded by 85% of transaction fees</p>
+                <p className="text-sm sm:text-base md:text-lg lg:text-xl text-slate-400 mb-2 px-2">Funded by 85% of transaction fees</p>
                 <div className="flex items-center justify-center gap-2 text-sm text-slate-500">
                   <span>Dev Wallet:</span>
                   <code className="text-slate-400 font-mono">{DEV_WALLET.slice(0, 4)}...{DEV_WALLET.slice(-4)}</code>
@@ -129,43 +129,43 @@ export function Overview() {
             transition={{ delay: 0.3, duration: 0.6 }}
             className="max-w-6xl mx-auto"
           >
-            <h2 className="text-4xl sm:text-5xl md:text-6xl font-bold text-white mb-4 text-center">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-3 sm:mb-4 text-center px-4">
               How It Works
             </h2>
-            <p className="text-xl text-slate-400 mb-12 text-center max-w-3xl mx-auto">
+            <p className="text-base sm:text-lg md:text-xl text-slate-400 mb-8 sm:mb-12 text-center max-w-3xl mx-auto px-4">
               Simple steps to join tournaments and compete for prizes
             </p>
             
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8 mb-12">
               {/* Step 1 */}
-              <div className="glass rounded-2xl p-6 sm:p-8 card-modern">
-                <div className="text-5xl font-bold text-game-gold mb-4">1</div>
-                <h3 className="text-xl sm:text-2xl font-bold text-white mb-3">Buy & Hold $ELIXIR</h3>
-                <p className="text-slate-400 text-sm sm:text-base leading-relaxed">
+              <div className="glass rounded-2xl p-4 sm:p-6 md:p-8 card-modern">
+                <div className="text-4xl sm:text-5xl font-bold text-game-gold mb-3 sm:mb-4">1</div>
+                <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-white mb-2 sm:mb-3">Buy & Hold $ELIXIR</h3>
+                <p className="text-slate-400 text-xs sm:text-sm md:text-base leading-relaxed">
                   Purchase $ELIXIR tokens on Pump.fun or Jupiter. Hold the minimum amount required for your desired tier:
                 </p>
-                <ul className="mt-4 space-y-2 text-sm text-slate-300">
+                <ul className="mt-3 sm:mt-4 space-y-1 sm:space-y-2 text-xs sm:text-sm text-slate-300">
                   <li>• <span className="text-purple-400 font-semibold">Squire:</span> 500K+ tokens</li>
                   <li>• <span className="text-game-gold font-semibold">Whale:</span> 2.5M+ tokens</li>
                   <li>• <span className="text-pink-400 font-semibold">TGE:</span> 500K+ tokens</li>
                 </ul>
               </div>
               {/* Step 2 */}
-              <div className="glass rounded-2xl p-6 sm:p-8 card-modern">
-                <div className="text-5xl font-bold text-purple-400 mb-4">2</div>
-                <h3 className="text-xl sm:text-2xl font-bold text-white mb-3">Connect Wallet</h3>
-                <p className="text-slate-400 text-sm sm:text-base leading-relaxed">
+              <div className="glass rounded-2xl p-4 sm:p-6 md:p-8 card-modern">
+                <div className="text-4xl sm:text-5xl font-bold text-purple-400 mb-3 sm:mb-4">2</div>
+                <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-white mb-2 sm:mb-3">Connect Wallet</h3>
+                <p className="text-slate-400 text-xs sm:text-sm md:text-base leading-relaxed">
                   Connect your Solana wallet (Phantom, Solflare, etc.) to verify your token balance and unlock tournament access.
                 </p>
-                <p className="mt-4 text-sm text-slate-300">
+                <p className="mt-3 sm:mt-4 text-xs sm:text-sm text-slate-300">
                   Your wallet address is linked to your tournament signup for verification.
                 </p>
               </div>
               {/* Step 3 */}
-              <div className="glass rounded-2xl p-6 sm:p-8 card-modern">
-                <div className="text-5xl font-bold text-pink-400 mb-4">3</div>
-                <h3 className="text-xl sm:text-2xl font-bold text-white mb-3">Sign Up & Compete</h3>
-                <p className="text-slate-400 text-sm sm:text-base leading-relaxed">
+              <div className="glass rounded-2xl p-4 sm:p-6 md:p-8 card-modern">
+                <div className="text-4xl sm:text-5xl font-bold text-pink-400 mb-3 sm:mb-4">3</div>
+                <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-white mb-2 sm:mb-3">Sign Up & Compete</h3>
+                <p className="text-slate-400 text-xs sm:text-sm md:text-base leading-relaxed">
                   Enter your Clash Royale player tag, join the tournament, and compete! Remember: you must maintain your token 
                   balance throughout the entire tournament to be eligible for prizes.
                 </p>
@@ -173,71 +173,71 @@ export function Overview() {
             </div>
 
             {/* How to Join Tournament - Detailed */}
-            <div className="glass rounded-3xl p-8 sm:p-10 md:p-12 card-modern">
-              <h3 className="text-3xl sm:text-4xl font-bold text-white mb-6 text-center">
+            <div className="glass rounded-3xl p-4 sm:p-6 md:p-8 lg:p-10 xl:p-12 card-modern">
+              <h3 className="text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-4 sm:mb-6 text-center px-2">
                 How to Join a Tournament
               </h3>
               
-              <div className="space-y-6">
-                <div className="flex gap-4">
-                  <div className="flex-shrink-0 w-8 h-8 rounded-full bg-purple-600 text-white font-bold flex items-center justify-center">
+              <div className="space-y-4 sm:space-y-6">
+                <div className="flex gap-3 sm:gap-4">
+                  <div className="flex-shrink-0 w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-purple-600 text-white font-bold flex items-center justify-center text-sm sm:text-base">
                     1
                   </div>
-                  <div>
-                    <h4 className="text-xl font-bold text-white mb-2">Check Your Eligibility</h4>
-                    <p className="text-slate-300 text-sm sm:text-base">
+                  <div className="flex-1 min-w-0">
+                    <h4 className="text-lg sm:text-xl font-bold text-white mb-1 sm:mb-2">Check Your Eligibility</h4>
+                    <p className="text-slate-300 text-xs sm:text-sm md:text-base leading-relaxed">
                       Go to the Dashboard and verify you hold enough $ELIXIR tokens for your desired tournament tier. 
                       Your balance and tier status are displayed automatically.
                     </p>
                   </div>
                 </div>
 
-                <div className="flex gap-4">
-                  <div className="flex-shrink-0 w-8 h-8 rounded-full bg-purple-600 text-white font-bold flex items-center justify-center">
+                <div className="flex gap-3 sm:gap-4">
+                  <div className="flex-shrink-0 w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-purple-600 text-white font-bold flex items-center justify-center text-sm sm:text-base">
                     2
                   </div>
-                  <div>
-                    <h4 className="text-xl font-bold text-white mb-2">Wait for Tournament Signup</h4>
-                    <p className="text-slate-300 text-sm sm:text-base">
+                  <div className="flex-1 min-w-0">
+                    <h4 className="text-lg sm:text-xl font-bold text-white mb-1 sm:mb-2">Wait for Tournament Signup</h4>
+                    <p className="text-slate-300 text-xs sm:text-sm md:text-base leading-relaxed">
                       Tournaments are held biweekly on Wednesdays and Saturdays. Signup opens during the preparation phase 
                       (3 PM UTC). Check the countdown timer on the Dashboard to know when signup opens.
                     </p>
                   </div>
                 </div>
 
-                <div className="flex gap-4">
-                  <div className="flex-shrink-0 w-8 h-8 rounded-full bg-purple-600 text-white font-bold flex items-center justify-center">
+                <div className="flex gap-3 sm:gap-4">
+                  <div className="flex-shrink-0 w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-purple-600 text-white font-bold flex items-center justify-center text-sm sm:text-base">
                     3
                   </div>
-                  <div>
-                    <h4 className="text-xl font-bold text-white mb-2">Enter Your Clash Royale Tag</h4>
-                    <p className="text-slate-300 text-sm sm:text-base">
+                  <div className="flex-1 min-w-0">
+                    <h4 className="text-lg sm:text-xl font-bold text-white mb-1 sm:mb-2">Enter Your Clash Royale Tag</h4>
+                    <p className="text-slate-300 text-xs sm:text-sm md:text-base leading-relaxed">
                       When signup opens, enter your Clash Royale player tag (found in your Clash Royale profile). 
                       This links your wallet to your Clash Royale account for tournament participation.
                     </p>
                   </div>
                 </div>
 
-                <div className="flex gap-4">
-                  <div className="flex-shrink-0 w-8 h-8 rounded-full bg-purple-600 text-white font-bold flex items-center justify-center">
+                <div className="flex gap-3 sm:gap-4">
+                  <div className="flex-shrink-0 w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-purple-600 text-white font-bold flex items-center justify-center text-sm sm:text-base">
                     4
                   </div>
-                  <div>
-                    <h4 className="text-xl font-bold text-white mb-2">Join the Tournament</h4>
-                    <p className="text-slate-300 text-sm sm:text-base">
+                  <div className="flex-1 min-w-0">
+                    <h4 className="text-lg sm:text-xl font-bold text-white mb-1 sm:mb-2">Join the Tournament</h4>
+                    <p className="text-slate-300 text-xs sm:text-sm md:text-base leading-relaxed">
                       Use the tournament tag and password provided on the Dashboard to join the in-game tournament. 
                       Tournament starts at 4 PM UTC and runs until 8 PM UTC.
                     </p>
                   </div>
                 </div>
 
-                <div className="flex gap-4">
-                  <div className="flex-shrink-0 w-8 h-8 rounded-full bg-purple-600 text-white font-bold flex items-center justify-center">
+                <div className="flex gap-3 sm:gap-4">
+                  <div className="flex-shrink-0 w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-purple-600 text-white font-bold flex items-center justify-center text-sm sm:text-base">
                     5
                   </div>
-                  <div>
-                    <h4 className="text-xl font-bold text-white mb-2">Compete & Maintain Balance</h4>
-                    <p className="text-slate-300 text-sm sm:text-base">
+                  <div className="flex-1 min-w-0">
+                    <h4 className="text-lg sm:text-xl font-bold text-white mb-1 sm:mb-2">Compete & Maintain Balance</h4>
+                    <p className="text-slate-300 text-xs sm:text-sm md:text-base leading-relaxed">
                       Play your matches! You're eliminated after 3 losses. <span className="text-yellow-400 font-semibold">Important:</span> You must maintain 
                       your required token balance throughout the entire tournament. Selling tokens or dropping below your tier 
                       will void any prizes.
@@ -245,13 +245,13 @@ export function Overview() {
                   </div>
                 </div>
 
-                <div className="flex gap-4">
-                  <div className="flex-shrink-0 w-8 h-8 rounded-full bg-game-gold text-white font-bold flex items-center justify-center">
+                <div className="flex gap-3 sm:gap-4">
+                  <div className="flex-shrink-0 w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-game-gold text-white font-bold flex items-center justify-center text-sm sm:text-base">
                     ✓
                   </div>
-                  <div>
-                    <h4 className="text-xl font-bold text-white mb-2">Win Prizes</h4>
-                    <p className="text-slate-300 text-sm sm:text-base">
+                  <div className="flex-1 min-w-0">
+                    <h4 className="text-lg sm:text-xl font-bold text-white mb-1 sm:mb-2">Win Prizes</h4>
+                    <p className="text-slate-300 text-xs sm:text-sm md:text-base leading-relaxed">
                       Top 3 finishers receive prizes: 1st place (75%), 2nd place (20%), 3rd place (5%). 
                       Prizes are distributed after verification of token holdings and tournament results.
                     </p>
@@ -259,8 +259,8 @@ export function Overview() {
                 </div>
               </div>
 
-              <div className="mt-8 p-6 bg-purple-500/10 border border-purple-500/30 rounded-xl">
-                <p className="text-sm sm:text-base text-purple-200">
+              <div className="mt-6 sm:mt-8 p-4 sm:p-6 bg-purple-500/10 border border-purple-500/30 rounded-xl">
+                <p className="text-xs sm:text-sm md:text-base text-purple-200 leading-relaxed">
                   <span className="font-semibold text-white">💡 Pro Tip:</span> Keep your $ELIXIR tokens in your connected wallet 
                   throughout the entire tournament period. Don't transfer or sell them until after prizes are distributed!
                 </p>

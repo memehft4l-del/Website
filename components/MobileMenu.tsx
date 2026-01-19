@@ -41,22 +41,25 @@ export function MobileMenu({ activeTab, onTabChange, connected }: MobileMenuProp
       </button>
 
       {/* Mobile Menu Overlay */}
-      <AnimatePresence>
+      <AnimatePresence mode="wait">
         {isOpen && (
           <>
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
+              transition={{ duration: 0.15 }}
               onClick={() => setIsOpen(false)}
               className="fixed inset-0 bg-black/50 backdrop-blur-sm z-40 md:hidden"
+              style={{ willChange: "opacity" }}
             />
             <motion.div
               initial={{ x: "100%" }}
               animate={{ x: 0 }}
               exit={{ x: "100%" }}
-              transition={{ type: "spring", damping: 25, stiffness: 200 }}
+              transition={{ type: "tween", duration: 0.2, ease: "easeOut" }}
               className="fixed top-0 right-0 h-screen w-screen sm:w-96 glass border-l border-white/10 z-50 md:hidden overflow-y-auto"
+              style={{ willChange: "transform" }}
             >
               <div className="p-4 sm:p-6 pt-12 sm:pt-8 pb-20 min-h-screen flex flex-col">
                 <div className="flex items-center justify-between mb-6 sm:mb-8 flex-shrink-0">
