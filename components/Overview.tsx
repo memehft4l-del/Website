@@ -50,7 +50,7 @@ export function Overview() {
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2, duration: 0.8 }}
-              className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-bold mb-4 sm:mb-6 leading-tight px-2"
+              className="text-4xl sm:text-5xl md:text-6xl lg:text-6xl xl:text-7xl font-bold mb-4 sm:mb-6 leading-tight px-2"
             >
               <span className="block text-white mb-1 sm:mb-2">#1 Place for</span>
               <span className="block gradient-text-gold break-words">Clash Royale</span>
@@ -94,11 +94,11 @@ export function Overview() {
           >
             <div className="glass rounded-3xl p-8 sm:p-12 md:p-16 border border-white/10 card-modern">
               <div className="text-center">
-                <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-3 sm:mb-4 px-2">
+                <h2 className="text-3xl sm:text-4xl md:text-4xl lg:text-5xl font-bold text-white mb-3 sm:mb-4 px-2">
                   Live Prize Pool
                 </h2>
                 <motion.p
-                  className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-bold gradient-text-gold mb-3 sm:mb-4 px-2 break-words"
+                  className="text-4xl sm:text-5xl md:text-5xl lg:text-6xl xl:text-7xl font-bold gradient-text-gold mb-3 sm:mb-4 px-2 break-words"
                   animate={{ scale: [1, 1.02, 1] }}
                   transition={{ duration: 2, repeat: Infinity }}
                 >
@@ -129,7 +129,7 @@ export function Overview() {
             transition={{ delay: 0.3, duration: 0.6 }}
             className="max-w-6xl mx-auto"
           >
-            <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-3 sm:mb-4 text-center px-4">
+            <h2 className="text-3xl sm:text-4xl md:text-4xl lg:text-5xl font-bold text-white mb-3 sm:mb-4 text-center px-4">
               How It Works
             </h2>
             <p className="text-base sm:text-lg md:text-xl text-slate-400 mb-8 sm:mb-12 text-center max-w-3xl mx-auto px-4">

@@ -113,7 +113,7 @@ export function Dashboard() {
           transition={{ duration: 0.6 }}
           className="text-center mb-12"
         >
-          <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold text-white mb-4">
+          <h1 className="text-3xl sm:text-4xl md:text-4xl lg:text-5xl font-bold text-white mb-4">
             Tournament Dashboard
           </h1>
           <p className="text-xl text-slate-400 mb-6">Track your balance, tier, and tournament access</p>

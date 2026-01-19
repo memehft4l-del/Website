@@ -44,7 +44,7 @@ export function TokenInfo() {
       className="max-w-5xl mx-auto"
     >
       <div className="text-center mb-12">
-        <h2 className="text-4xl sm:text-5xl md:text-6xl font-bold text-white mb-4">
+        <h2 className="text-3xl sm:text-4xl md:text-4xl lg:text-5xl font-bold text-white mb-4">
           Token Information
         </h2>
         <p className="text-xl text-slate-400">Access, trade, and track $ELIXIR</p>

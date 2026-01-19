@@ -81,7 +81,7 @@ export function TGETournament() {
             <Rocket className="w-12 h-12 text-purple-400" />
           </motion.div>
           <div>
-            <h1 className="text-4xl font-bold text-white mb-2">TGE Tournament</h1>
+            <h1 className="text-3xl sm:text-4xl md:text-4xl lg:text-5xl font-bold text-white mb-2">TGE Tournament</h1>
             <p className="text-slate-300">Token Generation Event - Special Launch Tournament</p>
           </div>
         </div>
