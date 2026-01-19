@@ -6,48 +6,51 @@ import { TiltCard } from "./TiltCard";
 
 export function AboutSection() {
   return (
-    <div className="w-full max-w-6xl mx-auto py-16 px-4">
+    <section className="w-full max-w-6xl mx-auto py-16 px-4">
       {/* $ELIXIR Ecosystem Section */}
       <motion.div
-        initial={{ opacity: 0, y: 20 }}
+        initial={{ opacity: 0, y: 30 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
         transition={{ duration: 0.6 }}
-        className="glass rounded-2xl p-8 md:p-12 mb-12"
+        className="max-w-6xl mx-auto"
       >
-        <div className="flex items-center gap-3 mb-8">
-          <Trophy className="w-8 h-8 text-game-gold" />
-          <h2 className="text-3xl md:text-4xl font-bold text-white">
+        <div className="text-center mb-12">
+          <h2 className="text-4xl sm:text-5xl md:text-6xl font-bold text-white mb-4">
             Elixir Pump Ecosystem
           </h2>
+          <p className="text-xl text-slate-400">Token utility, tokenomics, and tournament rules</p>
         </div>
 
-        <div className="space-y-8">
-          {/* Token Utility */}
-          <div className="glass rounded-xl p-6 border border-purple-500/20">
-            <div className="flex items-center gap-3 mb-4">
-              <Shield className="w-6 h-6 text-purple-400" />
-              <h3 className="text-xl font-bold text-white">Token Utility</h3>
-            </div>
-            <p className="text-slate-300 leading-relaxed">
-              <span className="text-game-gold font-semibold">$ELIXIR</span> is the core fuel for <span className="text-purple-400 font-semibold">Elixir Pump</span>, our Clash Royale tournament platform. High-tier holdings unlock exclusive 
-              Arenas (Squire/Whale) with larger prize pools.
-            </p>
-          </div>
+        <div className="glass rounded-3xl p-8 sm:p-10 md:p-12 card-modern">
 
-          {/* The Vault */}
-          <div className="glass rounded-xl p-6 border border-purple-500/20">
-            <div className="flex items-center gap-3 mb-4">
-              <Coins className="w-6 h-6 text-game-gold" />
-              <h3 className="text-xl font-bold text-white">The Vault</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8 mb-8">
+            {/* Token Utility */}
+            <div className="glass rounded-2xl p-6 sm:p-8 border border-purple-500/20 card-modern">
+              <div className="flex items-center gap-3 mb-4">
+                <Shield className="w-6 h-6 text-purple-400" />
+                <h3 className="text-xl sm:text-2xl font-bold text-white">Token Utility</h3>
+              </div>
+              <p className="text-slate-300 leading-relaxed text-sm sm:text-base">
+                <span className="text-game-gold font-semibold">$ELIXIR</span> is the core fuel for <span className="text-purple-400 font-semibold">Elixir Pump</span>, our Clash Royale tournament platform. High-tier holdings unlock exclusive 
+                Arenas (Squire/Whale) with larger prize pools.
+              </p>
             </div>
-            <p className="text-slate-300 leading-relaxed">
-              85% of all launch and trading fees fund the tournament Prize Pools. 15% is dedicated to automated <span className="text-game-gold font-semibold">$ELIXIR</span> Token Buybacks.
-            </p>
+
+            {/* The Vault */}
+            <div className="glass rounded-2xl p-6 sm:p-8 border border-purple-500/20 card-modern">
+              <div className="flex items-center gap-3 mb-4">
+                <Coins className="w-6 h-6 text-game-gold" />
+                <h3 className="text-xl sm:text-2xl font-bold text-white">The Vault</h3>
+              </div>
+              <p className="text-slate-300 leading-relaxed text-sm sm:text-base">
+                85% of all launch and trading fees fund the tournament Prize Pools. 15% is dedicated to automated <span className="text-game-gold font-semibold">$ELIXIR</span> Token Buybacks.
+              </p>
+            </div>
           </div>
 
           {/* Tournament Rules */}
-          <div className="glass rounded-xl p-6 border border-yellow-500/20 bg-yellow-500/5">
+          <div className="glass rounded-2xl p-6 sm:p-8 border border-yellow-500/20 bg-yellow-500/5 card-modern">
             <div className="flex items-center gap-3 mb-4">
               <Calendar className="w-6 h-6 text-yellow-400" />
               <h3 className="text-xl font-bold text-white">Tournament Format</h3>
@@ -80,6 +83,6 @@ export function AboutSection() {
           </div>
         </div>
       </motion.div>
-    </div>
+    </section>
   );
 }

@@ -38,44 +38,49 @@ export function TokenInfo() {
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20 }}
+      initial={{ opacity: 0, y: 30 }}
       animate={{ opacity: 1, y: 0 }}
-      className="glass rounded-2xl p-4 sm:p-6 md:p-8 mb-8 card-modern"
+      transition={{ duration: 0.6 }}
+      className="max-w-5xl mx-auto"
     >
-      <div className="flex items-center gap-3 mb-4 sm:mb-6">
-        <Zap className="w-5 h-5 sm:w-6 sm:h-6 text-purple-400" />
-        <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-white">Token Information</h2>
+      <div className="text-center mb-12">
+        <h2 className="text-4xl sm:text-5xl md:text-6xl font-bold text-white mb-4">
+          Token Information
+        </h2>
+        <p className="text-xl text-slate-400">Access, trade, and track $ELIXIR</p>
       </div>
+      
+      <div className="glass rounded-3xl p-6 sm:p-8 md:p-10 card-modern">
 
-      {/* Contract Address */}
-      <div className="glass rounded-xl p-3 sm:p-4 mb-4 sm:mb-6 border border-white/10">
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-4">
-          <div className="flex-1 min-w-0">
-            <div className="text-slate-400 text-xs sm:text-sm mb-2 font-medium">Contract Address</div>
-            <div className="flex items-center gap-2">
-              <code className="text-white font-mono text-xs sm:text-sm md:text-base break-all">
-                {contractAddress}
-              </code>
+        {/* Contract Address */}
+        <div className="glass rounded-2xl p-4 sm:p-6 mb-6 sm:mb-8 border border-white/10">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-4">
+            <div className="flex-1 min-w-0">
+              <div className="text-slate-400 text-xs sm:text-sm mb-2 font-medium">Contract Address</div>
+              <div className="flex items-center gap-2">
+                <code className="text-white font-mono text-xs sm:text-sm md:text-base break-all">
+                  {contractAddress}
+                </code>
+              </div>
             </div>
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={() => copyToClipboard(contractAddress)}
+              className="flex-shrink-0 glass rounded-lg p-3 hover:bg-white/10 transition-colors"
+              title="Copy contract address"
+            >
+              {copied ? (
+                <Check className="w-5 h-5 text-green-400" />
+              ) : (
+                <Copy className="w-5 h-5 text-slate-400" />
+              )}
+            </motion.button>
           </div>
-          <motion.button
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            onClick={() => copyToClipboard(contractAddress)}
-            className="flex-shrink-0 glass rounded-lg p-3 hover:bg-white/10 transition-colors"
-            title="Copy contract address"
-          >
-            {copied ? (
-              <Check className="w-5 h-5 text-green-400" />
-            ) : (
-              <Copy className="w-5 h-5 text-slate-400" />
-            )}
-          </motion.button>
         </div>
-      </div>
 
-      {/* Buy Buttons */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 mb-4 sm:mb-6">
+        {/* Buy Buttons */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 mb-6 sm:mb-8">
         <motion.a
           href={pumpFunUrl}
           target="_blank"
@@ -113,34 +118,35 @@ export function TokenInfo() {
         </motion.a>
       </div>
 
-      {/* Quick Links */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3">
-        {tokenInfo.twitter_url && (
+        {/* Quick Links */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          {tokenInfo.twitter_url && (
+            <motion.a
+              href={tokenInfo.twitter_url}
+              target="_blank"
+              rel="noopener noreferrer"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              className="glass rounded-lg p-3 border border-white/10 hover:border-white/20 transition-all flex items-center justify-center gap-3 group"
+            >
+              <Twitter className="w-5 h-5 text-blue-400" />
+              <span className="text-sm text-slate-300 font-medium">Follow on Twitter/X</span>
+              <ExternalLink className="w-4 h-4 text-slate-400 group-hover:text-white" />
+            </motion.a>
+          )}
           <motion.a
-            href={tokenInfo.twitter_url}
+            href={dexscreenerUrl}
             target="_blank"
             rel="noopener noreferrer"
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             className="glass rounded-lg p-3 border border-white/10 hover:border-white/20 transition-all flex items-center justify-center gap-3 group"
           >
-            <Twitter className="w-5 h-5 text-blue-400" />
-            <span className="text-sm text-slate-300 font-medium">Follow on Twitter/X</span>
+            <TrendingUp className="w-5 h-5 text-green-400" />
+            <span className="text-sm text-slate-300 font-medium">View on DexScreener</span>
             <ExternalLink className="w-4 h-4 text-slate-400 group-hover:text-white" />
           </motion.a>
-        )}
-        <motion.a
-          href={dexscreenerUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-          className="glass rounded-lg p-3 border border-white/10 hover:border-white/20 transition-all flex items-center justify-center gap-3 group"
-        >
-          <TrendingUp className="w-5 h-5 text-green-400" />
-          <span className="text-sm text-slate-300 font-medium">View on DexScreener</span>
-          <ExternalLink className="w-4 h-4 text-slate-400 group-hover:text-white" />
-        </motion.a>
+        </div>
       </div>
     </motion.div>
   );

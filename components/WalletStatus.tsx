@@ -3,6 +3,7 @@
 import { useWallet } from "@solana/wallet-adapter-react";
 import { useEffect, useState } from "react";
 import { useSound } from "@/lib/useSound";
+import { motion, AnimatePresence } from "framer-motion";
 import dynamic from "next/dynamic";
 
 // Dynamically import Navigation to prevent SSR issues
@@ -109,29 +110,39 @@ export function WalletStatus() {
     <main className="min-h-screen relative z-10 bg-slate-900">
       <Navigation activeTab={activeTab} onTabChange={setActiveTab} />
       
-      {activeTab === "overview" ? (
-        <Overview />
-      ) : activeTab === "dashboard" ? (
-        connected ? (
-          <Dashboard />
-        ) : (
-          <div className="container mx-auto px-4 py-16 text-center">
-            <p className="text-slate-400 mb-4">Please connect your wallet to access the dashboard.</p>
-            <button
-              onClick={() => setActiveTab("overview")}
-              className="text-purple-400 hover:text-purple-300 underline"
-            >
-              Go to Overview
-            </button>
-          </div>
-        )
-      ) : activeTab === "tournaments" ? (
-        <div className="container mx-auto px-4 py-8">
-          <TournamentMonitor />
-        </div>
-      ) : (
-        <TGETournament />
-      )}
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={activeTab}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -20 }}
+          transition={{ duration: 0.3, ease: [0.4, 0, 0.2, 1] }}
+        >
+          {activeTab === "overview" ? (
+            <Overview />
+          ) : activeTab === "dashboard" ? (
+            connected ? (
+              <Dashboard />
+            ) : (
+              <div className="container mx-auto px-4 py-16 text-center">
+                <p className="text-slate-400 mb-4">Please connect your wallet to access the dashboard.</p>
+                <button
+                  onClick={() => setActiveTab("overview")}
+                  className="text-purple-400 hover:text-purple-300 underline"
+                >
+                  Go to Overview
+                </button>
+              </div>
+            )
+          ) : activeTab === "tournaments" ? (
+            <div className="container mx-auto px-4 py-8">
+              <TournamentMonitor />
+            </div>
+          ) : (
+            <TGETournament />
+          )}
+        </motion.div>
+      </AnimatePresence>
     </main>
   );
 }

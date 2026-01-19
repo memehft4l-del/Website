@@ -8,11 +8,14 @@ import { AboutSection } from "@/components/AboutSection";
 import { TokenInfo } from "@/components/TokenInfo";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { usePrizePool, DEV_WALLET } from "@/lib/usePrizePool";
+import { useTokenInfo } from "@/lib/useTokenInfo";
 import { useState } from "react";
+import Link from "next/link";
 
 export function Overview() {
   const { connected } = useWallet();
   const { balance: prizePoolBalance, isLoading: prizePoolLoading } = usePrizePool();
+  const { tokenInfo } = useTokenInfo();
   const [copied, setCopied] = useState(false);
 
   const copyDevWallet = async () => {
@@ -32,156 +35,323 @@ export function Overview() {
 
   return (
     <>
-      <div className="container mx-auto px-4 py-16">
-        {/* Hero Section */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="max-w-4xl mx-auto text-center"
-        >
+      {/* Hero Section - Street.app Style */}
+      <section className="relative min-h-[90vh] flex items-center justify-center overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-b from-purple-900/20 via-slate-900 to-slate-900"></div>
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <motion.div
-            initial={{ scale: 0 }}
-            animate={{ scale: 1 }}
-            transition={{ type: "spring", stiffness: 200, damping: 10 }}
-            className="mb-8"
-          >
-            <div className="relative inline-block mb-6">
-              <motion.div
-                animate={{ 
-                  rotate: [0, 5, -5, 0],
-                  scale: [1, 1.05, 1]
-                }}
-                transition={{ 
-                  duration: 4, 
-                  repeat: Infinity, 
-                  repeatDelay: 2 
-                }}
-                className="relative"
-              >
-                <div className="absolute inset-0 blur-2xl bg-game-gold/40 rounded-full animate-pulse"></div>
-                <div className="absolute inset-0 blur-xl bg-purple-500/20 rounded-full animate-pulse" style={{ animationDelay: '1s' }}></div>
-                <Trophy className="w-16 h-16 sm:w-20 sm:h-20 mx-auto text-game-gold relative z-10 drop-shadow-[0_0_30px_rgba(255,215,0,0.6)] filter brightness-110" />
-              </motion.div>
-            </div>
-            <div className="mb-4">
-              <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-2 relative">
-                <span className="gradient-text text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-extrabold tracking-tight">
-                  Elixir Pump
-                </span>
-              </h1>
-              <p className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold relative">
-                <span className="gradient-text-gold text-xl sm:text-2xl md:text-3xl lg:text-4xl font-extrabold tracking-tight">
-                  $ELIXIR
-                </span>
-              </p>
-            </div>
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.1 }}
-              className="mb-6"
-            >
-              <p className="text-xl sm:text-2xl md:text-3xl lg:text-4xl text-white mb-4 font-bold text-stroke text-center">
-                🏆 Home to Clash Royale Tournaments 🏆
-              </p>
-              <p className="text-base sm:text-lg md:text-xl lg:text-2xl text-slate-300 mb-3 font-semibold text-center">
-                Token-Gated Competitive Gaming
-              </p>
-              <p className="text-sm sm:text-base md:text-lg lg:text-xl text-slate-400 mb-2 px-4 max-w-3xl mx-auto text-center">
-                Hold <span className="text-game-gold font-semibold">$ELIXIR</span> tokens to unlock exclusive tournament access and compete for prize pools funded by token fees.
-              </p>
-              <p className="text-xs sm:text-sm md:text-base text-slate-500 px-4 max-w-2xl mx-auto text-center">
-                The more <span className="text-purple-400 font-semibold">$ELIXIR</span> tokens you hold, the higher your tier and the bigger the prize pools you can compete for.
-              </p>
-            </motion.div>
-          </motion.div>
-
-          {/* Connect Wallet Section */}
-          {!connected && (
-            <TiltCard intensity={6}>
-              <motion.div
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: 0.2 }}
-                className="glass rounded-2xl p-6 sm:p-8 mb-8 sm:mb-12"
-              >
-                <div className="flex flex-col items-center gap-6">
-                  <motion.div
-                    animate={{ rotate: [0, 10, -10, 0] }}
-                    transition={{ duration: 2, repeat: Infinity, repeatDelay: 3 }}
-                  >
-                    <Shield className="w-12 h-12 sm:w-14 sm:h-14 text-purple-400" />
-                  </motion.div>
-                  <h2 className="text-2xl sm:text-3xl font-bold text-white">
-                    Connect Your Wallet
-                  </h2>
-                  <p className="text-slate-400 max-w-md text-sm sm:text-base px-4">
-                    Connect your Solana wallet to check your $ELIXIR balance and
-                    unlock tournament access
-                  </p>
-                  <motion.div
-                    className="mt-4"
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
-                  >
-                    <DynamicWalletButton className="!bg-gradient-to-r !from-purple-600 !to-yellow-600 hover:!from-purple-700 hover:!to-yellow-700 !rounded-lg !px-6 !py-3 sm:!px-8 sm:!py-4 !font-semibold !text-base sm:!text-lg !transition-all !border !border-white/10 !w-full sm:!w-auto" />
-                  </motion.div>
-                </div>
-              </motion.div>
-            </TiltCard>
-          )}
-
-          {/* Prize Pool Display */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 40 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3 }}
-            className="clash-card rounded-2xl p-6 sm:p-8 mb-8 sm:mb-12 gold-glow-box arena-badge-gold"
+            transition={{ duration: 0.8, ease: [0.4, 0, 0.2, 1] }}
+            className="max-w-5xl mx-auto text-center"
           >
-            <div className="flex items-center justify-center gap-4 mb-4">
-              <motion.div
-                animate={{ rotate: [0, 360] }}
-                transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
-              >
-                <Coins className="w-10 h-10 text-game-gold drop-shadow-[0_0_15px_rgba(255,215,0,0.6)]" />
-              </motion.div>
-              <h3 className="text-2xl sm:text-3xl md:text-4xl font-bold text-white text-stroke">Prize Pool</h3>
-            </div>
-            <motion.p
-              className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold gradient-text-gold gold-glow"
-              animate={{ scale: [1, 1.02, 1] }}
-              transition={{ duration: 2, repeat: Infinity }}
+            {/* Main Hero Title */}
+            <motion.h1
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2, duration: 0.8 }}
+              className="text-6xl sm:text-7xl md:text-8xl lg:text-9xl font-bold mb-6 leading-tight"
             >
-              {formatPrizePool()}
+              <span className="block text-white mb-2">#1 Place for</span>
+              <span className="block gradient-text-gold">Clash Royale</span>
+              <span className="block gradient-text">Tournaments</span>
+            </motion.h1>
+
+            {/* Subtitle */}
+            <motion.p
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.4, duration: 0.8 }}
+              className="text-xl sm:text-2xl md:text-3xl text-slate-300 mb-8 max-w-3xl mx-auto font-light"
+            >
+              Token-gated competitive gaming. Hold <span className="text-game-gold font-semibold">$ELIXIR</span> to unlock exclusive tournaments and compete for prize pools.
             </motion.p>
-            <p className="text-slate-400 mt-2 font-medium">Funded by 85% of transaction fees</p>
-            <p className="text-slate-500 text-xs mt-2 flex items-center justify-center gap-2">
-              <span>Dev Wallet:</span>
-              <code className="text-slate-400 font-mono text-xs">{DEV_WALLET.slice(0, 4)}...{DEV_WALLET.slice(-4)}</code>
-              <button
-                onClick={copyDevWallet}
-                className="text-slate-500 hover:text-slate-300 transition-colors"
-                title="Copy dev wallet address"
+
+            {/* CTA Button */}
+            {!connected && (
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.6, duration: 0.8 }}
+                className="mb-16"
               >
-                {copied ? <Check className="w-3 h-3 text-green-400" /> : <Copy className="w-3 h-3" />}
-              </button>
-            </p>
+                <DynamicWalletButton className="!bg-gradient-to-r !from-purple-600 !to-pink-600 hover:!from-purple-700 hover:!to-pink-700 !rounded-xl !px-8 !py-4 !text-lg !font-semibold !transition-all !shadow-lg !shadow-purple-600/30" />
+              </motion.div>
+            )}
           </motion.div>
-        </motion.div>
+        </div>
+      </section>
+
+      {/* Main Content */}
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-20 md:py-24">
+        {/* Prize Pool Section - Street.app Style */}
+        <section className="mb-20 sm:mb-24">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2, duration: 0.6 }}
+            className="max-w-4xl mx-auto"
+          >
+            <div className="glass rounded-3xl p-8 sm:p-12 md:p-16 border border-white/10 card-modern">
+              <div className="text-center">
+                <h2 className="text-4xl sm:text-5xl md:text-6xl font-bold text-white mb-4">
+                  Live Prize Pool
+                </h2>
+                <motion.p
+                  className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold gradient-text-gold mb-4"
+                  animate={{ scale: [1, 1.02, 1] }}
+                  transition={{ duration: 2, repeat: Infinity }}
+                >
+                  {formatPrizePool()}
+                </motion.p>
+                <p className="text-lg sm:text-xl text-slate-400 mb-2">Funded by 85% of transaction fees</p>
+                <div className="flex items-center justify-center gap-2 text-sm text-slate-500">
+                  <span>Dev Wallet:</span>
+                  <code className="text-slate-400 font-mono">{DEV_WALLET.slice(0, 4)}...{DEV_WALLET.slice(-4)}</code>
+                  <button
+                    onClick={copyDevWallet}
+                    className="text-slate-500 hover:text-slate-300 transition-colors"
+                    title="Copy dev wallet address"
+                  >
+                    {copied ? <Check className="w-4 h-4 text-green-400" /> : <Copy className="w-4 h-4" />}
+                  </button>
+                </div>
+              </div>
+            </div>
+          </motion.div>
+        </section>
+
+        {/* How It Works Section - Detailed */}
+        <section className="mb-20 sm:mb-24">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3, duration: 0.6 }}
+            className="max-w-6xl mx-auto"
+          >
+            <h2 className="text-4xl sm:text-5xl md:text-6xl font-bold text-white mb-4 text-center">
+              How It Works
+            </h2>
+            <p className="text-xl text-slate-400 mb-12 text-center max-w-3xl mx-auto">
+              Simple steps to join tournaments and compete for prizes
+            </p>
+            
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8 mb-12">
+              {/* Step 1 */}
+              <div className="glass rounded-2xl p-6 sm:p-8 card-modern">
+                <div className="text-5xl font-bold text-game-gold mb-4">1</div>
+                <h3 className="text-xl sm:text-2xl font-bold text-white mb-3">Buy & Hold $ELIXIR</h3>
+                <p className="text-slate-400 text-sm sm:text-base leading-relaxed">
+                  Purchase $ELIXIR tokens on Pump.fun or Jupiter. Hold the minimum amount required for your desired tier:
+                </p>
+                <ul className="mt-4 space-y-2 text-sm text-slate-300">
+                  <li>• <span className="text-purple-400 font-semibold">Squire:</span> 500K+ tokens</li>
+                  <li>• <span className="text-game-gold font-semibold">Whale:</span> 2.5M+ tokens</li>
+                  <li>• <span className="text-pink-400 font-semibold">TGE:</span> 500K+ tokens</li>
+                </ul>
+              </div>
+              {/* Step 2 */}
+              <div className="glass rounded-2xl p-6 sm:p-8 card-modern">
+                <div className="text-5xl font-bold text-purple-400 mb-4">2</div>
+                <h3 className="text-xl sm:text-2xl font-bold text-white mb-3">Connect Wallet</h3>
+                <p className="text-slate-400 text-sm sm:text-base leading-relaxed">
+                  Connect your Solana wallet (Phantom, Solflare, etc.) to verify your token balance and unlock tournament access.
+                </p>
+                <p className="mt-4 text-sm text-slate-300">
+                  Your wallet address is linked to your tournament signup for verification.
+                </p>
+              </div>
+              {/* Step 3 */}
+              <div className="glass rounded-2xl p-6 sm:p-8 card-modern">
+                <div className="text-5xl font-bold text-pink-400 mb-4">3</div>
+                <h3 className="text-xl sm:text-2xl font-bold text-white mb-3">Sign Up & Compete</h3>
+                <p className="text-slate-400 text-sm sm:text-base leading-relaxed">
+                  Enter your Clash Royale player tag, join the tournament, and compete! Remember: you must maintain your token 
+                  balance throughout the entire tournament to be eligible for prizes.
+                </p>
+              </div>
+            </div>
+
+            {/* How to Join Tournament - Detailed */}
+            <div className="glass rounded-3xl p-8 sm:p-10 md:p-12 card-modern">
+              <h3 className="text-3xl sm:text-4xl font-bold text-white mb-6 text-center">
+                How to Join a Tournament
+              </h3>
+              
+              <div className="space-y-6">
+                <div className="flex gap-4">
+                  <div className="flex-shrink-0 w-8 h-8 rounded-full bg-purple-600 text-white font-bold flex items-center justify-center">
+                    1
+                  </div>
+                  <div>
+                    <h4 className="text-xl font-bold text-white mb-2">Check Your Eligibility</h4>
+                    <p className="text-slate-300 text-sm sm:text-base">
+                      Go to the Dashboard and verify you hold enough $ELIXIR tokens for your desired tournament tier. 
+                      Your balance and tier status are displayed automatically.
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex gap-4">
+                  <div className="flex-shrink-0 w-8 h-8 rounded-full bg-purple-600 text-white font-bold flex items-center justify-center">
+                    2
+                  </div>
+                  <div>
+                    <h4 className="text-xl font-bold text-white mb-2">Wait for Tournament Signup</h4>
+                    <p className="text-slate-300 text-sm sm:text-base">
+                      Tournaments are held biweekly on Wednesdays and Saturdays. Signup opens during the preparation phase 
+                      (3 PM UTC). Check the countdown timer on the Dashboard to know when signup opens.
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex gap-4">
+                  <div className="flex-shrink-0 w-8 h-8 rounded-full bg-purple-600 text-white font-bold flex items-center justify-center">
+                    3
+                  </div>
+                  <div>
+                    <h4 className="text-xl font-bold text-white mb-2">Enter Your Clash Royale Tag</h4>
+                    <p className="text-slate-300 text-sm sm:text-base">
+                      When signup opens, enter your Clash Royale player tag (found in your Clash Royale profile). 
+                      This links your wallet to your Clash Royale account for tournament participation.
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex gap-4">
+                  <div className="flex-shrink-0 w-8 h-8 rounded-full bg-purple-600 text-white font-bold flex items-center justify-center">
+                    4
+                  </div>
+                  <div>
+                    <h4 className="text-xl font-bold text-white mb-2">Join the Tournament</h4>
+                    <p className="text-slate-300 text-sm sm:text-base">
+                      Use the tournament tag and password provided on the Dashboard to join the in-game tournament. 
+                      Tournament starts at 4 PM UTC and runs until 8 PM UTC.
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex gap-4">
+                  <div className="flex-shrink-0 w-8 h-8 rounded-full bg-purple-600 text-white font-bold flex items-center justify-center">
+                    5
+                  </div>
+                  <div>
+                    <h4 className="text-xl font-bold text-white mb-2">Compete & Maintain Balance</h4>
+                    <p className="text-slate-300 text-sm sm:text-base">
+                      Play your matches! You're eliminated after 3 losses. <span className="text-yellow-400 font-semibold">Important:</span> You must maintain 
+                      your required token balance throughout the entire tournament. Selling tokens or dropping below your tier 
+                      will void any prizes.
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex gap-4">
+                  <div className="flex-shrink-0 w-8 h-8 rounded-full bg-game-gold text-white font-bold flex items-center justify-center">
+                    ✓
+                  </div>
+                  <div>
+                    <h4 className="text-xl font-bold text-white mb-2">Win Prizes</h4>
+                    <p className="text-slate-300 text-sm sm:text-base">
+                      Top 3 finishers receive prizes: 1st place (75%), 2nd place (20%), 3rd place (5%). 
+                      Prizes are distributed after verification of token holdings and tournament results.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="mt-8 p-6 bg-purple-500/10 border border-purple-500/30 rounded-xl">
+                <p className="text-sm sm:text-base text-purple-200">
+                  <span className="font-semibold text-white">💡 Pro Tip:</span> Keep your $ELIXIR tokens in your connected wallet 
+                  throughout the entire tournament period. Don't transfer or sell them until after prizes are distributed!
+                </p>
+              </div>
+            </div>
+          </motion.div>
+        </section>
 
         {/* Token Info Section */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.7 }}
-          className="mt-12"
-        >
+        <section className="mb-20 sm:mb-24">
           <TokenInfo />
-        </motion.div>
+        </section>
       </div>
 
       {/* About Section */}
       <AboutSection />
+
+      {/* Footer with Legal Links */}
+      <footer className="border-t border-white/10 mt-20 sm:mt-24">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16">
+          <div className="max-w-6xl mx-auto">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
+              <div>
+                <h3 className="text-xl font-bold text-white mb-4">Elixir Pump</h3>
+                <p className="text-slate-400 text-sm">
+                  Home to Clash Royale Tournaments. Token-gated competitive gaming platform.
+                </p>
+              </div>
+              <div>
+                <h3 className="text-xl font-bold text-white mb-4">Quick Links</h3>
+                <ul className="space-y-2">
+                  <li>
+                    <Link href="/rules" className="text-slate-400 hover:text-white transition-colors text-sm">
+                      Tournament Rules
+                    </Link>
+                  </li>
+                  {tokenInfo?.twitter_url && (
+                    <li>
+                      <a 
+                        href={tokenInfo.twitter_url}
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="text-slate-400 hover:text-white transition-colors text-sm"
+                      >
+                        Twitter / X
+                      </a>
+                    </li>
+                  )}
+                  {tokenInfo?.dexscreener_url && (
+                    <li>
+                      <a 
+                        href={tokenInfo.dexscreener_url}
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="text-slate-400 hover:text-white transition-colors text-sm"
+                      >
+                        DexScreener
+                      </a>
+                    </li>
+                  )}
+                </ul>
+              </div>
+              <div>
+                <h3 className="text-xl font-bold text-white mb-4">Legal</h3>
+                <ul className="space-y-2">
+                  <li>
+                    <Link href="/legal" className="text-slate-400 hover:text-white transition-colors text-sm">
+                      Terms of Service
+                    </Link>
+                  </li>
+                  <li>
+                    <Link href="/legal" className="text-slate-400 hover:text-white transition-colors text-sm">
+                      Privacy Policy
+                    </Link>
+                  </li>
+                  <li>
+                    <Link href="/legal" className="text-slate-400 hover:text-white transition-colors text-sm">
+                      Disclaimers
+                    </Link>
+                  </li>
+                </ul>
+              </div>
+            </div>
+            <div className="border-t border-white/10 pt-8 text-center">
+              <p className="text-slate-500 text-sm">
+                © {new Date().getFullYear()} Elixir Pump. All rights reserved. Not affiliated with Supercell or Clash Royale.
+              </p>
+            </div>
+          </div>
+        </div>
+      </footer>
     </>
   );
 }

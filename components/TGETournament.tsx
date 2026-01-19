@@ -238,8 +238,16 @@ export function TGETournament() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4 }}
-          className="mt-8 max-w-2xl mx-auto"
+          className="mt-12 max-w-2xl mx-auto"
         >
+          <div className="text-center mb-6">
+            <h2 className="text-3xl sm:text-4xl font-bold text-white mb-2">
+              Ready to Compete?
+            </h2>
+            <p className="text-slate-400">
+              Sign up early! Your Clash Royale tag will be visible in the Tournaments Monitor.
+            </p>
+          </div>
           <TournamentSignupForm tier="TGE" />
         </motion.div>
       )}

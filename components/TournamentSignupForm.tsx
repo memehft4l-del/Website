@@ -83,9 +83,17 @@ export function TournamentSignupForm({ tier, onSignupSuccess }: TournamentSignup
       animate={{ opacity: 1, y: 0 }}
       className="glass rounded-xl p-6 border border-purple-500/20"
     >
-      <h3 className="text-xl font-bold text-white mb-4">
-        Sign Up for Tournament
-      </h3>
+      <div className="mb-4">
+        <h3 className="text-xl font-bold text-white mb-2">
+          Sign Up for Tournament
+        </h3>
+        <div className="bg-purple-500/10 border border-purple-500/30 rounded-lg p-3 mb-4">
+          <p className="text-sm text-purple-200">
+            <span className="font-semibold text-white">✨ Early Signups Open!</span> You can sign up now with your Clash Royale tag. 
+            Tournament details will be available closer to the event. Your signup will be visible in the Tournaments Monitor.
+          </p>
+        </div>
+      </div>
       
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>

@@ -99,28 +99,38 @@ export function Dashboard() {
   };
 
   return (
-    <div className="min-h-screen relative z-10 bg-slate-900">
-      <div className="container mx-auto px-3 sm:px-4 py-6 sm:py-8">
-        {/* Header */}
+    <motion.div 
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.4 }}
+      className="min-h-screen relative z-10 bg-slate-900"
+    >
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 md:py-20">
+        {/* Header - Street.app Style */}
         <motion.div
-          initial={{ opacity: 0, y: -20 }}
+          initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
-          className="flex flex-col md:flex-row justify-between items-center mb-8 gap-4"
+          transition={{ duration: 0.6 }}
+          className="text-center mb-12"
         >
-          <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold gradient-text">
+          <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold text-white mb-4">
             Tournament Dashboard
           </h1>
-          <DynamicWalletButton className="!bg-gradient-to-r !from-purple-600 !to-yellow-600 hover:!from-purple-700 hover:!to-yellow-700 !rounded-lg !px-4 !py-2 sm:!px-6 sm:!py-3 !font-semibold !text-sm sm:!text-base !transition-all !border !border-white/10 !w-full sm:!w-auto" />
+          <p className="text-xl text-slate-400 mb-6">Track your balance, tier, and tournament access</p>
+          <div className="flex justify-center">
+            <DynamicWalletButton className="!bg-gradient-to-r !from-purple-600 !to-pink-600 hover:!from-purple-700 hover:!to-pink-700 !rounded-xl !px-6 !py-3 !font-semibold !text-base !transition-all !shadow-lg !shadow-purple-600/30" />
+          </div>
         </motion.div>
 
         {/* Live Arena Status Card */}
         <motion.div
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ delay: 0.1 }}
-          className="glass-gold rounded-2xl p-4 sm:p-6 md:p-8 mb-6 sm:mb-8 gold-glow-box card-modern"
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2, duration: 0.6 }}
+          className="max-w-5xl mx-auto mb-12"
         >
-          <div className="flex items-center gap-2 sm:gap-3 mb-4 sm:mb-6">
+          <div className="glass-gold rounded-3xl p-6 sm:p-8 md:p-10 gold-glow-box card-modern">
+            <div className="flex items-center gap-2 sm:gap-3 mb-4 sm:mb-6">
             <Shield className="w-5 h-5 sm:w-6 sm:h-6 text-game-gold" />
             <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-white">
               Live Arena Status
@@ -183,6 +193,7 @@ export function Dashboard() {
           {/* Next Tournament Countdown */}
           <div className="pt-6 border-t border-white/10">
             <TournamentCountdown />
+          </div>
           </div>
         </motion.div>
 
@@ -390,8 +401,16 @@ export function Dashboard() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.4 }}
-            className="mt-8 max-w-2xl mx-auto"
+            className="mt-12 max-w-2xl mx-auto"
           >
+            <div className="text-center mb-6">
+              <h2 className="text-3xl sm:text-4xl font-bold text-white mb-2">
+                Ready to Compete?
+              </h2>
+              <p className="text-slate-400">
+                Sign up early! Your Clash Royale tag will be visible in the Tournaments Monitor.
+              </p>
+            </div>
             <TournamentSignupForm tier="SQUIRE" />
           </motion.div>
         )}
@@ -401,12 +420,20 @@ export function Dashboard() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.4 }}
-            className="mt-8 max-w-2xl mx-auto"
+            className="mt-12 max-w-2xl mx-auto"
           >
+            <div className="text-center mb-6">
+              <h2 className="text-3xl sm:text-4xl font-bold text-white mb-2">
+                Ready to Compete?
+              </h2>
+              <p className="text-slate-400">
+                Sign up early! Your Clash Royale tag will be visible in the Tournaments Monitor.
+              </p>
+            </div>
             <TournamentSignupForm tier="WHALE" />
           </motion.div>
         )}
       </div>
-    </div>
+    </motion.div>
   );
 }
