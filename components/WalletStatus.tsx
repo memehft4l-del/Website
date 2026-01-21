@@ -89,7 +89,7 @@ export function WalletStatus() {
       // Auto-switch to dashboard when wallet connects
       setActiveTab("dashboard");
     }
-  }, [connected, mounted]);
+  }, [connected, mounted, playSuccess]);
 
   // If wallet disconnects, go back to overview
   useEffect(() => {
@@ -100,14 +100,14 @@ export function WalletStatus() {
 
   if (!mounted) {
     return (
-      <div className="bg-[#0F172A] min-h-screen flex items-center justify-center">
-        <div className="text-white">Loading...</div>
+      <div className="bg-[#0a0a0f] min-h-screen flex items-center justify-center relative z-10">
+        <div className="text-white text-xl">Loading...</div>
       </div>
     );
   }
 
   return (
-    <main className="min-h-screen relative z-10 bg-slate-900">
+    <main className="min-h-screen relative z-10">
       <Navigation activeTab={activeTab} onTabChange={setActiveTab} />
       
       <AnimatePresence mode="wait">
@@ -135,9 +135,7 @@ export function WalletStatus() {
               </div>
             )
           ) : activeTab === "tournaments" ? (
-            <div className="container mx-auto px-4 py-8">
-              <TournamentMonitor />
-            </div>
+            <TournamentMonitor />
           ) : (
             <TGETournament />
           )}

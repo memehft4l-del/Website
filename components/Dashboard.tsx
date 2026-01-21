@@ -204,6 +204,11 @@ export function Dashboard() {
           transition={{ delay: 0.15 }}
           className="mb-8"
         >
+          <motion.div
+            whileHover={{ scale: 1.01, y: -1 }}
+            whileTap={{ scale: 0.99 }}
+            transition={{ type: "spring", stiffness: 400, damping: 25 }}
+          >
           <Link
             href="/rules"
             className="glass rounded-lg p-4 border border-purple-500/20 bg-purple-500/5 hover:bg-purple-500/10 transition-all flex items-center justify-between group"
@@ -217,6 +222,7 @@ export function Dashboard() {
             </div>
             <ArrowLeft className="w-5 h-5 text-slate-400 group-hover:text-white group-hover:translate-x-1 transition-all rotate-180" />
           </Link>
+          </motion.div>
         </motion.div>
 
         {/* Tournament Cards - Only show the highest tier tournament user qualifies for */}

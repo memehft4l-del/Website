@@ -141,11 +141,11 @@ export function TournamentSignupForm({ tier, onSignupSuccess }: TournamentSignup
           type="submit"
           disabled={isSubmitting || status === "success"}
           className={`
-            w-full px-4 py-3 rounded-lg font-semibold transition-all
+            w-full px-4 py-3 rounded-lg font-semibold transition-all duration-200
             ${
               isSubmitting || status === "success"
                 ? "bg-slate-700 text-slate-400 cursor-not-allowed"
-                : "bg-gradient-to-r from-purple-600 to-yellow-600 hover:from-purple-700 hover:to-yellow-700 text-white"
+                : "bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white shadow-lg shadow-purple-600/40 border border-purple-400/30 backdrop-blur-sm hover:scale-[1.02] hover:-translate-y-0.5 active:scale-[0.98] active:translate-y-0"
             }
           `}
         >

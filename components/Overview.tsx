@@ -35,9 +35,19 @@ export function Overview() {
 
   return (
     <>
-      {/* Hero Section - Street.app Style */}
+      {/* Hero Section - Modern Style */}
       <section className="relative min-h-[90vh] flex items-center justify-center overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-b from-purple-900/20 via-slate-900 to-slate-900"></div>
+        {/* Modern gradient overlay */}
+        <div className="absolute inset-0 bg-gradient-to-b from-purple-950/20 via-transparent to-purple-950/20"></div>
+        {/* Floating elixir drops - Start immediately */}
+        <div className="elixir-drop" style={{ left: '10%', animationDelay: '0.1s' }}></div>
+        <div className="elixir-drop" style={{ left: '30%', animationDelay: '0.3s' }}></div>
+        <div className="elixir-drop" style={{ left: '50%', animationDelay: '0.5s' }}></div>
+        <div className="elixir-drop" style={{ left: '70%', animationDelay: '0.2s' }}></div>
+        <div className="elixir-drop" style={{ left: '90%', animationDelay: '0.4s' }}></div>
+        <div className="elixir-drop" style={{ left: '20%', animationDelay: '0.6s' }}></div>
+        <div className="elixir-drop" style={{ left: '60%', animationDelay: '0.7s' }}></div>
+        <div className="elixir-drop" style={{ left: '80%', animationDelay: '0.8s' }}></div>
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <motion.div
             initial={{ opacity: 0, y: 40 }}
@@ -54,7 +64,7 @@ export function Overview() {
             >
               <span className="block text-white mb-1 sm:mb-2">#1 Place for</span>
               <span className="block gradient-text-gold break-words">Clash Royale</span>
-              <span className="block gradient-text break-words">Tournaments</span>
+              <span className="block text-white break-words drop-shadow-lg">Tournaments</span>
             </motion.h1>
 
             {/* Subtitle */}

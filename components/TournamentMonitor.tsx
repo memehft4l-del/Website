@@ -86,7 +86,7 @@ export function TournamentMonitor() {
   const whaleCount = signups.filter((s) => s.tier === "WHALE").length;
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 container mx-auto px-4 py-8">
       {/* Tournament Overview */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
