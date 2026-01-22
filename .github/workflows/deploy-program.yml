@@ -48,28 +48,24 @@ jobs:
       
       - name: Install Anchor
         run: |
-          # Install avm (Anchor Version Manager)
-          cargo install --git https://github.com/coral-xyz/anchor avm --locked --force || true
+          # Install avm (Anchor Version Manager) first
+          cargo install --git https://github.com/coral-xyz/anchor avm --locked --force
           
-          # Add avm to PATH
+          # Add cargo bin to PATH for avm
           export PATH="$HOME/.cargo/bin:$PATH"
           echo "$HOME/.cargo/bin" >> $GITHUB_PATH
           
-          # Install and use Anchor 0.32.1
-          avm install 0.32.1 --force || {
-            echo "avm install failed, trying direct cargo install..."
-            cargo install --git https://github.com/coral-xyz/anchor anchor-cli --locked --tag v0.32.1 --force
-          }
-          
-          # Use Anchor 0.32.1
-          avm use 0.32.1 || true
+          # Install Anchor 0.32.1 using avm
+          avm install 0.32.1
+          avm use 0.32.1
           
           # Add Anchor to PATH
           export PATH="$HOME/.avm/bin:$PATH"
           echo "$HOME/.avm/bin" >> $GITHUB_PATH
           
-          # Verify installation
+          # Verify installation and version
           anchor --version
+          echo "Anchor version: $(anchor --version)"
       
       - name: Setup Solana CLI
         run: |
@@ -84,13 +80,27 @@ jobs:
       
       - name: Build Anchor Program
         run: |
+          # Set up all PATHs
           export PATH="$HOME/.local/share/solana/install/active_release/bin:$PATH"
           export PATH="$HOME/.avm/bin:$PATH"
           export PATH="$HOME/.cargo/bin:$PATH"
+          
+          # Verify Anchor is available and correct version
+          echo "Checking Anchor installation..."
+          which anchor
+          anchor --version
+          
+          # Ensure we're using Anchor 0.32.1
+          avm use 0.32.1
+          
           cd ${{ github.workspace }}
           
           # Remove old Cargo.lock if it exists (to avoid version conflicts)
           rm -f Cargo.lock
+          
+          # Verify Anchor.toml specifies correct version
+          echo "Checking Anchor.toml..."
+          cat programs/clash-royale-escrow/Anchor.toml | grep -A 1 "anchor_version" || echo "No anchor_version found in Anchor.toml"
           
           # Build with Anchor
           anchor build
