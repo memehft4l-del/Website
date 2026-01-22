@@ -24,15 +24,16 @@ jobs:
           override: true
       
       - name: Install Solana CLI
-        uses: mvines/solana-action@v1
-        with:
-          solana-version: "1.18.26"
-          network: devnet
+        run: |
+          sh -c "$(curl -sSfL https://release.solana.com/stable/install)"
+          echo "$HOME/.local/share/solana/install/active_release/bin" >> $GITHUB_PATH
       
       - name: Install Anchor
-        uses: coral-xyz/anchor-action@v0.28.0
-        with:
-          anchor-version: "0.32.1"
+        run: |
+          cargo install --git https://github.com/coral-xyz/anchor avm --locked --force
+          avm install 0.32.1
+          avm use 0.32.1
+          echo "$HOME/.avm/bin" >> $GITHUB_PATH
       
       - name: Setup Solana CLI
         run: |
