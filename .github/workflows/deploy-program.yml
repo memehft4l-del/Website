@@ -48,11 +48,27 @@ jobs:
       
       - name: Install Anchor
         run: |
-          cargo install --git https://github.com/coral-xyz/anchor avm --locked --force
+          # Install avm (Anchor Version Manager)
+          cargo install --git https://github.com/coral-xyz/anchor avm --locked --force || true
+          
+          # Add avm to PATH
+          export PATH="$HOME/.cargo/bin:$PATH"
+          echo "$HOME/.cargo/bin" >> $GITHUB_PATH
+          
+          # Install and use Anchor 0.32.1
+          avm install 0.32.1 --force || {
+            echo "avm install failed, trying direct cargo install..."
+            cargo install --git https://github.com/coral-xyz/anchor anchor-cli --locked --tag v0.32.1 --force
+          }
+          
+          # Use Anchor 0.32.1
+          avm use 0.32.1 || true
+          
+          # Add Anchor to PATH
           export PATH="$HOME/.avm/bin:$PATH"
-          avm install 0.32.1
-          avm use 0.32.1
           echo "$HOME/.avm/bin" >> $GITHUB_PATH
+          
+          # Verify installation
           anchor --version
       
       - name: Setup Solana CLI
@@ -70,7 +86,13 @@ jobs:
         run: |
           export PATH="$HOME/.local/share/solana/install/active_release/bin:$PATH"
           export PATH="$HOME/.avm/bin:$PATH"
+          export PATH="$HOME/.cargo/bin:$PATH"
           cd ${{ github.workspace }}
+          
+          # Remove old Cargo.lock if it exists (to avoid version conflicts)
+          rm -f Cargo.lock
+          
+          # Build with Anchor
           anchor build
       
       - name: Verify Build Output
