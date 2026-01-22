@@ -1,0 +1,85 @@
+name: Build and Deploy Solana Program
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'programs/**'
+      - 'Cargo.toml'
+      - 'Anchor.toml'
+  workflow_dispatch:
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Install Rust
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+          override: true
+      
+      - name: Install Solana CLI
+        uses: mvines/solana-action@v1
+        with:
+          solana-version: "1.18.26"
+          network: devnet
+      
+      - name: Install Anchor
+        uses: coral-xyz/anchor-action@v0.28.0
+        with:
+          anchor-version: "0.32.1"
+      
+      - name: Setup Solana CLI
+        run: |
+          solana config set --url devnet
+          solana-keygen new --no-bip39-passphrase -o ~/.config/solana/id.json || true
+      
+      - name: Airdrop SOL (Devnet)
+        run: |
+          solana airdrop 2 $(solana address) --url devnet || true
+      
+      - name: Build Anchor Program
+        run: |
+          cd ${{ github.workspace }}
+          anchor build
+      
+      - name: Verify Build Output
+        run: |
+          ls -lh target/deploy/*.so
+          ls -lh target/deploy/*-keypair.json
+      
+      - name: Deploy to Devnet
+        env:
+          SOLANA_PRIVATE_KEY: ${{ secrets.SOLANA_PRIVATE_KEY }}
+        run: |
+          cd ${{ github.workspace }}
+          
+          # Set up keypair from secret if provided, otherwise use generated one
+          if [ -n "$SOLANA_PRIVATE_KEY" ]; then
+            echo "$SOLANA_PRIVATE_KEY" > ~/.config/solana/id.json
+          fi
+          
+          # Deploy the program
+          solana program deploy target/deploy/clash_royale_escrow.so \
+            --url devnet \
+            --program-id programs/clash-royale-escrow/target/deploy/clash_royale_escrow-keypair.json \
+            --max-signatures 1
+      
+      - name: Verify Deployment
+        run: |
+          solana program show Boj5LmCSvrNMzJ9mdbTEf2vMZ1HnabZb2p3KHxyQgcDY --url devnet
+      
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: program-artifacts
+          path: |
+            target/deploy/*.so
+            target/idl/*.json
+          retention-days: 30
+
