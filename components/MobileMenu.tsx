@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { X, Home, LayoutDashboard, Users, Rocket, BookOpen } from "lucide-react";
+import { X, Home, LayoutDashboard, Users, Rocket, BookOpen, Trophy } from "lucide-react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -108,6 +108,14 @@ export function MobileMenu({ activeTab, onTabChange, connected }: MobileMenuProp
                   >
                     <BookOpen className="w-5 h-5 sm:w-6 sm:h-6 flex-shrink-0" />
                     <span className="flex-1 text-left">Rules</span>
+                  </Link>
+                  <Link
+                    href="/arena"
+                    onClick={() => setIsOpen(false)}
+                    className="w-full flex items-center gap-3 sm:gap-4 px-4 sm:px-5 py-3.5 sm:py-4 rounded-xl font-semibold text-sm sm:text-base transition-all text-slate-300 hover:text-white hover:bg-white/10 active:bg-white/5 touch-manipulation min-h-[56px]"
+                  >
+                    <Trophy className="w-5 h-5 sm:w-6 sm:h-6 flex-shrink-0" />
+                    <span className="flex-1 text-left">Arena</span>
                   </Link>
                 </nav>
               </div>

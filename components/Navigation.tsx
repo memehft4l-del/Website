@@ -122,6 +122,19 @@ export function Navigation({ activeTab, onTabChange }: NavigationProps) {
               transition={{ type: "spring", stiffness: 400, damping: 25 }}
             >
               <Link
+                href="/arena"
+                className="flex items-center gap-2 px-5 py-2.5 rounded-xl font-semibold transition-all duration-200 text-slate-300 hover:text-white hover:bg-white/10 hover:backdrop-blur-sm border border-transparent hover:border-white/10"
+              >
+                <Trophy className="w-4 h-4" />
+                Arena
+              </Link>
+            </motion.div>
+            <motion.div
+              whileHover={{ scale: 1.02, y: -1 }}
+              whileTap={{ scale: 0.98, y: 0 }}
+              transition={{ type: "spring", stiffness: 400, damping: 25 }}
+            >
+              <Link
                 href="/rules"
                 className="flex items-center gap-2 px-5 py-2.5 rounded-xl font-semibold transition-all duration-200 text-slate-300 hover:text-white hover:bg-white/10 hover:backdrop-blur-sm border border-transparent hover:border-white/10"
               >
