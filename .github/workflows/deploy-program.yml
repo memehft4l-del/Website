@@ -85,13 +85,13 @@ jobs:
           export PATH="$HOME/.avm/bin:$PATH"
           export PATH="$HOME/.cargo/bin:$PATH"
           
+          # Ensure we're using Anchor 0.32.1 BEFORE anything else
+          avm use 0.32.1
+          
           # Verify Anchor is available and correct version
           echo "Checking Anchor installation..."
           which anchor
           anchor --version
-          
-          # Ensure we're using Anchor 0.32.1
-          avm use 0.32.1
           
           cd ${{ github.workspace }}
           
@@ -102,8 +102,11 @@ jobs:
           echo "Checking Anchor.toml..."
           cat programs/clash-royale-escrow/Anchor.toml | grep -A 1 "anchor_version" || echo "No anchor_version found in Anchor.toml"
           
-          # Build with Anchor
-          anchor build
+          # Set ANCHOR_VERSION environment variable to prevent auto-install
+          export ANCHOR_VERSION=0.32.1
+          
+          # Build with Anchor - use --skip-local-validator to avoid version checks
+          anchor build --skip-local-validator || anchor build
       
       - name: Verify Build Output
         run: |
