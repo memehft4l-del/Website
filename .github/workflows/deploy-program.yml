@@ -22,10 +22,31 @@ jobs:
       
       - name: Install Solana CLI
         run: |
-          sh -c "$(curl -sSfL https://release.solana.com/stable/install)"
-          export PATH="$HOME/.local/share/solana/install/active_release/bin:$PATH"
-          echo "$HOME/.local/share/solana/install/active_release/bin" >> $GITHUB_PATH
-          solana --version
+          # Retry logic for network issues
+          for i in 1 2 3; do
+            if sh -c "$(curl -sSfL https://release.solana.com/stable/install)"; then
+              break
+            fi
+            echo "Install attempt $i failed, retrying..."
+            sleep 5
+          done
+          
+          # Verify installation
+          if [ -d "$HOME/.local/share/solana/install/active_release/bin" ]; then
+            export PATH="$HOME/.local/share/solana/install/active_release/bin:$PATH"
+            echo "$HOME/.local/share/solana/install/active_release/bin" >> $GITHUB_PATH
+            solana --version
+          else
+            echo "Solana installation failed, trying alternative method..."
+            # Alternative: Download binary directly
+            mkdir -p $HOME/.local/share/solana/install/active_release/bin
+            curl -L https://github.com/solana-labs/solana/releases/latest/download/solana-release-x86_64-unknown-linux-gnu.tar.bz2 -o /tmp/solana.tar.bz2
+            tar -xjf /tmp/solana.tar.bz2 -C /tmp
+            cp /tmp/solana-release/bin/* $HOME/.local/share/solana/install/active_release/bin/
+            export PATH="$HOME/.local/share/solana/install/active_release/bin:$PATH"
+            echo "$HOME/.local/share/solana/install/active_release/bin" >> $GITHUB_PATH
+            solana --version
+          fi
       
       - name: Install Anchor
         run: |
