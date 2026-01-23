@@ -17,6 +17,12 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
       
+      - name: Remove Cargo.lock files
+        run: |
+          # Remove all Cargo.lock files immediately after checkout
+          find . -name "Cargo.lock" -type f -delete
+          echo "Removed all Cargo.lock files"
+      
       - name: Install Rust
         uses: dtolnay/rust-toolchain@stable
       
