@@ -104,12 +104,11 @@ jobs:
       
       - name: Build Anchor Program
         run: |
-          # Set up all PATHs
+          # Setup Paths
           export PATH="$HOME/.local/share/solana/install/active_release/bin:$PATH"
           export PATH="$HOME/.avm/bin:$PATH"
           export PATH="$HOME/.cargo/bin:$PATH"
           
-          # Ensure we're using Anchor 0.32.1 BEFORE anything else
           avm use 0.32.1
           
           # Verify Anchor is available and correct version
@@ -127,25 +126,46 @@ jobs:
           echo "Checking Anchor.toml..."
           cat programs/clash-royale-escrow/Anchor.toml | grep -A 1 "anchor_version" || echo "No anchor_version found in Anchor.toml"
           
-          # Build with Anchor - this will generate a fresh Cargo.lock
-          anchor build
-          
-          # FIX: Downgrade the lockfile version if it was generated as v4
+          # Force version 3 generation before building
+          # This prevents the 'version 4' error by pre-creating a compatible file
           if [ -f "Cargo.lock" ]; then
+            echo "Existing Cargo.lock found, downgrading to version 3..."
             sed -i 's/^version = 4$/version = 3/' Cargo.lock
-            echo "✓ Downgraded Cargo.lock to version 3 (if it was version 4)"
-            
-            # Verify the change
-            if grep -q "^version = 3" Cargo.lock; then
-              echo "✓ Cargo.lock is now version 3"
+            sed -i 's/version = 4/version = 3/' Cargo.lock
+            echo "✓ Downgraded Cargo.lock to version 3"
+          else
+            echo "No Cargo.lock found, generating fresh one..."
+            # Generate a fresh one and immediately downgrade it
+            cargo generate-lockfile || echo "cargo generate-lockfile failed, will let Anchor generate it"
+            if [ -f "Cargo.lock" ]; then
+              sed -i 's/^version = 4$/version = 3/' Cargo.lock
+              sed -i 's/version = 4/version = 3/' Cargo.lock
+              echo "✓ Generated and downgraded Cargo.lock to version 3"
             fi
           fi
           
-          # Rebuild if lockfile was changed (to ensure consistency)
-          if grep -q "^version = 3" Cargo.lock 2>/dev/null; then
-            echo "Rebuilding to ensure consistency with version 3 lockfile..."
-            anchor build
+          # Verify version 3
+          if [ -f "Cargo.lock" ]; then
+            if grep -q "^version = 3" Cargo.lock; then
+              echo "✓ Cargo.lock is confirmed version 3"
+            else
+              echo "Warning: Cargo.lock version check failed"
+              head -3 Cargo.lock
+            fi
           fi
+          
+          # Build with the forced-v3 lockfile
+          # The --locked flag ensures it doesn't try to upgrade back to v4
+          anchor build -- --locked || {
+            echo "Build with --locked failed, trying without..."
+            # If --locked fails, try without but ensure version 3 is maintained
+            anchor build
+            # After build, downgrade again if needed
+            if [ -f "Cargo.lock" ]; then
+              sed -i 's/^version = 4$/version = 3/' Cargo.lock
+              sed -i 's/version = 4/version = 3/' Cargo.lock
+            fi
+          }
       
       - name: Verify Build Output
         run: |
