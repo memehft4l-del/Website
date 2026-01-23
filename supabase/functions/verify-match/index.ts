@@ -82,7 +82,7 @@ serve(async (req) => {
     
     // Get Program ID from environment
     const programId = Deno.env.get("WAGER_ESCROW_PROGRAM_ID") || 
-      "Boj5LmCSvrNMzJ9mdbTEf2vMZ1HnabZb2p3KHxyQgcDY";
+      "CA4ADsMYjuCQMsGfHuxHzcn4s6VuiQCtT49MGCLANEvb";
     const programIdPubkey = new PublicKey(programId);
     
     // Get Platform Treasury from environment

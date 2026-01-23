@@ -14,7 +14,7 @@ export const RPC_ENDPOINT =
 // Wager Escrow Program ID (Devnet)
 export const WAGER_ESCROW_PROGRAM_ID =
   process.env.NEXT_PUBLIC_WAGER_ESCROW_PROGRAM_ID ||
-  "Boj5LmCSvrNMzJ9mdbTEf2vMZ1HnabZb2p3KHxyQgcDY";
+  "CA4ADsMYjuCQMsGfHuxHzcn4s6VuiQCtT49MGCLANEvb";
 
 // Devnet RPC for backend operations (use Helius for reliability)
 export const DEVNET_RPC_ENDPOINT =

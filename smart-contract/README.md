@@ -32,7 +32,7 @@ The Clash Royale Escrow program handles 1v1 wagering between players:
 
 ## Program ID
 
-- **Devnet**: `Boj5LmCSvrNMzJ9mdbTEf2vMZ1HnabZb2p3KHxyQgcDY`
+- **Devnet**: `CA4ADsMYjuCQMsGfHuxHzcn4s6VuiQCtT49MGCLANEvb`
 
 ## Building
 
