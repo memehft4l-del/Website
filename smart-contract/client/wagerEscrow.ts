@@ -17,7 +17,7 @@ interface Wallet {
 // Program ID - Devnet deployed program ID
 export const WAGER_ESCROW_PROGRAM_ID = new PublicKey(
   process.env.NEXT_PUBLIC_WAGER_ESCROW_PROGRAM_ID || 
-  "Boj5LmCSvrNMzJ9mdbTEf2vMZ1HnabZb2p3KHxyQgcDY" // Devnet Program ID
+  "CA4ADsMYjuCQMsGfHuxHzcn4s6VuiQCtT49MGCLANEvb" // Devnet Program ID
 );
 
 // Platform treasury address (update with your actual treasury address)

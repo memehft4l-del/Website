@@ -1,7 +1,7 @@
 use anchor_lang::prelude::*;
 use anchor_lang::system_program;
 
-declare_id!("Boj5LmCSvrNMzJ9mdbTEf2vMZ1HnabZb2p3KHxyQgcDY");
+declare_id!("CA4ADsMYjuCQMsGfHuxHzcn4s6VuiQCtT49MGCLANEvb");
 
 #[program]
 pub mod clash_royale_escrow {

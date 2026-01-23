@@ -7,10 +7,10 @@ resolution = true
 skip-lint = false
 
 [programs.localnet]
-clash_royale_escrow = "Boj5LmCSvrNMzJ9mdbTEf2vMZ1HnabZb2p3KHxyQgcDY"
+clash_royale_escrow = "CA4ADsMYjuCQMsGfHuxHzcn4s6VuiQCtT49MGCLANEvb"
 
 [programs.devnet]
-clash_royale_escrow = "Boj5LmCSvrNMzJ9mdbTEf2vMZ1HnabZb2p3KHxyQgcDY"
+clash_royale_escrow = "CA4ADsMYjuCQMsGfHuxHzcn4s6VuiQCtT49MGCLANEvb"
 
 [registry]
 url = "https://api.apr.dev"
