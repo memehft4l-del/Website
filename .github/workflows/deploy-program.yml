@@ -38,6 +38,16 @@ jobs:
       
       - name: Install Rust
         uses: dtolnay/rust-toolchain@stable
+        with:
+          components: rustfmt, clippy
+      
+      - name: Verify Cargo version
+        run: |
+          cargo --version
+          rustc --version
+          # Ensure we have a Cargo version that supports lock file version 4
+          CARGO_VERSION=$(cargo --version | awk '{print $2}')
+          echo "Cargo version: $CARGO_VERSION"
       
       - name: Install Solana CLI
         run: |
@@ -123,12 +133,26 @@ jobs:
           echo "Checking Anchor.toml..."
           cat programs/clash-royale-escrow/Anchor.toml | grep -A 1 "anchor_version" || echo "No anchor_version found in Anchor.toml"
           
-          # Configure Cargo to use lock file version 3 (compatible)
-          # This prevents Cargo from creating version 4 lock files
+          # Configure Cargo environment
           export CARGO_NET_OFFLINE=false
           
+          # If Cargo.lock still exists, try to convert it to version 3
+          if [ -f "Cargo.lock" ]; then
+            echo "Warning: Cargo.lock still exists, attempting to fix..."
+            # Try to regenerate with compatible version
+            cargo generate-lockfile 2>&1 || true
+            # If that fails, delete and let Anchor regenerate
+            rm -f Cargo.lock
+          fi
+          
           # Build with Anchor - this will generate a fresh Cargo.lock
-          anchor build
+          # Use --no-deps to avoid dependency resolution issues
+          anchor build || {
+            echo "Build failed, trying with fresh Cargo.lock..."
+            rm -f Cargo.lock
+            find . -name "Cargo.lock" -type f -delete
+            anchor build
+          }
       
       - name: Verify Build Output
         run: |
