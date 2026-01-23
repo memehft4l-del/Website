@@ -19,17 +19,9 @@ jobs:
       
       - name: Remove Cargo.lock from programs subdirectories
         run: |
-          # Only remove Cargo.lock from programs subdirectories (keep root if it exists)
+          # Only remove Cargo.lock from programs subdirectories (keep root)
           find programs -name "Cargo.lock" -type f -delete
           echo "✓ Removed Cargo.lock files from programs subdirectories"
-          
-          # If root Cargo.lock exists and is version 4, downgrade it to version 3
-          if [ -f "Cargo.lock" ]; then
-            if grep -q "^version = 4" Cargo.lock; then
-              sed -i 's/^version = 4$/version = 3/' Cargo.lock
-              echo "✓ Downgraded root Cargo.lock from version 4 to version 3"
-            fi
-          fi
       
       - name: Install Rust
         uses: dtolnay/rust-toolchain@stable
@@ -46,23 +38,8 @@ jobs:
       
       - name: Install Solana CLI
         run: |
-          # Use direct binary download method (more reliable)
-          SOLANA_VERSION="1.18.26"
-          mkdir -p $HOME/.local/share/solana/install/active_release/bin
-          
-          # Download Solana release from GitHub (more reliable than release.solana.com)
-          curl -L "https://github.com/solana-labs/solana/releases/download/v${SOLANA_VERSION}/solana-release-x86_64-unknown-linux-gnu.tar.bz2" \
-            -o /tmp/solana.tar.bz2 || {
-            echo "Failed to download, trying latest release..."
-            curl -L "https://github.com/solana-labs/solana/releases/latest/download/solana-release-x86_64-unknown-linux-gnu.tar.bz2" \
-              -o /tmp/solana.tar.bz2
-          }
-          
-          # Extract and install
-          tar -xjf /tmp/solana.tar.bz2 -C /tmp
-          cp -r /tmp/solana-release/* $HOME/.local/share/solana/install/active_release/
-          
-          # Add to PATH
+          # Install Solana 2.1.13 (supports lockfile version 4)
+          sh -c "$(curl -sSfL https://release.anza.xyz/v2.1.13/install)"
           export PATH="$HOME/.local/share/solana/install/active_release/bin:$PATH"
           echo "$HOME/.local/share/solana/install/active_release/bin" >> $GITHUB_PATH
           
@@ -118,54 +95,12 @@ jobs:
           
           cd ${{ github.workspace }}
           
-          # Remove Cargo.lock from programs subdirectories only (keep root)
-          find programs -name "Cargo.lock" -type f -delete
-          echo "Removed Cargo.lock files from programs subdirectories"
-          
           # Verify Anchor.toml specifies correct version
           echo "Checking Anchor.toml..."
           cat programs/clash-royale-escrow/Anchor.toml | grep -A 1 "anchor_version" || echo "No anchor_version found in Anchor.toml"
           
-          # Force version 3 generation before building
-          # This prevents the 'version 4' error by pre-creating a compatible file
-          if [ -f "Cargo.lock" ]; then
-            echo "Existing Cargo.lock found, downgrading to version 3..."
-            sed -i 's/^version = 4$/version = 3/' Cargo.lock
-            sed -i 's/version = 4/version = 3/' Cargo.lock
-            echo "✓ Downgraded Cargo.lock to version 3"
-          else
-            echo "No Cargo.lock found, generating fresh one..."
-            # Generate a fresh one and immediately downgrade it
-            cargo generate-lockfile || echo "cargo generate-lockfile failed, will let Anchor generate it"
-            if [ -f "Cargo.lock" ]; then
-              sed -i 's/^version = 4$/version = 3/' Cargo.lock
-              sed -i 's/version = 4/version = 3/' Cargo.lock
-              echo "✓ Generated and downgraded Cargo.lock to version 3"
-            fi
-          fi
-          
-          # Verify version 3
-          if [ -f "Cargo.lock" ]; then
-            if grep -q "^version = 3" Cargo.lock; then
-              echo "✓ Cargo.lock is confirmed version 3"
-            else
-              echo "Warning: Cargo.lock version check failed"
-              head -3 Cargo.lock
-            fi
-          fi
-          
-          # Build with the forced-v3 lockfile
-          # The --locked flag ensures it doesn't try to upgrade back to v4
-          anchor build -- --locked || {
-            echo "Build with --locked failed, trying without..."
-            # If --locked fails, try without but ensure version 3 is maintained
-            anchor build
-            # After build, downgrade again if needed
-            if [ -f "Cargo.lock" ]; then
-              sed -i 's/^version = 4$/version = 3/' Cargo.lock
-              sed -i 's/version = 4/version = 3/' Cargo.lock
-            fi
-          }
+          # Build with Anchor (Solana 2.1.13 supports lockfile version 4 natively)
+          anchor build
       
       - name: Verify Build Output
         run: |
