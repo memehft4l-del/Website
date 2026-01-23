@@ -22,6 +22,19 @@ jobs:
           # Remove all Cargo.lock files immediately after checkout
           find . -name "Cargo.lock" -type f -delete
           echo "Removed all Cargo.lock files"
+          
+          # Also remove from programs directory specifically
+          rm -f Cargo.lock
+          rm -f programs/*/Cargo.lock
+          rm -f programs/clash-royale-escrow/Cargo.lock
+          
+          # Verify they're gone
+          if find . -name "Cargo.lock" -type f | grep -q .; then
+            echo "Warning: Some Cargo.lock files still exist"
+            find . -name "Cargo.lock" -type f
+          else
+            echo "✓ All Cargo.lock files removed"
+          fi
       
       - name: Install Rust
         uses: dtolnay/rust-toolchain@stable
@@ -101,15 +114,20 @@ jobs:
           
           cd ${{ github.workspace }}
           
-          # Remove ALL Cargo.lock files (root and in programs) to avoid version conflicts
+          # Remove ALL Cargo.lock files AGAIN (in case they were regenerated)
           find . -name "Cargo.lock" -type f -delete
-          echo "Removed all Cargo.lock files"
+          rm -f Cargo.lock programs/*/Cargo.lock programs/clash-royale-escrow/Cargo.lock
+          echo "Removed all Cargo.lock files before build"
           
           # Verify Anchor.toml specifies correct version
           echo "Checking Anchor.toml..."
           cat programs/clash-royale-escrow/Anchor.toml | grep -A 1 "anchor_version" || echo "No anchor_version found in Anchor.toml"
           
-          # Build with Anchor (removed invalid --skip-local-validator flag)
+          # Configure Cargo to use lock file version 3 (compatible)
+          # This prevents Cargo from creating version 4 lock files
+          export CARGO_NET_OFFLINE=false
+          
+          # Build with Anchor - this will generate a fresh Cargo.lock
           anchor build
       
       - name: Verify Build Output

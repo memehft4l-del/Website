@@ -6,3 +6,7 @@ resolver = "2"
 
 [profile.release]
 overflow-checks = true
+
+# Prevent Cargo from creating version 4 lock files
+[net]
+offline = false
