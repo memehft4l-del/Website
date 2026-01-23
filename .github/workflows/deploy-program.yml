@@ -17,23 +17,18 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
       
-      - name: Remove Cargo.lock files
+      - name: Remove Cargo.lock from programs subdirectories
         run: |
-          # Remove all Cargo.lock files immediately after checkout
-          find . -name "Cargo.lock" -type f -delete
-          echo "Removed all Cargo.lock files"
+          # Only remove Cargo.lock from programs subdirectories (keep root if it exists)
+          find programs -name "Cargo.lock" -type f -delete
+          echo "✓ Removed Cargo.lock files from programs subdirectories"
           
-          # Also remove from programs directory specifically
-          rm -f Cargo.lock
-          rm -f programs/*/Cargo.lock
-          rm -f programs/clash-royale-escrow/Cargo.lock
-          
-          # Verify they're gone
-          if find . -name "Cargo.lock" -type f | grep -q .; then
-            echo "Warning: Some Cargo.lock files still exist"
-            find . -name "Cargo.lock" -type f
-          else
-            echo "✓ All Cargo.lock files removed"
+          # If root Cargo.lock exists and is version 4, downgrade it to version 3
+          if [ -f "Cargo.lock" ]; then
+            if grep -q "^version = 4" Cargo.lock; then
+              sed -i 's/^version = 4$/version = 3/' Cargo.lock
+              echo "✓ Downgraded root Cargo.lock from version 4 to version 3"
+            fi
           fi
       
       - name: Install Rust
@@ -124,35 +119,33 @@ jobs:
           
           cd ${{ github.workspace }}
           
-          # Remove ALL Cargo.lock files AGAIN (in case they were regenerated)
-          find . -name "Cargo.lock" -type f -delete
-          rm -f Cargo.lock programs/*/Cargo.lock programs/clash-royale-escrow/Cargo.lock
-          echo "Removed all Cargo.lock files before build"
+          # Remove Cargo.lock from programs subdirectories only (keep root)
+          find programs -name "Cargo.lock" -type f -delete
+          echo "Removed Cargo.lock files from programs subdirectories"
           
           # Verify Anchor.toml specifies correct version
           echo "Checking Anchor.toml..."
           cat programs/clash-royale-escrow/Anchor.toml | grep -A 1 "anchor_version" || echo "No anchor_version found in Anchor.toml"
           
-          # Configure Cargo environment
-          export CARGO_NET_OFFLINE=false
+          # Build with Anchor - this will generate a fresh Cargo.lock
+          anchor build
           
-          # If Cargo.lock still exists, try to convert it to version 3
+          # FIX: Downgrade the lockfile version if it was generated as v4
           if [ -f "Cargo.lock" ]; then
-            echo "Warning: Cargo.lock still exists, attempting to fix..."
-            # Try to regenerate with compatible version
-            cargo generate-lockfile 2>&1 || true
-            # If that fails, delete and let Anchor regenerate
-            rm -f Cargo.lock
+            sed -i 's/^version = 4$/version = 3/' Cargo.lock
+            echo "✓ Downgraded Cargo.lock to version 3 (if it was version 4)"
+            
+            # Verify the change
+            if grep -q "^version = 3" Cargo.lock; then
+              echo "✓ Cargo.lock is now version 3"
+            fi
           fi
           
-          # Build with Anchor - this will generate a fresh Cargo.lock
-          # Use --no-deps to avoid dependency resolution issues
-          anchor build || {
-            echo "Build failed, trying with fresh Cargo.lock..."
-            rm -f Cargo.lock
-            find . -name "Cargo.lock" -type f -delete
+          # Rebuild if lockfile was changed (to ensure consistency)
+          if grep -q "^version = 3" Cargo.lock 2>/dev/null; then
+            echo "Rebuilding to ensure consistency with version 3 lockfile..."
             anchor build
-          }
+          fi
       
       - name: Verify Build Output
         run: |
