@@ -95,18 +95,16 @@ jobs:
           
           cd ${{ github.workspace }}
           
-          # Remove old Cargo.lock if it exists (to avoid version conflicts)
-          rm -f Cargo.lock
+          # Remove ALL Cargo.lock files (root and in programs) to avoid version conflicts
+          find . -name "Cargo.lock" -type f -delete
+          echo "Removed all Cargo.lock files"
           
           # Verify Anchor.toml specifies correct version
           echo "Checking Anchor.toml..."
           cat programs/clash-royale-escrow/Anchor.toml | grep -A 1 "anchor_version" || echo "No anchor_version found in Anchor.toml"
           
-          # Set ANCHOR_VERSION environment variable to prevent auto-install
-          export ANCHOR_VERSION=0.32.1
-          
-          # Build with Anchor - use --skip-local-validator to avoid version checks
-          anchor build --skip-local-validator || anchor build
+          # Build with Anchor (removed invalid --skip-local-validator flag)
+          anchor build
       
       - name: Verify Build Output
         run: |
