@@ -72,6 +72,10 @@ jobs:
           # Verify installation and version
           anchor --version
           echo "Anchor version: $(anchor --version)"
+          
+          # Verify Rust version compatibility
+          rustc --version
+          echo "Rust version check complete"
       
       - name: Setup Solana CLI
         run: |
@@ -104,12 +108,19 @@ jobs:
           echo "Checking Anchor.toml..."
           cat programs/clash-royale-escrow/Anchor.toml | grep -A 1 "anchor_version" || echo "No anchor_version found in Anchor.toml"
           
+          # Verify Rust version meets requirements (Solana 2.1.13 needs rustc 1.79.0+)
+          echo "Checking Rust version..."
+          rustc --version
+          RUST_VERSION=$(rustc --version | awk '{print $2}')
+          echo "Rust version: $RUST_VERSION"
+          
           # Remove any existing Cargo.lock to force fresh resolution
           rm -f Cargo.lock
           find programs -name "Cargo.lock" -delete
           
           # Build with Anchor (Solana 2.1.13 supports lockfile version 4 natively)
           # The patch in root Cargo.toml will pin constant_time_eq to 0.4.1
+          echo "Starting Anchor build..."
           anchor build
       
       - name: Verify Build Output
