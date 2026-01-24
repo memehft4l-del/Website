@@ -4,3 +4,7 @@ resolver = "2"
 
 [profile.release]
 overflow-checks = true
+
+# Pin constant_time_eq to avoid edition2024 requirement
+[patch.crates-io]
+constant_time_eq = "=0.4.1"

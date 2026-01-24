@@ -99,7 +99,12 @@ jobs:
           echo "Checking Anchor.toml..."
           cat programs/clash-royale-escrow/Anchor.toml | grep -A 1 "anchor_version" || echo "No anchor_version found in Anchor.toml"
           
+          # Remove any existing Cargo.lock to force fresh resolution
+          rm -f Cargo.lock
+          find programs -name "Cargo.lock" -delete
+          
           # Build with Anchor (Solana 2.1.13 supports lockfile version 4 natively)
+          # The patch in root Cargo.toml will pin constant_time_eq to 0.4.1
           anchor build
       
       - name: Verify Build Output
