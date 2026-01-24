@@ -120,10 +120,19 @@ jobs:
           fi
           
           # Deploy the program
-          solana program deploy target/deploy/clash_royale_escrow.so \
-            --url devnet \
-            --program-id programs/clash-royale-escrow/target/deploy/clash_royale_escrow-keypair.json \
-            --max-signatures 1
+          # Check if keypair exists, if not use the program ID directly
+          if [ -f "programs/clash-royale-escrow/target/deploy/clash_royale_escrow-keypair.json" ]; then
+            solana program deploy target/deploy/clash_royale_escrow.so \
+              --url devnet \
+              --program-id programs/clash-royale-escrow/target/deploy/clash_royale_escrow-keypair.json \
+              --max-signatures 1
+          else
+            echo "Keypair not found, deploying with program ID..."
+            solana program deploy target/deploy/clash_royale_escrow.so \
+              --url devnet \
+              --program-id CA4ADsMYjuCQMsGfHuxHzcn4s6VuiQCtT49MGCLANEvb \
+              --max-signatures 1
+          fi
       
       - name: Verify Deployment
         run: |
