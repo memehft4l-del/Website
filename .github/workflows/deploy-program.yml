@@ -88,25 +88,14 @@ jobs:
           export PATH="$HOME/.local/share/solana/install/active_release/bin:$PATH"
           solana airdrop 2 $(solana address) --url devnet || true
       
-      - name: Build Anchor Program
+      - name: Build Solana Program
         run: |
           # Setup Paths
           export PATH="$HOME/.local/share/solana/install/active_release/bin:$PATH"
           export PATH="$HOME/.avm/bin:$PATH"
           export PATH="$HOME/.cargo/bin:$PATH"
           
-          avm use 0.32.1
-          
-          # Verify Anchor is available and correct version
-          echo "Checking Anchor installation..."
-          which anchor
-          anchor --version
-          
           cd ${{ github.workspace }}
-          
-          # Verify Anchor.toml specifies correct version
-          echo "Checking Anchor.toml..."
-          cat programs/clash-royale-escrow/Anchor.toml | grep -A 1 "anchor_version" || echo "No anchor_version found in Anchor.toml"
           
           # Verify Rust version meets requirements (Solana 2.1.13 needs rustc 1.79.0+)
           echo "Checking Rust version..."
@@ -114,14 +103,51 @@ jobs:
           RUST_VERSION=$(rustc --version | awk '{print $2}')
           echo "Rust version: $RUST_VERSION"
           
+          # Verify Solana CLI is available
+          echo "Checking Solana CLI..."
+          solana --version
+          cargo-build-sbf --version || echo "cargo-build-sbf not found, will use anchor build"
+          
+          # Verify Anchor.toml specifies correct version
+          echo "Checking Anchor.toml..."
+          cat programs/clash-royale-escrow/Anchor.toml | grep -A 1 "anchor_version" || echo "No anchor_version found in Anchor.toml"
+          
           # Remove any existing Cargo.lock to force fresh resolution
           rm -f Cargo.lock
           find programs -name "Cargo.lock" -delete
           
-          # Build with Anchor (Solana 2.1.13 supports lockfile version 4 natively)
-          # The patch in root Cargo.toml will pin constant_time_eq to 0.4.1
-          echo "Starting Anchor build..."
-          anchor build
+          # Try building with cargo-build-sbf first (more reliable)
+          # If that fails, fall back to anchor build
+          echo "Attempting to build with cargo-build-sbf..."
+          cd programs/clash-royale-escrow
+          
+          if command -v cargo-build-sbf &> /dev/null; then
+            echo "Using cargo-build-sbf for direct Rust build..."
+            cargo build-sbf --manifest-path Cargo.toml || {
+              echo "cargo-build-sbf failed, trying anchor build..."
+              cd ${{ github.workspace }}
+              avm use 0.32.1
+              anchor build
+            }
+          else
+            echo "cargo-build-sbf not available, using anchor build..."
+            cd ${{ github.workspace }}
+            avm use 0.32.1
+            anchor --version
+            anchor build
+          fi
+          
+          # Ensure we're back in workspace root
+          cd ${{ github.workspace }}
+          
+          # Verify build output exists
+          if [ -f "target/deploy/clash_royale_escrow.so" ]; then
+            echo "✅ Build successful! Program binary found."
+            ls -lh target/deploy/clash_royale_escrow.so
+          else
+            echo "❌ Build failed - no .so file found"
+            exit 1
+          fi
       
       - name: Verify Build Output
         run: |
