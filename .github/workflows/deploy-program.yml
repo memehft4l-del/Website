@@ -86,62 +86,47 @@ jobs:
       
       - name: Build Solana Program
         run: |
-          # Setup Paths
+          # Setup all paths
           export PATH="$HOME/.local/share/solana/install/active_release/bin:$PATH"
           export PATH="$HOME/.avm/bin:$PATH"
           export PATH="$HOME/.cargo/bin:$PATH"
           
           cd ${{ github.workspace }}
           
-          # Verify Rust version meets requirements (Solana 2.1.13 needs rustc 1.79.0+)
-          echo "Checking Rust version..."
+          # Verify versions
+          echo "=== Version Checks ==="
           rustc --version
-          RUST_VERSION=$(rustc --version | awk '{print $2}')
-          echo "Rust version: $RUST_VERSION"
-          
-          # Verify Solana CLI is available
-          echo "Checking Solana CLI..."
+          cargo --version
           solana --version
-          cargo-build-sbf --version || echo "cargo-build-sbf not found, will use anchor build"
           
-          # Verify Anchor.toml specifies correct version
-          echo "Checking Anchor.toml..."
-          cat programs/clash-royale-escrow/Anchor.toml | grep -A 1 "anchor_version" || echo "No anchor_version found in Anchor.toml"
+          # Verify Anchor.toml
+          echo "=== Checking Anchor.toml ==="
+          cat programs/clash-royale-escrow/Anchor.toml | grep -A 1 "anchor_version" || echo "No anchor_version found"
           
-          # Remove any existing Cargo.lock to force fresh resolution
+          # Clean previous builds
+          echo "=== Cleaning Previous Builds ==="
+          rm -rf target/deploy/clash_royale_escrow.so
           rm -f Cargo.lock
           find programs -name "Cargo.lock" -delete
           
-          # Try building with cargo-build-sbf first (more reliable)
-          # If that fails, fall back to anchor build
-          echo "Attempting to build with cargo-build-sbf..."
-          cd programs/clash-royale-escrow
+          # Build with Anchor (most reliable method)
+          echo "=== Building with Anchor ==="
+          avm use 0.32.1
+          anchor --version
           
-          if command -v cargo-build-sbf &> /dev/null; then
-            echo "Using cargo-build-sbf for direct Rust build..."
-            cargo build-sbf --manifest-path Cargo.toml || {
-              echo "cargo-build-sbf failed, trying anchor build..."
-              cd ${{ github.workspace }}
-              avm use 0.32.1
-              anchor build
-            }
-          else
-            echo "cargo-build-sbf not available, using anchor build..."
-            cd ${{ github.workspace }}
-            avm use 0.32.1
-            anchor --version
-            anchor build
-          fi
+          # Build the program
+          anchor build
           
-          # Ensure we're back in workspace root
-          cd ${{ github.workspace }}
-          
-          # Verify build output exists
+          # Verify build output
+          echo "=== Verifying Build Output ==="
           if [ -f "target/deploy/clash_royale_escrow.so" ]; then
-            echo "✅ Build successful! Program binary found."
+            echo "✅ Build successful!"
             ls -lh target/deploy/clash_royale_escrow.so
+            ls -lh target/deploy/clash_royale_escrow-keypair.json || echo "Keypair file check skipped"
           else
             echo "❌ Build failed - no .so file found"
+            echo "Checking target directory:"
+            ls -la target/deploy/ || echo "target/deploy/ does not exist"
             exit 1
           fi
       
