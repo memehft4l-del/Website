@@ -35,7 +35,7 @@ pub mod clash_royale_escrow {
         );
         system_program::transfer(cpi_context, amount)?;
 
-        msg!("Wager created: {} SOL by {}", amount, creator.key());
+        msg!("Wager created: {} lamports by {}", amount, creator.key());
         Ok(())
     }
 
@@ -72,7 +72,7 @@ pub mod clash_royale_escrow {
         system_program::transfer(cpi_context, wager.amount)?;
 
         msg!(
-            "Wager joined: {} SOL by {}. Status: Active",
+            "Wager joined: {} lamports by {}. Status: Active",
             wager.amount,
             opponent.key()
         );
@@ -143,7 +143,7 @@ pub mod clash_royale_escrow {
         **creator.to_account_info().try_borrow_mut_lamports()? += rent_lamports;
 
         msg!(
-            "Wager resolved: Winner {}, Payout: {} SOL, Fee: {} SOL",
+            "Wager resolved: Winner {}, Payout: {} lamports, Fee: {} lamports",
             winner.key(),
             winner_payout,
             platform_fee
@@ -233,4 +233,3 @@ pub enum EscrowError {
     #[msg("Math overflow")]
     MathOverflow,
 }
-
