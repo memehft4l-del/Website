@@ -38,19 +38,15 @@ jobs:
       
       - name: Install Solana CLI
         run: |
-          # For Solana 2.0+, use agave install instead of solana install
           # Install Solana 2.1.13 (supports lockfile version 4)
           sh -c "$(curl -sSfL https://release.anza.xyz/v2.1.13/install)"
           export PATH="$HOME/.local/share/solana/install/active_release/bin:$PATH"
           echo "$HOME/.local/share/solana/install/active_release/bin" >> $GITHUB_PATH
           
-          # Update solana-install to ensure compatibility
-          solana-install update || true
-          
           # Verify installation
           solana --version
-          solana-install --version
-          echo "Solana CLI installed successfully"
+          cargo-build-sbf --version || echo "cargo-build-sbf will be available after Solana install"
+          echo "✅ Solana CLI installed successfully"
       
       - name: Install Anchor
         run: |
