@@ -63,3 +63,4 @@ After updating the icon:
 
 The icon should now appear in browser tabs showing the Elixir container!
 
+

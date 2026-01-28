@@ -44,3 +44,4 @@ else
     echo "3. Authenticate via browser when prompted"
 fi
 
+

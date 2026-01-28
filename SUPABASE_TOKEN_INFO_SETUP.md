@@ -61,3 +61,4 @@ After updating in Supabase:
 - Changes in Supabase are reflected immediately (no deployment needed)
 - The contract address is used to generate URLs if they're not provided
 
+

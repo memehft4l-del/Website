@@ -46,3 +46,4 @@ else
     echo "   3. You're authenticated with GitHub (git config --global user.name/email)"
 fi
 
+

@@ -123,10 +123,11 @@ export function Navigation({ activeTab, onTabChange }: NavigationProps) {
             >
               <Link
                 href="/arena"
-                className="flex items-center gap-2 px-5 py-2.5 rounded-xl font-semibold transition-all duration-200 text-slate-300 hover:text-white hover:bg-white/10 hover:backdrop-blur-sm border border-transparent hover:border-white/10"
+                className="flex items-center gap-2 px-5 py-2.5 rounded-xl font-semibold transition-all duration-200 text-slate-300 hover:text-white hover:bg-white/10 hover:backdrop-blur-sm border border-transparent hover:border-white/10 relative"
               >
                 <Trophy className="w-4 h-4" />
                 Arena
+                <span className="absolute -top-1 -right-1 w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
               </Link>
             </motion.div>
             <motion.div

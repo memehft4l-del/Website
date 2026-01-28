@@ -109,3 +109,4 @@ GRANT ALL ON user_profiles TO anon, authenticated;
 GRANT USAGE, SELECT ON SEQUENCE wagers_id_seq TO anon, authenticated;
 GRANT USAGE, SELECT ON SEQUENCE user_profiles_id_seq TO anon, authenticated;
 
+

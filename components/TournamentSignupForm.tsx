@@ -1,10 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { CheckCircle, XCircle, Loader2 } from "lucide-react";
+import { CheckCircle, XCircle, Loader2, Trophy, TrendingUp, Users, Award } from "lucide-react";
 import { supabase, TournamentSignup } from "@/lib/supabase";
 import { useWallet } from "@solana/wallet-adapter-react";
+import { getPlayerStats, PlayerStats } from "@/lib/clashRoyale/getPlayerStats";
 
 interface TournamentSignupFormProps {
   tier: "SQUIRE" | "WHALE" | "TGE";
@@ -17,6 +18,40 @@ export function TournamentSignupForm({ tier, onSignupSuccess }: TournamentSignup
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [status, setStatus] = useState<"idle" | "success" | "error">("idle");
   const [errorMessage, setErrorMessage] = useState("");
+  const [playerStats, setPlayerStats] = useState<PlayerStats | null>(null);
+  const [loadingStats, setLoadingStats] = useState(false);
+  const [statsError, setStatsError] = useState<string | null>(null);
+
+  // Fetch player stats when tag is entered
+  useEffect(() => {
+    const fetchStats = async () => {
+      const trimmedTag = username.trim();
+      if (!trimmedTag || trimmedTag.length < 3) {
+        setPlayerStats(null);
+        setStatsError(null);
+        return;
+      }
+
+      // Debounce: wait 800ms after user stops typing
+      const timeoutId = setTimeout(async () => {
+        setLoadingStats(true);
+        setStatsError(null);
+        try {
+          const stats = await getPlayerStats(trimmedTag);
+          setPlayerStats(stats);
+        } catch (error: any) {
+          setPlayerStats(null);
+          setStatsError(error.message);
+        } finally {
+          setLoadingStats(false);
+        }
+      }, 800);
+
+      return () => clearTimeout(timeoutId);
+    };
+
+    fetchStats();
+  }, [username]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -113,6 +148,68 @@ export function TournamentSignupForm({ tier, onSignupSuccess }: TournamentSignup
           <p className="text-xs text-slate-500 mt-1">
             Find your player tag in-game: Profile → Copy Player Tag
           </p>
+
+          {/* Player Stats Display */}
+          {loadingStats && (
+            <div className="mt-3 p-3 bg-slate-800/50 rounded-lg border border-purple-500/20">
+              <div className="flex items-center gap-2 text-purple-300 text-sm">
+                <Loader2 className="w-4 h-4 animate-spin" />
+                Loading player stats...
+              </div>
+            </div>
+          )}
+
+          {statsError && (
+            <div className="mt-3 p-3 bg-red-500/10 border border-red-500/30 rounded-lg">
+              <p className="text-red-400 text-xs">{statsError}</p>
+            </div>
+          )}
+
+          {playerStats && !loadingStats && (
+            <motion.div
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="mt-3 p-4 bg-gradient-to-r from-purple-500/10 to-pink-500/10 border border-purple-500/30 rounded-lg"
+            >
+              <div className="flex items-center gap-2 mb-3">
+                <Trophy className="w-5 h-5 text-game-gold" />
+                <h4 className="text-white font-semibold">{playerStats.name}</h4>
+                <span className="text-slate-400 text-xs">{playerStats.tag}</span>
+              </div>
+              <div className="grid grid-cols-2 gap-3">
+                <div className="bg-slate-900/50 rounded p-2">
+                  <div className="text-slate-400 text-xs mb-1">Trophies</div>
+                  <div className="text-white font-bold text-lg">{playerStats.trophies.toLocaleString()}</div>
+                  {playerStats.bestTrophies > playerStats.trophies && (
+                    <div className="text-yellow-400 text-xs">Best: {playerStats.bestTrophies.toLocaleString()}</div>
+                  )}
+                </div>
+                <div className="bg-slate-900/50 rounded p-2">
+                  <div className="text-slate-400 text-xs mb-1">Level</div>
+                  <div className="text-white font-bold text-lg">{playerStats.level}</div>
+                </div>
+                <div className="bg-slate-900/50 rounded p-2">
+                  <div className="text-slate-400 text-xs mb-1">Wins</div>
+                  <div className="text-green-400 font-bold">{playerStats.wins.toLocaleString()}</div>
+                </div>
+                <div className="bg-slate-900/50 rounded p-2">
+                  <div className="text-slate-400 text-xs mb-1">Losses</div>
+                  <div className="text-red-400 font-bold">{playerStats.losses.toLocaleString()}</div>
+                </div>
+                {playerStats.battleCount > 0 && (
+                  <div className="bg-slate-900/50 rounded p-2 col-span-2">
+                    <div className="text-slate-400 text-xs mb-1">Total Battles</div>
+                    <div className="text-white font-semibold">{playerStats.battleCount.toLocaleString()}</div>
+                    {playerStats.wins + playerStats.losses > 0 && (
+                      <div className="text-slate-400 text-xs mt-1">
+                        Win Rate: {Math.round((playerStats.wins / (playerStats.wins + playerStats.losses)) * 100)}%
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+            </motion.div>
+          )}
         </div>
 
         {status === "error" && (

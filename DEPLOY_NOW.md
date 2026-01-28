@@ -74,3 +74,4 @@ solana program deploy target/deploy/clash_royale_escrow.so \
 
 The workflow file is already created at `.github/workflows/deploy-program.yml` in your local repo. You just need to push it manually or update your token scope.
 
+

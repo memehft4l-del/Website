@@ -64,7 +64,7 @@ export function Overview() {
             >
               <span className="block text-white mb-1 sm:mb-2">#1 Place for</span>
               <span className="block gradient-text-gold break-words">Clash Royale</span>
-              <span className="block text-white break-words drop-shadow-lg">Tournaments</span>
+              <span className="block text-white break-words drop-shadow-lg">Tournaments & 1v1s</span>
             </motion.h1>
 
             {/* Subtitle */}
@@ -72,10 +72,32 @@ export function Overview() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.4, duration: 0.8 }}
-              className="text-base sm:text-lg md:text-xl lg:text-2xl text-slate-300 mb-6 sm:mb-8 max-w-3xl mx-auto font-light px-4"
+              className="text-base sm:text-lg md:text-xl lg:text-2xl text-slate-300 mb-4 max-w-3xl mx-auto font-light px-4"
             >
               Token-gated competitive gaming. Hold <span className="text-game-gold font-semibold">$ELIXIR</span> to unlock exclusive tournaments and compete for prize pools.
             </motion.p>
+            <motion.p
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.45, duration: 0.8 }}
+              className="text-base sm:text-lg md:text-xl text-green-400 mb-6 sm:mb-8 max-w-3xl mx-auto font-medium px-4"
+            >
+              Think you're the best? Place bets on yourself and play 1v1s against other real players to win SOL.
+            </motion.p>
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.6, duration: 0.8 }}
+              className="mb-8"
+            >
+              <Link
+                href="/arena"
+                className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white rounded-xl font-semibold transition-all shadow-lg shadow-green-600/30"
+              >
+                <Trophy className="w-5 h-5" />
+                1v1 Betting Arena
+              </Link>
+            </motion.div>
 
             {/* CTA Button */}
             {!connected && (

@@ -130,3 +130,4 @@ supabase secrets list
 supabase secrets set SOLANA_BACKEND_PRIVATE_KEY="[123,45,67,...]"
 ```
 
+

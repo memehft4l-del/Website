@@ -142,3 +142,4 @@ export function ElixirBar({ current, max = MAX_TOKENS, showLabel = true, size = 
   );
 }
 
+

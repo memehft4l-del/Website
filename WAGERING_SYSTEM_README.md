@@ -239,3 +239,4 @@ curl -X POST https://your-project-ref.supabase.co/functions/v1/verify-match \
 
 Your wagering system is now ready! Follow the setup instructions above to deploy and configure everything.
 
+

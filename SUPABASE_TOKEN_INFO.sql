@@ -51,3 +51,4 @@ CREATE POLICY "Allow public read" ON token_info
 -- Create index for faster lookups
 CREATE INDEX IF NOT EXISTS idx_token_info_active ON token_info(is_active);
 
+

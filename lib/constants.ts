@@ -22,11 +22,22 @@ export const DEVNET_RPC_ENDPOINT =
   "https://api.devnet.solana.com";
 
 // Wager amount options
-// Devnet: 0.001 SOL (default for testing)
-// Production: 0.25 SOL increments
+// Devnet: 0.10 SOL increments (for testing)
+// Production: 0.10 SOL increments from 0.1 to 10.0 SOL
 export const WAGER_AMOUNTS = {
-  DEVNET: [0.001],
-  PRODUCTION: [0.25, 0.5, 0.75, 1.0, 1.25, 1.5, 1.75, 2.0, 2.5, 3.0, 3.5, 4.0, 4.5, 5.0],
+  DEVNET: [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0, 1.5, 2.0, 2.5, 3.0, 4.0, 5.0],
+  PRODUCTION: [
+    0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0,
+    1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9, 2.0,
+    2.1, 2.2, 2.3, 2.4, 2.5, 2.6, 2.7, 2.8, 2.9, 3.0,
+    3.1, 3.2, 3.3, 3.4, 3.5, 3.6, 3.7, 3.8, 3.9, 4.0,
+    4.1, 4.2, 4.3, 4.4, 4.5, 4.6, 4.7, 4.8, 4.9, 5.0,
+    5.1, 5.2, 5.3, 5.4, 5.5, 5.6, 5.7, 5.8, 5.9, 6.0,
+    6.1, 6.2, 6.3, 6.4, 6.5, 6.6, 6.7, 6.8, 6.9, 7.0,
+    7.1, 7.2, 7.3, 7.4, 7.5, 7.6, 7.7, 7.8, 7.9, 8.0,
+    8.1, 8.2, 8.3, 8.4, 8.5, 8.6, 8.7, 8.8, 8.9, 9.0,
+    9.1, 9.2, 9.3, 9.4, 9.5, 9.6, 9.7, 9.8, 9.9, 10.0
+  ],
 };
 
 // Check if we're in production mode (Mainnet)
@@ -37,8 +48,8 @@ export const getAvailableWagerAmounts = () => {
   return IS_PRODUCTION ? WAGER_AMOUNTS.PRODUCTION : WAGER_AMOUNTS.DEVNET;
 };
 
-// Default wager amount (0.001 SOL for Devnet)
-export const DEFAULT_WAGER_AMOUNT = 0.001;
+// Default wager amount (0.1 SOL)
+export const DEFAULT_WAGER_AMOUNT = 0.1;
 
 // Tier Thresholds
 export const TIER_THRESHOLDS = {
@@ -78,3 +89,26 @@ export const PRIZE_POOL = "150 SOL";
 
 // Stuck match timeout (60 minutes in milliseconds)
 export const STUCK_MATCH_TIMEOUT = 60 * 60 * 1000; // 60 minutes
+
+// Admin wallet address (receives all escrow funds)
+export const ADMIN_WALLET_ADDRESS =
+  process.env.NEXT_PUBLIC_ADMIN_WALLET_ADDRESS ||
+  "ZvhrcR6XHRSDcb8A15vrZ89rFaHUBWGVBYY1yadY2sj"; // Default admin wallet
+
+// Points system configuration
+export const POINTS_CONFIG = {
+  WIN: 100, // Points for winning a match
+  LOSS: 10, // Points for losing (participation)
+  STREAK_BONUS: 50, // Bonus points per win streak
+  MAX_STREAK_BONUS: 500, // Maximum streak bonus
+};
+
+// Clash Royale API Proxy URL (Railway deployment)
+export const CLASH_ROYALE_PROXY_URL =
+  process.env.NEXT_PUBLIC_CLASH_ROYALE_PROXY_URL || "https://api-production-0e8d.up.railway.app";
+
+// Solscan base URL (determines cluster based on network)
+export const getSolscanUrl = (signature: string): string => {
+  const cluster = IS_PRODUCTION ? "" : "?cluster=devnet";
+  return `https://solscan.io/tx/${signature}${cluster}`;
+};

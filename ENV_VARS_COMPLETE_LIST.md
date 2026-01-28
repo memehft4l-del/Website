@@ -118,3 +118,4 @@ Based on your current setup:
 - Supabase Key: `sb_publishable_Y_MINoKzOLp1DBG23X0HZg_NR9gXzSk`
 - RPC Endpoint: Check your `.env.local` for your Helius key
 
+

@@ -112,3 +112,4 @@ The frontend works perfectly without the program deployed:
 
 **Use GitHub Actions** - it's the easiest and most reliable way to build and deploy. Just push your code and let GitHub Actions handle it!
 
+

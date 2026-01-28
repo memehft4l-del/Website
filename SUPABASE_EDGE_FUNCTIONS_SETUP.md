@@ -162,3 +162,4 @@ Before using the Edge Functions, make sure you've run the SQL schema:
 4. Implement the claim-funds escrow release logic
 5. Test the full flow: Create wager → Escrow deposit → Verify match → Claim funds
 
+
