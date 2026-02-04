@@ -71,8 +71,8 @@ export async function createWager(
       });
     },
   };
-  const provider = new AnchorProvider(connection, wallet, { commitment: "confirmed" });
-  const program = new Program(IDL, WAGER_ESCROW_PROGRAM_ID, provider);
+  const provider = new AnchorProvider(connection, wallet as any, { commitment: "confirmed" });
+  const program = new Program(IDL as any, WAGER_ESCROW_PROGRAM_ID, provider);
 
   const [wagerPDA] = getWagerPDA(creator.publicKey, wagerId);
   const amountLamports = Math.floor(amountSol * LAMPORTS_PER_SOL);
@@ -113,8 +113,8 @@ export async function joinWager(
       });
     },
   };
-  const provider = new AnchorProvider(connection, wallet, { commitment: "confirmed" });
-  const program = new Program(IDL, WAGER_ESCROW_PROGRAM_ID, provider);
+  const provider = new AnchorProvider(connection, wallet as any, { commitment: "confirmed" });
+  const program = new Program(IDL as any, WAGER_ESCROW_PROGRAM_ID, provider);
 
   const [wagerPDA] = getWagerPDA(creatorPubkey, wagerId);
 
@@ -160,8 +160,8 @@ export async function resolveWager(
       });
     },
   };
-  const provider = new AnchorProvider(connection, wallet, { commitment: "confirmed" });
-  const program = new Program(IDL, WAGER_ESCROW_PROGRAM_ID, provider);
+  const provider = new AnchorProvider(connection, wallet as any, { commitment: "confirmed" });
+  const program = new Program(IDL as any, WAGER_ESCROW_PROGRAM_ID, provider);
 
   const [wagerPDA] = getWagerPDA(creatorPubkey, wagerId);
 
