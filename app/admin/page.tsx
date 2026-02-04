@@ -10,7 +10,7 @@ import { RPC_ENDPOINT } from "@/lib/constants";
 import { 
   Trophy, CheckCircle, XCircle, Clock, AlertCircle, 
   DollarSign, Search, Filter, RefreshCw, Eye, 
-  CheckCircle2, XCircle2, Loader2, Copy, Wallet, ExternalLink, Send
+  Loader2, Copy, Wallet, ExternalLink, Send
 } from "lucide-react";
 import { getUserProfile } from "@/lib/wagers";
 
@@ -32,6 +32,7 @@ interface Wager {
   completed_at: string | null;
   verified_at: string | null;
   paid_at: string | null;
+  updated_at: string | null;
 }
 
 interface UserProfile {
@@ -495,8 +496,14 @@ export default function AdminDashboard() {
                               </button>
                               {connected ? (
                                 <button
-                                  onClick={() => handleSendPayment(wager.opponent_id, refundPerPlayer, wager.id, true)}
-                                  disabled={sendingPayment === wager.id}
+                                  onClick={() => {
+                                    if (wager.opponent_id) {
+                                      handleSendPayment(wager.opponent_id, refundPerPlayer, wager.id, true);
+                                    } else {
+                                      alert("Opponent ID is missing");
+                                    }
+                                  }}
+                                  disabled={sendingPayment === wager.id || !wager.opponent_id}
                                   className="ml-2 px-2 py-1 bg-blue-600 hover:bg-blue-700 text-white rounded text-xs disabled:opacity-50"
                                 >
                                   {sendingPayment === wager.id ? "Sending..." : "Send Refund"}
@@ -526,7 +533,7 @@ export default function AdminDashboard() {
                           }}
                           className="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg font-semibold transition-all flex items-center gap-2"
                         >
-                          <CheckCircle2 size={18} />
+                          <CheckCircle size={18} />
                           Mark Refunded
                         </button>
                         <button
@@ -654,7 +661,7 @@ export default function AdminDashboard() {
                           }}
                           className="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg font-semibold transition-all flex items-center gap-2"
                         >
-                          <CheckCircle2 size={18} />
+                          <CheckCircle size={18} />
                           Mark Paid
                         </button>
                         <button
@@ -839,7 +846,7 @@ export default function AdminDashboard() {
                               {verifying === wager.id ? (
                                 <Loader2 size={18} className="animate-spin" />
                               ) : (
-                                <CheckCircle2 size={18} />
+                                <CheckCircle size={18} />
                               )}
                             </button>
                           )}

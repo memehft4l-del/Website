@@ -790,6 +790,7 @@ export default function ArenaPage() {
                           onCancel={() => handleCancelWager(wager.id)}
                           claiming={claimingWagerId === wager.id}
                           myWallet={publicKey?.toBase58() || ""}
+                          onRefresh={fetchWagers}
                         />
                       ))}
                     </div>
@@ -818,6 +819,7 @@ export default function ArenaPage() {
                           onCancel={() => handleCancelWager(wager.id)}
                           claiming={claimingWagerId === wager.id}
                           myWallet={publicKey?.toBase58() || ""}
+                          onRefresh={fetchWagers}
                         />
                       ))}
                     </div>
@@ -846,6 +848,7 @@ export default function ArenaPage() {
                           onCancel={() => handleCancelWager(wager.id)}
                           claiming={claimingWagerId === wager.id}
                           myWallet={publicKey?.toBase58() || ""}
+                          onRefresh={fetchWagers}
                         />
                       ))}
                     </div>
@@ -874,6 +877,7 @@ export default function ArenaPage() {
                           onCancel={() => handleCancelWager(wager.id)}
                           claiming={claimingWagerId === wager.id}
                           myWallet={publicKey?.toBase58() || ""}
+                          onRefresh={fetchWagers}
                         />
                       ))}
                     </div>
@@ -912,6 +916,7 @@ export default function ArenaPage() {
                       claiming={claimingWagerId === wager.id}
                       joining={joiningWagerId === wager.id}
                       myWallet={publicKey?.toBase58() || ""}
+                      onRefresh={fetchWagers}
                     />
                   ))}
                 </div>
@@ -934,6 +939,7 @@ function WagerCard({
   claiming,
   joining,
   myWallet,
+  onRefresh,
 }: {
   wager: Wager;
   isMyWager: boolean;
@@ -944,6 +950,7 @@ function WagerCard({
   claiming: boolean;
   joining?: boolean;
   myWallet: string;
+  onRefresh: () => void;
 }) {
   const [creatorTag, setCreatorTag] = useState<string | null>(null);
   const [opponentTag, setOpponentTag] = useState<string | null>(null);
@@ -1209,10 +1216,7 @@ function WagerCard({
               <PlayInstructionsSection 
                 wager={wager} 
                 isCreator={isCreator}
-                onTournamentDetailsSaved={() => {
-                  // Refresh wagers to get updated tournament details
-                  fetchWagers();
-                }}
+                onTournamentDetailsSaved={onRefresh}
               />
             )}
           </div>

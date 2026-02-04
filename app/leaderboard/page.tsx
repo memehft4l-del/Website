@@ -1,6 +1,6 @@
 "use client";
 
-import { Leaderboard } from "@/components/Leaderboard";
+import Leaderboard from "@/components/Leaderboard";
 import { Navigation } from "@/components/Navigation";
 
 export default function LeaderboardPage() {
