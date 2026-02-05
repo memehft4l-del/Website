@@ -23,7 +23,7 @@
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
-  "exclude": ["node_modules", "smart-contract", "supabase/functions"]
+  "exclude": ["node_modules", "smart-contract", "supabase/functions", "lib/solana/wagerEscrow.ts", "lib/solana/wagerEscrowClient.ts"]
 }
 
 
