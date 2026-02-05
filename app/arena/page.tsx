@@ -6,7 +6,7 @@ import { useWallet } from "@solana/wallet-adapter-react";
 import { supabase } from "@/lib/supabase";
 import { Trophy, Users, Clock, CheckCircle, XCircle, Loader2, Coins, X, AlertCircle, TestTube, Wallet, Info, Gamepad2, Share2, Copy as CopyIcon } from "lucide-react";
 import { Connection, PublicKey, SystemProgram, Transaction, LAMPORTS_PER_SOL } from "@solana/web3.js";
-import { RPC_ENDPOINT, getAvailableWagerAmounts, DEFAULT_WAGER_AMOUNT, ADMIN_WALLET_ADDRESS, STUCK_MATCH_TIMEOUT, getSolscanUrl, IS_PRODUCTION } from "@/lib/constants";
+import { RPC_ENDPOINT, getAvailableWagerAmounts, DEFAULT_WAGER_AMOUNT, ADMIN_WALLET_ADDRESS, STUCK_MATCH_TIMEOUT, getSolscanUrl, getSolscanAccountUrl, IS_PRODUCTION } from "@/lib/constants";
 import { updateUserProfile, getUserProfile } from "@/lib/wagers";
 import { getUserStats } from "@/lib/points";
 import { getPlayerStats, PlayerStats } from "@/lib/clashRoyale/getPlayerStats";
@@ -582,8 +582,17 @@ export default function ArenaPage() {
                     Your SOL is sent directly to our secure admin wallet for escrow. 
                     Funds are held until the match is verified, then paid to the winner.
                   </p>
-                  <p className="text-xs mt-1 font-mono text-blue-300">
-                    Admin Wallet: {ADMIN_WALLET_ADDRESS.slice(0, 8)}...{ADMIN_WALLET_ADDRESS.slice(-8)}
+                  <p className="text-xs mt-1">
+                    <span className="text-blue-300">Admin Wallet: </span>
+                    <a
+                      href={getSolscanAccountUrl(ADMIN_WALLET_ADDRESS)}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="font-mono text-blue-400 hover:text-blue-300 underline break-all"
+                      title="View on Solscan"
+                    >
+                      {ADMIN_WALLET_ADDRESS}
+                    </a>
                   </p>
                 </div>
               </div>

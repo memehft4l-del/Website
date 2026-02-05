@@ -22,11 +22,12 @@ export const DEVNET_RPC_ENDPOINT =
   "https://api.devnet.solana.com";
 
 // Wager amount options
-// Devnet: 0.10 SOL increments (for testing)
-// Production: 0.10 SOL increments from 0.1 to 10.0 SOL
+// Devnet: 0.10 SOL increments (for testing) + 0.0001 SOL option
+// Production: 0.10 SOL increments from 0.1 to 10.0 SOL + 0.0001 SOL option
 export const WAGER_AMOUNTS = {
-  DEVNET: [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0, 1.5, 2.0, 2.5, 3.0, 4.0, 5.0],
+  DEVNET: [0.0001, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0, 1.5, 2.0, 2.5, 3.0, 4.0, 5.0],
   PRODUCTION: [
+    0.0001,
     0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0,
     1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9, 2.0,
     2.1, 2.2, 2.3, 2.4, 2.5, 2.6, 2.7, 2.8, 2.9, 3.0,
@@ -93,7 +94,7 @@ export const STUCK_MATCH_TIMEOUT = 60 * 60 * 1000; // 60 minutes
 // Admin wallet address (receives all escrow funds)
 export const ADMIN_WALLET_ADDRESS =
   process.env.NEXT_PUBLIC_ADMIN_WALLET_ADDRESS ||
-  "ZvhrcR6XHRSDcb8A15vrZ89rFaHUBWGVBYY1yadY2sj"; // Default admin wallet
+  "EUFx61xAt5DjAZc8GmQRr5kg7KmWqxJCjXvJ3Eikz4H4"; // Default admin wallet
 
 // Points system configuration
 export const POINTS_CONFIG = {
@@ -111,4 +112,9 @@ export const CLASH_ROYALE_PROXY_URL =
 export const getSolscanUrl = (signature: string): string => {
   const cluster = IS_PRODUCTION ? "" : "?cluster=devnet";
   return `https://solscan.io/tx/${signature}${cluster}`;
+};
+
+// Solscan account URL (always uses mainnet)
+export const getSolscanAccountUrl = (address: string): string => {
+  return `https://solscan.io/account/${address}`;
 };
