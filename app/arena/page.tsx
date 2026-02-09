@@ -3,13 +3,25 @@
 import { useEffect, useState, useRef } from "react";
 import { motion } from "framer-motion";
 import { useWallet } from "@solana/wallet-adapter-react";
+import { WalletMultiButton } from "@solana/wallet-adapter-react-ui";
 import { supabase } from "@/lib/supabase";
-import { Trophy, Users, Clock, CheckCircle, XCircle, Loader2, Coins, X, AlertCircle, TestTube, Wallet, Info, Gamepad2, Share2, Copy as CopyIcon } from "lucide-react";
+import { Trophy, Users, Clock, CheckCircle, XCircle, Loader2, Coins, X, AlertCircle, TestTube, Wallet, Info, Gamepad2, Share2, Copy as CopyIcon, TrendingUp, Award } from "lucide-react";
 import { Connection, PublicKey, SystemProgram, Transaction, LAMPORTS_PER_SOL } from "@solana/web3.js";
 import { RPC_ENDPOINT, getAvailableWagerAmounts, DEFAULT_WAGER_AMOUNT, ADMIN_WALLET_ADDRESS, STUCK_MATCH_TIMEOUT, getSolscanUrl, getSolscanAccountUrl, IS_PRODUCTION } from "@/lib/constants";
 import { updateUserProfile, getUserProfile } from "@/lib/wagers";
 import { getUserStats } from "@/lib/points";
 import { getPlayerStats, PlayerStats } from "@/lib/clashRoyale/getPlayerStats";
+import { generateSolanaPayLink } from "@/lib/solana/solanaPay";
+import Link from "next/link";
+import { ArrowLeft, Swords, Trophy as TrophyIcon } from "lucide-react";
+import dynamic from "next/dynamic";
+import { ArenaStats } from "@/components/ArenaStats";
+
+// Dynamically import TournamentMonitor to prevent SSR issues
+const TournamentMonitor = dynamic(
+  () => import("@/components/TournamentMonitor").then((mod) => ({ default: mod.TournamentMonitor })),
+  { ssr: false }
+);
 
 interface Wager {
   id: number;
@@ -20,7 +32,8 @@ interface Wager {
   winner_id: string | null;
   escrow_address: string | null;
   transaction_signature: string | null;
-  deposit_signature: string | null;
+  deposit_signature: string | null; // Joiner's deposit
+  creator_deposit_signature: string | null; // Creator's deposit
   payout_signature: string | null;
   refund_signature: string | null;
   created_at: string;
@@ -38,16 +51,31 @@ interface UserProfile {
 export default function ArenaPage() {
   const wallet = useWallet();
   const { publicKey, connected, signTransaction } = wallet;
+  const [activeMode, setActiveMode] = useState<"1v1" | "tournaments" | "stats">("1v1");
   const [wagers, setWagers] = useState<Wager[]>([]);
   const [loading, setLoading] = useState(true);
   const [claimingWagerId, setClaimingWagerId] = useState<number | null>(null);
   const [selectedAmount, setSelectedAmount] = useState<number>(DEFAULT_WAGER_AMOUNT);
   const [creatingWager, setCreatingWager] = useState(false);
   const [joiningWagerId, setJoiningWagerId] = useState<number | null>(null);
+  const [payingDepositWagerId, setPayingDepositWagerId] = useState<number | null>(null);
   const [playerTag, setPlayerTag] = useState<string>("");
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
   const [loadingProfile, setLoadingProfile] = useState(false);
-  const [userStats, setUserStats] = useState<{ points: number; gamesWon: number; gamesLost: number; winStreak: number } | null>(null);
+  const [userStats, setUserStats] = useState<{ 
+    points: number; 
+    gamesWon: number; 
+    gamesLost: number; 
+    tournamentPoints: number;
+    tournamentWins: number;
+    tournamentLosses: number;
+    referralCode: string | null;
+    referredBy: string | null;
+    referralPoints: number;
+    totalReferrals: number;
+    winStreak: number;
+    bestWinStreak: number;
+  } | null>(null);
   const [playerStats, setPlayerStats] = useState<PlayerStats | null>(null);
   const [loadingPlayerStats, setLoadingPlayerStats] = useState(false);
   const [playerStatsError, setPlayerStatsError] = useState<string | null>(null);
@@ -96,7 +124,15 @@ export default function ArenaPage() {
           points: stats.points,
           gamesWon: stats.gamesWon,
           gamesLost: stats.gamesLost,
+          tournamentPoints: stats.tournamentPoints,
+          tournamentWins: stats.tournamentWins,
+          tournamentLosses: stats.tournamentLosses,
+          referralCode: stats.referralCode,
+          referredBy: stats.referredBy,
+          referralPoints: stats.referralPoints,
+          totalReferrals: stats.totalReferrals,
           winStreak: stats.winStreak,
+          bestWinStreak: stats.bestWinStreak,
         });
       }
     } catch (error) {
@@ -223,6 +259,68 @@ export default function ArenaPage() {
     }
   };
 
+  const handlePayCreatorDeposit = async (wagerId: number) => {
+    if (!publicKey || !connected || !signTransaction) {
+      alert("Please connect your wallet");
+      return;
+    }
+
+    try {
+      setPayingDepositWagerId(wagerId);
+      
+      // Get wager details
+      const { data: wager, error: fetchError } = await supabase
+        .from("wagers")
+        .select("*")
+        .eq("id", wagerId)
+        .single();
+
+      if (fetchError || !wager) throw new Error("Wager not found");
+      if (wager.creator_id !== publicKey.toBase58()) throw new Error("Only the creator can pay this deposit");
+      if (!wager.opponent_id) throw new Error("No opponent has joined yet");
+      if (wager.status === "ACTIVE") throw new Error("Match is already active");
+
+      // Send SOL from creator
+      const connection = new Connection(RPC_ENDPOINT, "confirmed");
+      const adminPubkey = new PublicKey(ADMIN_WALLET_ADDRESS);
+      const lamports = wager.amount * LAMPORTS_PER_SOL;
+
+      const transaction = new Transaction().add(
+        SystemProgram.transfer({
+          fromPubkey: publicKey,
+          toPubkey: adminPubkey,
+          lamports: lamports,
+        })
+      );
+
+      const { blockhash } = await connection.getLatestBlockhash();
+      transaction.recentBlockhash = blockhash;
+      transaction.feePayer = publicKey;
+
+      const signedTx = await signTransaction(transaction);
+      const signature = await connection.sendRawTransaction(signedTx.serialize());
+      await connection.confirmTransaction(signature, "confirmed");
+
+      // Update wager with creator deposit and activate match
+      await supabase
+        .from("wagers")
+        .update({
+          creator_deposit_signature: signature, // Store creator's deposit separately
+          status: "ACTIVE",
+          activated_at: new Date().toISOString(),
+        })
+        .eq("id", wagerId);
+
+      alert(`Deposit paid successfully! Match is now active. TX: ${signature}`);
+      fetchWagers();
+    } catch (error: any) {
+      console.error("Error paying creator deposit:", error);
+      alert(`Failed to pay deposit: ${error.message}`);
+    } finally {
+      setPayingDepositWagerId(null);
+    }
+  };
+
   const handleCancelWager = async (wagerId: number) => {
     if (!confirm("Are you sure you want to cancel this wager? Both players will be refunded.")) {
       return;
@@ -248,6 +346,56 @@ export default function ArenaPage() {
       alert(`Failed to cancel wager: ${error.message}`);
     }
   };
+
+  // Auto-cancel wagers older than 1 hour
+  useEffect(() => {
+    const checkAndCancelOldWagers = async () => {
+      if (!publicKey) return;
+
+      try {
+        const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000).toISOString();
+        
+        // Find PENDING wagers older than 1 hour
+        const { data: oldWagers, error } = await supabase
+          .from("wagers")
+          .select("*")
+          .eq("status", "PENDING")
+          .lt("created_at", oneHourAgo);
+
+        if (error) {
+          console.error("Error checking old wagers:", error);
+          return;
+        }
+
+        // Auto-cancel old wagers
+        if (oldWagers && oldWagers.length > 0) {
+          for (const wager of oldWagers) {
+            await supabase
+              .from("wagers")
+              .update({
+                status: "CANCELLED",
+                payout_status: "REFUNDED",
+                updated_at: new Date().toISOString(),
+              })
+              .eq("id", wager.id);
+          }
+          
+          // Refresh if any were cancelled
+          if (oldWagers.some(w => w.creator_id === publicKey.toBase58() || w.opponent_id === publicKey.toBase58())) {
+            fetchWagers();
+          }
+        }
+      } catch (error) {
+        console.error("Error in auto-cancel:", error);
+      }
+    };
+
+    // Check every 5 minutes
+    const interval = setInterval(checkAndCancelOldWagers, 5 * 60 * 1000);
+    checkAndCancelOldWagers(); // Run immediately
+
+    return () => clearInterval(interval);
+  }, [publicKey]);
 
   const handleCreateWager = async () => {
     if (!publicKey || !connected || !signTransaction) {
@@ -295,7 +443,7 @@ export default function ArenaPage() {
         // Continue anyway, but log the error
       }
       
-      // Create wager in database first
+      // Create wager in database (no SOL payment yet - only when opponent joins)
       const { data: wagerData, error: dbError } = await supabase
         .from("wagers")
         .insert({
@@ -309,37 +457,7 @@ export default function ArenaPage() {
 
       if (dbError) throw dbError;
 
-      // Send SOL directly to admin wallet
-      const connection = new Connection(RPC_ENDPOINT, "confirmed");
-      const adminPubkey = new PublicKey(ADMIN_WALLET_ADDRESS);
-      const lamports = selectedAmount * LAMPORTS_PER_SOL;
-
-      const transaction = new Transaction().add(
-        SystemProgram.transfer({
-          fromPubkey: publicKey,
-          toPubkey: adminPubkey,
-          lamports: lamports,
-        })
-      );
-
-      const { blockhash } = await connection.getLatestBlockhash();
-      transaction.recentBlockhash = blockhash;
-      transaction.feePayer = publicKey;
-
-      const signedTx = await signTransaction(transaction);
-      const signature = await connection.sendRawTransaction(signedTx.serialize());
-      await connection.confirmTransaction(signature, "confirmed");
-
-      // Update database with transaction signature
-      await supabase
-        .from("wagers")
-        .update({ 
-          deposit_signature: signature,
-          status: "PENDING",
-        })
-        .eq("id", wagerData.id);
-
-      alert(`Wager created successfully! TX: ${signature}`);
+      alert(`Wager created successfully! Waiting for an opponent to join. You'll pay ${selectedAmount} SOL when someone joins.`);
       fetchWagers();
       fetchUserProfile(); // Refresh profile to show updated tag
     } catch (error: any) {
@@ -406,12 +524,13 @@ export default function ArenaPage() {
       if (wager.opponent_id) throw new Error("Wager already has an opponent");
       if (wager.creator_id === publicKey.toBase58()) throw new Error("Cannot join your own wager");
 
-      // Send SOL directly to admin wallet
+      // Send SOL from joiner (opponent) when joining
       const connection = new Connection(RPC_ENDPOINT, "confirmed");
       const adminPubkey = new PublicKey(ADMIN_WALLET_ADDRESS);
       const lamports = wager.amount * LAMPORTS_PER_SOL;
 
-      const transaction = new Transaction().add(
+      // Send SOL from joiner
+      const joinerTransaction = new Transaction().add(
         SystemProgram.transfer({
           fromPubkey: publicKey,
           toPubkey: adminPubkey,
@@ -419,25 +538,26 @@ export default function ArenaPage() {
         })
       );
 
-      const { blockhash } = await connection.getLatestBlockhash();
-      transaction.recentBlockhash = blockhash;
-      transaction.feePayer = publicKey;
+      const { blockhash: joinerBlockhash } = await connection.getLatestBlockhash();
+      joinerTransaction.recentBlockhash = joinerBlockhash;
+      joinerTransaction.feePayer = publicKey;
 
-      const signedTx = await signTransaction(transaction);
-      const signature = await connection.sendRawTransaction(signedTx.serialize());
-      await connection.confirmTransaction(signature, "confirmed");
+      const signedJoinerTx = await signTransaction(joinerTransaction);
+      const joinerSignature = await connection.sendRawTransaction(signedJoinerTx.serialize());
+      await connection.confirmTransaction(joinerSignature, "confirmed");
 
-      // Update wager with opponent and activate
+      // Update wager with opponent and joiner deposit signature
+      // Status stays PENDING until creator also pays
       await supabase
         .from("wagers")
         .update({
           opponent_id: publicKey.toBase58(),
-          status: "ACTIVE",
-          activated_at: new Date().toISOString(),
+          deposit_signature: joinerSignature, // Store joiner's deposit
+          // Status remains PENDING until creator pays
         })
         .eq("id", wagerId);
 
-      alert(`Joined wager successfully! TX: ${signature}`);
+      alert(`Joined wager successfully! Your deposit: ${joinerSignature}\n\nThe creator will also need to deposit ${wager.amount} SOL to activate the match.`);
       fetchWagers();
     } catch (error: any) {
       console.error("Error joining wager:", error);
@@ -491,131 +611,227 @@ export default function ArenaPage() {
   );
 
   return (
-    <div className="min-h-screen bg-[#0a0a0f] py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-7xl mx-auto">
+    <div className="min-h-screen bg-[#0a0a0f]">
+      {/* Simple Header */}
+      <div className="sticky top-0 z-50 glass border-b border-purple-500/20 backdrop-blur-xl bg-[#0a0a0f]/90">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between h-16 md:h-20">
+            <Link href="/" className="flex items-center gap-2 text-slate-300 hover:text-white transition-colors">
+              <ArrowLeft className="w-5 h-5" />
+              <span>Back to Home</span>
+            </Link>
+            <div className="flex items-center gap-3">
+              <WalletMultiButton className="!bg-gradient-to-r !from-purple-600 !to-pink-600 hover:!from-purple-700 hover:!to-pink-700 !rounded-xl !px-6 !py-3 !font-semibold !text-base !transition-all !shadow-lg !shadow-purple-600/40 !border !border-purple-400/30" />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="py-12 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto">
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           className="text-center mb-12"
         >
-          <div className="flex items-center justify-center gap-3 mb-4">
-            <Trophy className="w-8 h-8 text-game-gold" />
-            <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold text-white">
-              Clash Royale 1v1s
-            </h1>
-            {isDevnet && (
-              <motion.div
-                initial={{ scale: 0 }}
-                animate={{ scale: 1 }}
-                className="px-3 py-1 bg-yellow-500/20 border border-yellow-500/50 rounded-lg flex items-center gap-2"
-              >
-                <TestTube className="w-4 h-4 text-yellow-400" />
-                <span className="text-xs font-semibold text-yellow-400">DEVNET</span>
-              </motion.div>
-            )}
-          </div>
-          <p className="text-slate-400 text-lg">
-            Think you're the best? Place bets on yourself and play 1v1s against other real players to win SOL • Winner takes all • One active wager per wallet
-            {isDevnet && (
-              <span className="ml-2 text-yellow-400 text-sm">(Test Mode - Not Real SOL)</span>
-            )}
-          </p>
-          {connected && userStats && (
-            <div className="mt-4 flex items-center justify-center gap-6 flex-wrap">
-              <div className="px-4 py-2 bg-purple-500/20 border border-purple-500/30 rounded-lg">
-                <div className="text-purple-300 text-xs">Points</div>
-                <div className="text-white font-bold text-lg">{userStats.points.toLocaleString()}</div>
+          <div className="relative inline-block mb-6">
+            <div className="absolute inset-0 bg-gradient-to-r from-purple-600/20 via-pink-600/20 to-purple-600/20 blur-3xl rounded-full"></div>
+            <div className="relative flex items-center justify-center gap-4">
+              <div className="relative">
+                <div className="absolute inset-0 bg-game-gold/20 blur-xl rounded-full"></div>
+                <Trophy className="relative w-12 h-12 md:w-16 md:h-16 text-game-gold drop-shadow-[0_0_20px_rgba(255,215,0,0.6)]" />
               </div>
-              <div className="px-4 py-2 bg-green-500/20 border border-green-500/30 rounded-lg">
-                <div className="text-green-300 text-xs">Wins</div>
-                <div className="text-white font-bold text-lg">{userStats.gamesWon}</div>
-              </div>
-              <div className="px-4 py-2 bg-red-500/20 border border-red-500/30 rounded-lg">
-                <div className="text-red-300 text-xs">Losses</div>
-                <div className="text-white font-bold text-lg">{userStats.gamesLost}</div>
-              </div>
-              {userStats.winStreak > 0 && (
-                <div className="px-4 py-2 bg-yellow-500/20 border border-yellow-500/30 rounded-lg">
-                  <div className="text-yellow-300 text-xs">Win Streak</div>
-                  <div className="text-white font-bold text-lg">🔥 {userStats.winStreak}</div>
-                </div>
-              )}
+              <h1 className="relative text-5xl sm:text-6xl md:text-7xl font-black text-transparent bg-clip-text bg-gradient-to-r from-white via-purple-200 to-pink-200 drop-shadow-lg">
+                The Arena
+              </h1>
             </div>
+          </div>
+          <p className="text-slate-300 text-lg md:text-xl mb-8 font-light max-w-2xl mx-auto leading-relaxed">
+            Connect your wallet to compete in <span className="text-green-400 font-semibold">1v1 matches</span> and <span className="text-purple-400 font-semibold">tournaments</span>. 
+            <br className="hidden md:block" />
+            <span className="text-slate-400">Winner takes all • Points earned from both game modes</span>
+          </p>
+
+          {/* Game Mode Tabs */}
+          {connected && (
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.1 }}
+              className="flex items-center justify-center gap-3 mb-10 flex-wrap"
+            >
+              <motion.button
+                onClick={() => setActiveMode("1v1")}
+                whileHover={{ scale: 1.02, y: -2 }}
+                whileTap={{ scale: 0.98 }}
+                className={`relative flex items-center gap-3 px-8 py-4 rounded-2xl font-bold text-base transition-all duration-300 ${
+                  activeMode === "1v1"
+                    ? "bg-gradient-to-r from-green-600 via-emerald-500 to-green-600 text-white shadow-2xl shadow-green-600/50 border-2 border-green-400/50"
+                    : "bg-slate-800/50 backdrop-blur-sm text-slate-400 hover:text-white hover:bg-slate-800/70 border-2 border-slate-700/50"
+                }`}
+              >
+                {activeMode === "1v1" && (
+                  <motion.div
+                    layoutId="activeTab"
+                    className="absolute inset-0 bg-gradient-to-r from-green-600/20 to-emerald-600/20 rounded-2xl"
+                    transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
+                  />
+                )}
+                <Swords className={`relative w-5 h-5 ${activeMode === "1v1" ? "text-white" : "text-slate-500"}`} />
+                <span className="relative">1v1 Matches</span>
+              </motion.button>
+              <motion.button
+                onClick={() => setActiveMode("tournaments")}
+                whileHover={{ scale: 1.02, y: -2 }}
+                whileTap={{ scale: 0.98 }}
+                className={`relative flex items-center gap-3 px-8 py-4 rounded-2xl font-bold text-base transition-all duration-300 ${
+                  activeMode === "tournaments"
+                    ? "bg-gradient-to-r from-purple-600 via-pink-500 to-purple-600 text-white shadow-2xl shadow-purple-600/50 border-2 border-purple-400/50"
+                    : "bg-slate-800/50 backdrop-blur-sm text-slate-400 hover:text-white hover:bg-slate-800/70 border-2 border-slate-700/50"
+                }`}
+              >
+                {activeMode === "tournaments" && (
+                  <motion.div
+                    layoutId="activeTab"
+                    className="absolute inset-0 bg-gradient-to-r from-purple-600/20 to-pink-600/20 rounded-2xl"
+                    transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
+                  />
+                )}
+                <TrophyIcon className={`relative w-5 h-5 ${activeMode === "tournaments" ? "text-white" : "text-slate-500"}`} />
+                <span className="relative">Tournaments</span>
+              </motion.button>
+              <motion.button
+                onClick={() => setActiveMode("stats")}
+                whileHover={{ scale: 1.02, y: -2 }}
+                whileTap={{ scale: 0.98 }}
+                className={`relative flex items-center gap-3 px-8 py-4 rounded-2xl font-bold text-base transition-all duration-300 ${
+                  activeMode === "stats"
+                    ? "bg-gradient-to-r from-blue-600 via-cyan-500 to-blue-600 text-white shadow-2xl shadow-blue-600/50 border-2 border-blue-400/50"
+                    : "bg-slate-800/50 backdrop-blur-sm text-slate-400 hover:text-white hover:bg-slate-800/70 border-2 border-slate-700/50"
+                }`}
+              >
+                {activeMode === "stats" && (
+                  <motion.div
+                    layoutId="activeTab"
+                    className="absolute inset-0 bg-gradient-to-r from-blue-600/20 to-cyan-600/20 rounded-2xl"
+                    transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
+                  />
+                )}
+                <TrendingUp className={`relative w-5 h-5 ${activeMode === "stats" ? "text-white" : "text-slate-500"}`} />
+                <span className="relative">Stats</span>
+              </motion.button>
+            </motion.div>
           )}
         </motion.div>
 
         {!connected && (
           <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            className="glass rounded-xl p-6 text-center mb-8"
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="relative overflow-hidden bg-gradient-to-br from-slate-900/90 via-purple-900/20 to-slate-900/90 backdrop-blur-xl rounded-3xl p-12 text-center mb-8 max-w-2xl mx-auto border border-purple-500/20 shadow-2xl"
           >
-            <p className="text-slate-300 mb-2 text-lg font-semibold">
-              Connect your wallet to start playing 1v1s
-            </p>
-            <p className="text-slate-400 text-sm">
-              Think you're the best? Place bets on yourself and play against other real players to win SOL!
-            </p>
+            <div className="absolute inset-0 bg-gradient-to-r from-purple-600/10 via-transparent to-pink-600/10"></div>
+            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-96 h-96 bg-purple-600/10 rounded-full blur-3xl"></div>
+            <div className="relative z-10">
+              <motion.div
+                animate={{ rotate: [0, 10, -10, 0] }}
+                transition={{ duration: 3, repeat: Infinity, repeatDelay: 2 }}
+                className="inline-block mb-6"
+              >
+                <Trophy className="w-20 h-20 text-game-gold drop-shadow-[0_0_30px_rgba(255,215,0,0.8)]" />
+              </motion.div>
+              <h2 className="text-3xl md:text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-white via-purple-200 to-pink-200 mb-4">
+                Connect Your Wallet
+              </h2>
+              <p className="text-slate-300 text-lg mb-8 leading-relaxed">
+                Join the arena to compete in <span className="text-green-400 font-semibold">1v1 matches</span> and <span className="text-purple-400 font-semibold">tournaments</span>.
+                <br />
+                <span className="text-slate-400">Place bets, play matches, and earn points to climb the leaderboard.</span>
+              </p>
+              <div className="flex justify-center">
+                <WalletMultiButton className="!bg-gradient-to-r !from-purple-600 !via-pink-600 !to-purple-600 hover:!from-purple-700 hover:!via-pink-700 hover:!to-purple-700 !rounded-2xl !px-10 !py-4 !font-bold !text-lg !transition-all !shadow-2xl !shadow-purple-600/50 !border-2 !border-purple-400/50 !backdrop-blur-sm" />
+              </div>
+            </div>
           </motion.div>
         )}
 
+
+        {/* 1v1 Section */}
+        {connected && activeMode === "1v1" && (
+          <>
         {/* Create Wager Section */}
-        {connected && (
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="glass rounded-xl p-6 mb-8"
+            className="relative overflow-hidden bg-gradient-to-br from-slate-900/90 via-slate-800/50 to-slate-900/90 backdrop-blur-xl rounded-3xl p-8 mb-8 border border-white/10 shadow-2xl"
           >
-            <h2 className="text-xl font-bold text-white mb-2">Create New 1v1 Wager</h2>
-            <p className="text-slate-400 text-sm mb-4">
-              Create a wager and wait for an opponent to join. Winner takes the full pot (both deposits).
-            </p>
+            <div className="absolute top-0 right-0 w-64 h-64 bg-green-600/10 rounded-full blur-3xl -mr-32 -mt-32"></div>
+            <div className="relative z-10">
+              <div className="flex items-center gap-3 mb-3">
+                <div className="p-2 bg-green-600/20 rounded-xl border border-green-500/30">
+                  <Swords className="w-6 h-6 text-green-400" />
+                </div>
+                <div>
+                  <h2 className="text-2xl font-bold text-white">Create New 1v1 Wager</h2>
+                  <p className="text-slate-400 text-sm">
+                    Challenge an opponent • Winner takes all
+                  </p>
+                </div>
+              </div>
             
             {/* Info about where SOL goes */}
-            <div className="mb-4 p-3 bg-blue-500/10 border border-blue-500/30 rounded-lg">
-              <div className="flex items-start gap-2">
-                <Info className="w-4 h-4 text-blue-400 mt-0.5 flex-shrink-0" />
-                <div className="text-sm text-slate-300">
-                  <p className="font-semibold text-blue-400 mb-1">Where does your SOL go?</p>
-                  <p className="text-xs">
-                    Your SOL is sent directly to our secure admin wallet for escrow. 
-                    Funds are held until the match is verified, then paid to the winner.
+            <div className="mb-6 p-4 bg-gradient-to-r from-blue-600/10 via-blue-500/5 to-transparent border border-blue-500/20 rounded-2xl backdrop-blur-sm">
+              <div className="flex items-start gap-3">
+                <div className="p-2 bg-blue-600/20 rounded-lg border border-blue-500/30 flex-shrink-0">
+                  <Info className="w-4 h-4 text-blue-400" />
+                </div>
+                <div className="flex-1">
+                  <p className="font-semibold text-blue-300 mb-2 text-sm">Escrow Information</p>
+                  <p className="text-xs text-slate-400 leading-relaxed mb-3">
+                    Your SOL is sent to our secure admin wallet for escrow. Funds are held until the match is verified, then paid to the winner.
                   </p>
-                  <p className="text-xs mt-1">
-                    <span className="text-blue-300">Admin Wallet: </span>
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <span className="text-xs text-slate-500">Admin Wallet:</span>
                     <a
                       href={getSolscanAccountUrl(ADMIN_WALLET_ADDRESS)}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="font-mono text-blue-400 hover:text-blue-300 underline break-all"
+                      className="font-mono text-xs text-blue-400 hover:text-blue-300 underline transition-colors"
                       title="View on Solscan"
                     >
-                      {ADMIN_WALLET_ADDRESS}
+                      {ADMIN_WALLET_ADDRESS.slice(0, 8)}...{ADMIN_WALLET_ADDRESS.slice(-8)}
                     </a>
-                  </p>
+                  </div>
                 </div>
               </div>
             </div>
 
             {hasOutstandingWager && (
-              <div className="mb-4 p-3 bg-yellow-500/10 border border-yellow-500/30 rounded-lg">
-                <div className="flex items-start gap-2">
-                  <AlertCircle className="w-4 h-4 text-yellow-400 mt-0.5 flex-shrink-0" />
-                  <div className="text-sm text-yellow-200">
-                    <p className="font-semibold text-yellow-400 mb-1">You have an active wager</p>
-                    <p className="text-xs">
+              <motion.div
+                initial={{ opacity: 0, x: -10 }}
+                animate={{ opacity: 1, x: 0 }}
+                className="mb-6 p-4 bg-gradient-to-r from-yellow-600/10 via-yellow-500/5 to-transparent border border-yellow-500/20 rounded-2xl backdrop-blur-sm"
+              >
+                <div className="flex items-start gap-3">
+                  <div className="p-2 bg-yellow-600/20 rounded-lg border border-yellow-500/30 flex-shrink-0">
+                    <AlertCircle className="w-4 h-4 text-yellow-400" />
+                  </div>
+                  <div className="flex-1">
+                    <p className="font-semibold text-yellow-300 mb-1 text-sm">Active Wager Detected</p>
+                    <p className="text-xs text-yellow-200/80 leading-relaxed">
                       You can only have 1 active wager at a time. Complete or cancel your current wager to create a new one.
                     </p>
                   </div>
                 </div>
-              </div>
+              </motion.div>
             )}
 
-            <div className="space-y-4">
+            <div className="space-y-6">
               <div>
-                <label className="block text-sm font-medium text-slate-300 mb-2">
-                  Clash Royale Player Tag <span className="text-red-400">*</span>
+                <label className="block text-sm font-semibold text-slate-200 mb-3 flex items-center gap-2">
+                  <span>Clash Royale Player Tag</span>
+                  <span className="text-red-400 text-xs">*</span>
                 </label>
                 <input
                   type="text"
@@ -650,9 +866,9 @@ export default function ArenaPage() {
                     }
                   }}
                   placeholder="#ABC123XYZ"
-                  className="w-full px-4 py-2 bg-slate-800 border border-white/10 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                  className="w-full px-5 py-3 bg-slate-900/50 border border-white/10 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:border-purple-500/50 transition-all backdrop-blur-sm"
                 />
-                <p className="text-xs text-slate-500 mt-1">
+                <p className="text-xs text-slate-400 mt-2 ml-1">
                   Enter your Clash Royale player tag so others can see your stats
                 </p>
 
@@ -765,17 +981,17 @@ export default function ArenaPage() {
                 </button>
               </div>
             </div>
+            </div>
           </motion.div>
-        )}
 
-        {loading ? (
-          <div className="flex items-center justify-center py-12">
-            <Loader2 className="w-8 h-8 animate-spin text-purple-500" />
-          </div>
-        ) : (
-          <>
-            {/* My Wagers - Organized by Status */}
-            {connected && myWagers.length > 0 && (
+          {loading ? (
+            <div className="flex items-center justify-center py-12">
+              <Loader2 className="w-8 h-8 animate-spin text-purple-500" />
+            </div>
+          ) : (
+            <>
+              {/* My Wagers - Organized by Status */}
+              {connected && myWagers.length > 0 && (
               <>
                 {/* Searching for a Game (PENDING) */}
                 {myWagers.filter(w => w.status === "PENDING").length > 0 && (
@@ -797,7 +1013,9 @@ export default function ArenaPage() {
                           onClaim={() => handleClaimFunds(wager.id)}
                           onVerify={() => handleVerifyMatch(wager.id)}
                           onCancel={() => handleCancelWager(wager.id)}
+                          onPayDeposit={() => handlePayCreatorDeposit(wager.id)}
                           claiming={claimingWagerId === wager.id}
+                          payingDeposit={payingDepositWagerId === wager.id}
                           myWallet={publicKey?.toBase58() || ""}
                           onRefresh={fetchWagers}
                         />
@@ -826,7 +1044,9 @@ export default function ArenaPage() {
                           onClaim={() => handleClaimFunds(wager.id)}
                           onVerify={() => handleVerifyMatch(wager.id)}
                           onCancel={() => handleCancelWager(wager.id)}
+                          onPayDeposit={() => handlePayCreatorDeposit(wager.id)}
                           claiming={claimingWagerId === wager.id}
+                          payingDeposit={payingDepositWagerId === wager.id}
                           myWallet={publicKey?.toBase58() || ""}
                           onRefresh={fetchWagers}
                         />
@@ -855,7 +1075,9 @@ export default function ArenaPage() {
                           onClaim={() => handleClaimFunds(wager.id)}
                           onVerify={() => handleVerifyMatch(wager.id)}
                           onCancel={() => handleCancelWager(wager.id)}
+                          onPayDeposit={() => handlePayCreatorDeposit(wager.id)}
                           claiming={claimingWagerId === wager.id}
+                          payingDeposit={payingDepositWagerId === wager.id}
                           myWallet={publicKey?.toBase58() || ""}
                           onRefresh={fetchWagers}
                         />
@@ -884,7 +1106,9 @@ export default function ArenaPage() {
                           onClaim={() => handleClaimFunds(wager.id)}
                           onVerify={() => handleVerifyMatch(wager.id)}
                           onCancel={() => handleCancelWager(wager.id)}
+                          onPayDeposit={() => handlePayCreatorDeposit(wager.id)}
                           claiming={claimingWagerId === wager.id}
+                          payingDeposit={payingDepositWagerId === wager.id}
                           myWallet={publicKey?.toBase58() || ""}
                           onRefresh={fetchWagers}
                         />
@@ -907,32 +1131,64 @@ export default function ArenaPage() {
               <p className="text-slate-400 text-sm mb-4">
                 Join an open wager to challenge another player. Winner takes the full pot.
               </p>
-              {wagers.length === 0 ? (
+              {wagers.filter(w => w.status === "PENDING" && !w.opponent_id && w.creator_id !== publicKey?.toBase58()).length === 0 ? (
                 <div className="glass rounded-xl p-8 text-center">
-                  <p className="text-slate-400">No wagers found</p>
+                  <p className="text-slate-400">No available wagers to join</p>
                 </div>
               ) : (
                 <div className="grid gap-4">
-                  {wagers.map((wager) => (
-                    <WagerCard
-                      key={wager.id}
-                      wager={wager}
-                      isMyWager={false}
-                      onClaim={() => handleClaimFunds(wager.id)}
-                      onVerify={() => handleVerifyMatch(wager.id)}
-                      onCancel={() => handleCancelWager(wager.id)}
-                      onJoin={() => handleJoinWager(wager.id)}
-                      claiming={claimingWagerId === wager.id}
-                      joining={joiningWagerId === wager.id}
-                      myWallet={publicKey?.toBase58() || ""}
-                      onRefresh={fetchWagers}
-                    />
-                  ))}
+                  {wagers
+                    .filter(w => w.status === "PENDING" && !w.opponent_id && w.creator_id !== publicKey?.toBase58())
+                    .map((wager) => (
+                      <WagerCard
+                        key={wager.id}
+                        wager={wager}
+                        isMyWager={false}
+                        onClaim={() => handleClaimFunds(wager.id)}
+                        onVerify={() => handleVerifyMatch(wager.id)}
+                        onCancel={() => handleCancelWager(wager.id)}
+                        onJoin={() => handleJoinWager(wager.id)}
+                        claiming={claimingWagerId === wager.id}
+                        joining={joiningWagerId === wager.id}
+                        myWallet={publicKey?.toBase58() || ""}
+                        onRefresh={fetchWagers}
+                      />
+                    ))}
                 </div>
               )}
-            </motion.div>
+              </motion.div>
+            </>
+          )}
           </>
         )}
+
+        {/* Tournaments Section */}
+        {connected && activeMode === "tournaments" && (
+          <div className="mt-8">
+            <TournamentMonitor />
+          </div>
+        )}
+
+        {/* Stats Section */}
+        {connected && activeMode === "stats" && userStats && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="mt-8"
+          >
+            <div className="flex items-center gap-3 mb-6">
+              <div className="p-2 bg-blue-600/20 rounded-xl border border-blue-500/30">
+                <TrendingUp className="w-6 h-6 text-blue-400" />
+              </div>
+              <div>
+                <h2 className="text-2xl font-bold text-white">Your Stats</h2>
+                <p className="text-slate-400 text-sm">Track your performance and referrals</p>
+              </div>
+            </div>
+            <ArenaStats userStats={userStats} onStatsUpdate={fetchUserStats} />
+          </motion.div>
+        )}
+        </div>
       </div>
     </div>
   );
@@ -945,8 +1201,10 @@ function WagerCard({
   onVerify,
   onCancel,
   onJoin,
+  onPayDeposit,
   claiming,
   joining,
+  payingDeposit,
   myWallet,
   onRefresh,
 }: {
@@ -956,8 +1214,10 @@ function WagerCard({
   onVerify: () => void;
   onCancel: () => void;
   onJoin?: () => void;
+  onPayDeposit?: () => void;
   claiming: boolean;
   joining?: boolean;
+  payingDeposit?: boolean;
   myWallet: string;
   onRefresh: () => void;
 }) {
@@ -1164,11 +1424,24 @@ function WagerCard({
               )}
             </div>
 
-            {/* Transaction Links */}
+            {/* Transaction Links - Show both deposits separately */}
             <div className="space-y-1 mt-2">
+              {wager.creator_deposit_signature && (
+                <div className="text-xs text-slate-500">
+                  Creator Deposit:{" "}
+                  <a
+                    href={getSolscanUrl(wager.creator_deposit_signature)}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-blue-400 hover:text-blue-300 underline"
+                  >
+                    {wager.creator_deposit_signature.slice(0, 16)}...
+                  </a>
+                </div>
+              )}
               {wager.deposit_signature && (
                 <div className="text-xs text-slate-500">
-                  Deposit:{" "}
+                  Opponent Deposit:{" "}
                   <a
                     href={getSolscanUrl(wager.deposit_signature)}
                     target="_blank"
@@ -1205,22 +1478,9 @@ function WagerCard({
                   </a>
                 </div>
               )}
-              {wager.transaction_signature && !wager.deposit_signature && (
-                <div className="text-xs text-slate-500">
-                  TX:{" "}
-                  <a
-                    href={getSolscanUrl(wager.transaction_signature)}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-purple-400 hover:text-purple-300 underline"
-                  >
-                    {wager.transaction_signature.slice(0, 16)}...
-                  </a>
-                </div>
-              )}
             </div>
 
-            {/* Play Instructions for ACTIVE wagers */}
+            {/* Play Instructions for ACTIVE wagers - Always show when matched */}
             {wager.status === "ACTIVE" && (isCreator || isOpponent) && (
               <PlayInstructionsSection 
                 wager={wager} 
@@ -1228,28 +1488,79 @@ function WagerCard({
                 onTournamentDetailsSaved={onRefresh}
               />
             )}
+            {/* Show setup instructions for creator when matched but not active */}
+            {wager.status === "PENDING" && wager.opponent_id && isCreator && (
+              <div className="mt-4 p-3 bg-purple-500/10 border border-purple-500/30 rounded-lg">
+                <p className="text-purple-300 text-xs mb-2">
+                  💡 Once both payments are complete, you'll be able to set up tournament details here.
+                </p>
+              </div>
+            )}
           </div>
         </div>
 
         <div className="flex flex-col gap-2 sm:items-end">
           {wager.status === "PENDING" && !wager.opponent_id && !isCreator && onJoin && (
-            <button
+            <motion.button
               onClick={onJoin}
               disabled={joining}
-              className="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg font-semibold transition-all text-sm disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              className="px-6 py-3 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white rounded-lg font-semibold transition-all text-base disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 shadow-lg shadow-green-600/30"
             >
               {joining ? (
                 <>
-                  <Loader2 className="w-4 h-4 animate-spin" />
-                  Joining...
+                  <Loader2 className="w-5 h-5 animate-spin" />
+                  Joining & Paying...
                 </>
               ) : (
                 <>
-                  <Users className="w-4 h-4" />
-                  Join Wager
+                  <Users className="w-5 h-5" />
+                  <span>Join & Pay {wager.amount} SOL</span>
                 </>
               )}
-            </button>
+            </motion.button>
+          )}
+          {wager.status === "PENDING" && wager.opponent_id && isCreator && onPayDeposit && !wager.creator_deposit_signature && (
+            <div className="flex flex-col gap-2">
+              <motion.button
+                onClick={onPayDeposit}
+                disabled={payingDeposit}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                className="px-6 py-3 bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white rounded-lg font-semibold transition-all text-base disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 shadow-lg shadow-blue-600/30"
+              >
+                {payingDeposit ? (
+                  <>
+                    <Loader2 className="w-5 h-5 animate-spin" />
+                    Processing Payment...
+                  </>
+                ) : (
+                  <>
+                    <Coins className="w-5 h-5" />
+                    <span>Pay Deposit ({wager.amount} SOL)</span>
+                  </>
+                )}
+              </motion.button>
+              <a
+                href={generateSolanaPayLink(wager.amount, `wager-${wager.id}-creator`)}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-xs text-blue-400 hover:text-blue-300 underline text-center"
+                onClick={(e) => {
+                  // Open wallet app directly
+                  window.open(generateSolanaPayLink(wager.amount, `wager-${wager.id}-creator`), '_blank');
+                }}
+              >
+                Or use Solana Pay link
+              </a>
+            </div>
+          )}
+          {wager.status === "PENDING" && wager.opponent_id && isCreator && wager.creator_deposit_signature && (
+            <div className="px-4 py-2 bg-green-500/20 border border-green-500/30 text-green-300 rounded-lg text-sm flex items-center gap-2">
+              <CheckCircle className="w-4 h-4" />
+              Deposit Paid - Waiting for activation
+            </div>
           )}
           {(wager.status === "PENDING" || wager.status === "ACTIVE") && (isCreator || isOpponent) && (
             <button

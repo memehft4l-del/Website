@@ -6,11 +6,11 @@ import { supabase } from "@/lib/supabase";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { WalletMultiButton } from "@solana/wallet-adapter-react-ui";
 import { Connection, PublicKey, SystemProgram, Transaction, LAMPORTS_PER_SOL } from "@solana/web3.js";
-import { RPC_ENDPOINT } from "@/lib/constants";
+import { RPC_ENDPOINT, ADMIN_PASSWORD } from "@/lib/constants";
 import { 
   Trophy, CheckCircle, XCircle, Clock, AlertCircle, 
   DollarSign, Search, Filter, RefreshCw, Eye, 
-  Loader2, Copy, Wallet, ExternalLink, Send
+  Loader2, Copy, Wallet, ExternalLink, Send, Lock
 } from "lucide-react";
 import { getUserProfile } from "@/lib/wagers";
 
@@ -43,6 +43,9 @@ interface UserProfile {
 export default function AdminDashboard() {
   const wallet = useWallet();
   const { publicKey, connected, signTransaction, sendTransaction } = wallet;
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [password, setPassword] = useState("");
+  const [passwordError, setPasswordError] = useState("");
   const [wagers, setWagers] = useState<Wager[]>([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<"all" | "pending" | "needs_review" | "verified" | "paid">("all");
@@ -53,9 +56,72 @@ export default function AdminDashboard() {
   const [sendingPayment, setSendingPayment] = useState<number | null>(null);
   const [walletBalance, setWalletBalance] = useState<number | null>(null);
 
+  // Check if already authenticated
+  useEffect(() => {
+    const authStatus = sessionStorage.getItem("admin_authenticated");
+    if (authStatus === "true") {
+      setIsAuthenticated(true);
+    }
+  }, []);
+
+  const handlePasswordSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (password === ADMIN_PASSWORD) {
+      setIsAuthenticated(true);
+      sessionStorage.setItem("admin_authenticated", "true");
+      setPasswordError("");
+      setPassword("");
+    } else {
+      setPasswordError("Incorrect password. Please try again.");
+      setPassword("");
+    }
+  };
+
   useEffect(() => {
     fetchWagers();
     
+    // Auto-cancel wagers older than 1 hour
+    const autoCancelOldWagers = async () => {
+      try {
+        const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000).toISOString();
+        
+        // Find PENDING wagers older than 1 hour
+        const { data: oldWagers, error } = await supabase
+          .from("wagers")
+          .select("*")
+          .eq("status", "PENDING")
+          .lt("created_at", oneHourAgo);
+
+        if (error) {
+          console.error("Error checking old wagers:", error);
+          return;
+        }
+
+        // Auto-cancel old wagers
+        if (oldWagers && oldWagers.length > 0) {
+          for (const wager of oldWagers) {
+            await supabase
+              .from("wagers")
+              .update({
+                status: "CANCELLED",
+                payout_status: "REFUNDED",
+                updated_at: new Date().toISOString(),
+              })
+              .eq("id", wager.id);
+          }
+          
+          // Refresh wagers if any were cancelled
+          fetchWagers();
+        }
+      } catch (error) {
+        console.error("Error in auto-cancel:", error);
+      }
+    };
+
+    // Check every 5 minutes
+    const interval = setInterval(autoCancelOldWagers, 5 * 60 * 1000);
+    autoCancelOldWagers(); // Run immediately
+
     // Subscribe to Realtime updates
     const channel = supabase
       .channel("admin-wagers-changes")
@@ -73,6 +139,7 @@ export default function AdminDashboard() {
       .subscribe();
 
     return () => {
+      clearInterval(interval);
       supabase.removeChannel(channel);
     };
   }, []);
@@ -312,6 +379,59 @@ export default function AdminDashboard() {
       setSendingPayment(null);
     }
   };
+
+  // Password protection screen
+  if (!isAuthenticated) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 flex items-center justify-center p-4">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="glass rounded-2xl p-8 max-w-md w-full border border-purple-500/20"
+        >
+          <div className="text-center mb-6">
+            <div className="flex items-center justify-center mb-4">
+              <div className="p-3 bg-purple-500/20 rounded-full">
+                <Lock className="w-8 h-8 text-purple-400" />
+              </div>
+            </div>
+            <h1 className="text-2xl font-bold text-white mb-2">Admin Dashboard</h1>
+            <p className="text-slate-400 text-sm">Enter password to access</p>
+          </div>
+          
+          <form onSubmit={handlePasswordSubmit} className="space-y-4">
+            <div>
+              <label htmlFor="password" className="block text-sm font-medium text-slate-300 mb-2">
+                Password
+              </label>
+              <input
+                id="password"
+                type="password"
+                value={password}
+                onChange={(e) => {
+                  setPassword(e.target.value);
+                  setPasswordError("");
+                }}
+                className="w-full px-4 py-2 bg-slate-800 border border-white/10 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                placeholder="Enter admin password"
+                autoFocus
+              />
+              {passwordError && (
+                <p className="mt-2 text-sm text-red-400">{passwordError}</p>
+              )}
+            </div>
+            
+            <button
+              type="submit"
+              className="w-full px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg font-semibold transition-all"
+            >
+              Access Dashboard
+            </button>
+          </form>
+        </motion.div>
+      </div>
+    );
+  }
 
   const filteredWagers = wagers.filter((wager) => {
     if (searchTerm) {

@@ -96,12 +96,35 @@ export const ADMIN_WALLET_ADDRESS =
   process.env.NEXT_PUBLIC_ADMIN_WALLET_ADDRESS ||
   "EUFx61xAt5DjAZc8GmQRr5kg7KmWqxJCjXvJ3Eikz4H4"; // Default admin wallet
 
+// Admin dashboard password
+export const ADMIN_PASSWORD =
+  process.env.NEXT_PUBLIC_ADMIN_PASSWORD || "admin123"; // Change this in production!
+
 // Points system configuration
 export const POINTS_CONFIG = {
-  WIN: 100, // Points for winning a match
-  LOSS: 10, // Points for losing (participation)
-  STREAK_BONUS: 50, // Bonus points per win streak
-  MAX_STREAK_BONUS: 500, // Maximum streak bonus
+  // 1v1 Points
+  ONE_V_ONE: {
+    WIN: 100, // Base points for winning a 1v1
+    LOSS: 10, // Points for losing (participation)
+    STREAK_BONUS: 50, // Bonus points per win streak
+    MAX_STREAK_BONUS: 500, // Maximum streak bonus
+    WAGER_BONUS_MULTIPLIER: 10, // Points per SOL wagered
+  },
+  // Tournament Points (fair system based on placement)
+  TOURNAMENT: {
+    FIRST_PLACE: 500, // Winner
+    SECOND_PLACE: 300, // Runner-up
+    THIRD_PLACE: 200, // Third place
+    TOP_8: 100, // Top 8 finish
+    TOP_16: 50, // Top 16 finish
+    PARTICIPATION: 25, // Just participating
+    WIN_BONUS: 50, // Bonus per match won in tournament
+  },
+  // Referral System
+  REFERRAL: {
+    REFERRER_BONUS_PERCENTAGE: 0.1, // 10% of referred user's points go to referrer
+    REFERRED_BONUS: 50, // Bonus points for signing up with a referral code
+  },
 };
 
 // Clash Royale API Proxy URL (Railway deployment)

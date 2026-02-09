@@ -38,9 +38,9 @@ const Dashboard = dynamic(
   }
 );
 
-// Dynamically import TournamentMonitor to prevent SSR issues
-const TournamentMonitor = dynamic(
-  () => import("@/components/TournamentMonitor").then((mod) => ({ default: mod.TournamentMonitor })),
+// Dynamically import TournamentOverview to prevent SSR issues
+const TournamentOverview = dynamic(
+  () => import("@/components/TournamentOverview").then((mod) => ({ default: mod.TournamentOverview })),
   { 
     ssr: false,
     loading: () => (
@@ -74,7 +74,17 @@ export function WalletStatus() {
   const { playSuccess } = useSound();
 
   useEffect(() => {
+    // Set mounted immediately
     setMounted(true);
+    
+    // Check for tab parameter in URL
+    if (typeof window !== "undefined") {
+      const params = new URLSearchParams(window.location.search);
+      const tabParam = params.get("tab") as "overview" | "dashboard" | "tournaments" | "tge" | null;
+      if (tabParam && ["overview", "dashboard", "tournaments", "tge"].includes(tabParam)) {
+        setActiveTab(tabParam);
+      }
+    }
   }, []);
 
   // Play success sound when wallet connects
@@ -89,7 +99,7 @@ export function WalletStatus() {
       // Auto-switch to dashboard when wallet connects
       setActiveTab("dashboard");
     }
-  }, [connected, mounted, playSuccess]);
+  }, [connected, mounted]);
 
   // If wallet disconnects, go back to overview
   useEffect(() => {
@@ -135,7 +145,7 @@ export function WalletStatus() {
               </div>
             )
           ) : activeTab === "tournaments" ? (
-            <TournamentMonitor />
+            <TournamentOverview />
           ) : (
             <TGETournament />
           )}

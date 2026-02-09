@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { X, Home, LayoutDashboard, Users, Rocket, BookOpen, Trophy } from "lucide-react";
+import { X, Home, LayoutDashboard, Users, Rocket, BookOpen, Trophy, BarChart3 } from "lucide-react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -88,7 +88,7 @@ export function MobileMenu({ activeTab, onTabChange, connected }: MobileMenuProp
                           setIsOpen(false);
                         }}
                         className={`
-                          w-full flex items-center gap-3 sm:gap-4 px-4 sm:px-5 py-3.5 sm:py-4 rounded-xl font-semibold text-sm sm:text-base transition-all touch-manipulation min-h-[56px]
+                          w-full flex items-center gap-3 sm:gap-4 px-4 sm:px-5 py-3.5 sm:py-4 rounded-xl font-semibold text-sm sm:text-base transition-all touch-manipulation min-h-[56px] active:scale-95
                           ${
                             isActive
                               ? "bg-purple-600 text-white shadow-lg shadow-purple-600/20"
@@ -112,10 +112,31 @@ export function MobileMenu({ activeTab, onTabChange, connected }: MobileMenuProp
                   <Link
                     href="/arena"
                     onClick={() => setIsOpen(false)}
+                    className="w-full flex items-center gap-3 sm:gap-4 px-4 sm:px-5 py-3.5 sm:py-4 rounded-xl font-bold text-sm sm:text-base transition-all bg-gradient-to-r from-green-500 via-emerald-500 to-green-600 text-white shadow-2xl shadow-green-500/60 border-2 border-green-300/60 active:scale-95 touch-manipulation min-h-[56px] relative overflow-hidden group"
+                  >
+                    {/* Animated background glow */}
+                    <div className="absolute inset-0 bg-gradient-to-r from-green-400/50 via-emerald-400/50 to-green-400/50 opacity-0 group-active:opacity-100 blur-xl transition-opacity duration-300"></div>
+                    
+                    {/* Shimmer effect */}
+                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent translate-x-[-100%] group-active:translate-x-[100%] transition-transform duration-500 ease-in-out"></div>
+                    
+                    {/* Pulsing glow ring */}
+                    <div className="absolute inset-0 rounded-xl border-2 border-green-300/50 animate-pulse"></div>
+                    
+                    {/* Content */}
+                    <Trophy className="w-5 h-5 sm:w-6 sm:h-6 flex-shrink-0 relative z-10 group-active:rotate-12 transition-transform duration-300" />
+                    <span className="flex-1 text-left relative z-10 tracking-wide">Go to Arena</span>
+                    
+                    {/* Pulsing indicator */}
+                    <span className="absolute -top-0.5 -right-0.5 w-3 h-3 bg-yellow-400 rounded-full animate-pulse shadow-lg shadow-yellow-400/70 z-10 ring-2 ring-yellow-300/50"></span>
+                  </Link>
+                  <Link
+                    href="/leaderboard"
+                    onClick={() => setIsOpen(false)}
                     className="w-full flex items-center gap-3 sm:gap-4 px-4 sm:px-5 py-3.5 sm:py-4 rounded-xl font-semibold text-sm sm:text-base transition-all text-slate-300 hover:text-white hover:bg-white/10 active:bg-white/5 touch-manipulation min-h-[56px]"
                   >
-                    <Trophy className="w-5 h-5 sm:w-6 sm:h-6 flex-shrink-0" />
-                    <span className="flex-1 text-left">Arena</span>
+                    <BarChart3 className="w-5 h-5 sm:w-6 sm:h-6 flex-shrink-0" />
+                    <span className="flex-1 text-left">Leaderboard</span>
                   </Link>
                 </nav>
               </div>

@@ -43,9 +43,14 @@ BEGIN
     ALTER TABLE wagers ADD COLUMN admin_wallet TEXT;
   END IF;
   
-  -- Add deposit_signature if it doesn't exist
+  -- Add deposit_signature if it doesn't exist (joiner's deposit)
   IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='wagers' AND column_name='deposit_signature') THEN
     ALTER TABLE wagers ADD COLUMN deposit_signature TEXT;
+  END IF;
+  
+  -- Add creator_deposit_signature if it doesn't exist (creator's deposit)
+  IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='wagers' AND column_name='creator_deposit_signature') THEN
+    ALTER TABLE wagers ADD COLUMN creator_deposit_signature TEXT;
   END IF;
   
   -- Add payout_signature if it doesn't exist
@@ -105,12 +110,19 @@ CREATE TABLE IF NOT EXISTS user_profiles (
   wallet_address TEXT NOT NULL UNIQUE,
   cr_tag TEXT,
   total_points INTEGER DEFAULT 0,
-  games_won INTEGER DEFAULT 0,
-  games_lost INTEGER DEFAULT 0,
+  games_won INTEGER DEFAULT 0, -- 1v1 wins only
+  games_lost INTEGER DEFAULT 0, -- 1v1 losses only
+  tournament_points INTEGER DEFAULT 0, -- Points from tournaments only
+  tournament_wins INTEGER DEFAULT 0, -- Tournament wins
+  tournament_losses INTEGER DEFAULT 0, -- Tournament losses
+  referral_code TEXT UNIQUE, -- Unique referral code for this user
+  referred_by TEXT, -- Wallet address of the user who referred them
+  referral_points INTEGER DEFAULT 0, -- Points earned from referrals
+  total_referrals INTEGER DEFAULT 0, -- Number of users referred
   total_winnings DECIMAL(18, 9) DEFAULT 0,
   total_wagered DECIMAL(18, 9) DEFAULT 0,
-  win_streak INTEGER DEFAULT 0,
-  best_win_streak INTEGER DEFAULT 0,
+  win_streak INTEGER DEFAULT 0, -- 1v1 win streak
+  best_win_streak INTEGER DEFAULT 0, -- Best 1v1 win streak
   created_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc'::text, NOW()) NOT NULL,
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc'::text, NOW()) NOT NULL
 );
@@ -151,6 +163,26 @@ BEGIN
   -- Add best_win_streak if it doesn't exist
   IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='user_profiles' AND column_name='best_win_streak') THEN
     ALTER TABLE user_profiles ADD COLUMN best_win_streak INTEGER DEFAULT 0;
+  END IF;
+  
+  -- Add referral_code if it doesn't exist
+  IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='user_profiles' AND column_name='referral_code') THEN
+    ALTER TABLE user_profiles ADD COLUMN referral_code TEXT UNIQUE;
+  END IF;
+  
+  -- Add referred_by if it doesn't exist
+  IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='user_profiles' AND column_name='referred_by') THEN
+    ALTER TABLE user_profiles ADD COLUMN referred_by TEXT;
+  END IF;
+  
+  -- Add referral_points if it doesn't exist
+  IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='user_profiles' AND column_name='referral_points') THEN
+    ALTER TABLE user_profiles ADD COLUMN referral_points INTEGER DEFAULT 0;
+  END IF;
+  
+  -- Add total_referrals if it doesn't exist
+  IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='user_profiles' AND column_name='total_referrals') THEN
+    ALTER TABLE user_profiles ADD COLUMN total_referrals INTEGER DEFAULT 0;
   END IF;
 END $$;
 
