@@ -33,7 +33,7 @@ export function Navigation({ activeTab, onTabChange }: NavigationProps) {
   };
 
   return (
-    <nav className="sticky top-0 z-50 glass border-b border-purple-500/20 backdrop-blur-xl transition-all duration-300 bg-[#0a0a0f]/90">
+    <nav className="sticky top-0 z-50 glass border-b border-white/10 backdrop-blur-xl transition-all duration-300">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-18 md:h-20">
           {/* Logo/Brand - Enhanced */}
@@ -53,7 +53,7 @@ export function Navigation({ activeTab, onTabChange }: NavigationProps) {
               >
                 <Trophy className="w-6 h-6 md:w-7 md:h-7 text-game-gold drop-shadow-[0_0_15px_rgba(255,215,0,0.8)] filter brightness-110" />
               </motion.div>
-              <span className="text-xl sm:text-2xl md:text-3xl font-bold gradient-text-gold tracking-tight drop-shadow-[0_0_20px_rgba(255,215,0,0.6)]">
+              <span className="text-xl sm:text-2xl md:text-3xl font-display font-bold gradient-text-gold tracking-tight drop-shadow-[0_0_20px_rgba(255,215,0,0.6)]">
                 $ELIXIR
               </span>
             </motion.div>
@@ -172,20 +172,14 @@ export function Navigation({ activeTab, onTabChange }: NavigationProps) {
             >
               <Link
                 href="/arena"
-                className="relative flex items-center gap-2.5 px-6 py-3 bg-gradient-to-r from-green-500 via-emerald-500 to-green-600 hover:from-green-400 hover:via-emerald-400 hover:to-green-500 text-white rounded-xl font-bold text-sm transition-all duration-300 shadow-2xl shadow-green-500/60 border-2 border-green-300/60 hover:border-green-200/80 overflow-hidden group"
+                className="btn-premium relative flex items-center gap-2.5 px-6 py-3 bg-gradient-to-r from-green-500 via-emerald-500 to-green-600 text-white rounded-lg font-bold text-sm shadow-2xl shadow-green-500/60 border border-green-300/60 overflow-hidden group"
               >
                 {/* Animated background glow */}
                 <div className="absolute inset-0 bg-gradient-to-r from-green-400/50 via-emerald-400/50 to-green-400/50 opacity-0 group-hover:opacity-100 blur-xl transition-opacity duration-300"></div>
                 
-                {/* Shimmer effect */}
-                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000 ease-in-out"></div>
-                
-                {/* Pulsing glow ring */}
-                <div className="absolute inset-0 rounded-xl border-2 border-green-300/50 animate-pulse"></div>
-                
                 {/* Content */}
-                <Trophy className="w-5 h-5 relative z-10 drop-shadow-lg group-hover:rotate-12 transition-transform duration-300" />
-                <span className="relative z-10 tracking-wide">Go to Arena</span>
+                <Trophy className="w-5 h-5 relative z-10 drop-shadow-lg group-hover:rotate-12 transition-transform duration-300 float-animation" />
+                <span className="relative z-10 tracking-wide font-display">Go to Arena</span>
                 
                 {/* Pulsing indicator */}
                 <span className="absolute -top-0.5 -right-0.5 w-3 h-3 bg-yellow-400 rounded-full animate-pulse shadow-lg shadow-yellow-400/70 z-10 ring-2 ring-yellow-300/50"></span>

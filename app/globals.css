@@ -43,7 +43,7 @@ body {
   image-rendering: crisp-edges;
 }
 
-/* Modern Dark Background with Elixir Accents */
+/* Premium Dark Background with Deep Gradients */
 body::before {
   content: '';
   position: fixed;
@@ -52,41 +52,27 @@ body::before {
   width: 100%;
   height: 100%;
   background: 
-    /* Modern gradient base */
+    /* Deep charcoal to midnight blue gradient */
     linear-gradient(
       135deg,
       #0a0a0f 0%,
-      #1a0a1f 25%,
-      #0f0a1a 50%,
-      #1a0a1f 75%,
+      #1a1a2e 20%,
+      #16213e 40%,
+      #0f3460 60%,
+      #16213e 80%,
       #0a0a0f 100%
     ),
     /* Elixir purple/pink accents */
-    radial-gradient(circle at 20% 30%, rgba(139, 92, 246, 0.15) 0%, transparent 50%),
-    radial-gradient(circle at 80% 70%, rgba(168, 85, 247, 0.12) 0%, transparent 50%),
-    radial-gradient(circle at 50% 50%, rgba(255, 0, 255, 0.08) 0%, transparent 60%),
-    /* Subtle grid pattern */
-    repeating-linear-gradient(
-      0deg,
-      rgba(255, 255, 255, 0.02) 0px,
-      rgba(255, 255, 255, 0.02) 1px,
-      transparent 1px,
-      transparent 20px
-    ),
-    repeating-linear-gradient(
-      90deg,
-      rgba(255, 255, 255, 0.02) 0px,
-      rgba(255, 255, 255, 0.02) 1px,
-      transparent 1px,
-      transparent 20px
-    );
-  background-size: 100% 100%, 200% 200%, 200% 200%, 200% 200%, 100px 100px, 100px 100px;
+    radial-gradient(circle at 20% 30%, rgba(139, 92, 246, 0.12) 0%, transparent 50%),
+    radial-gradient(circle at 80% 70%, rgba(168, 85, 247, 0.1) 0%, transparent 50%),
+    radial-gradient(circle at 50% 50%, rgba(255, 0, 255, 0.06) 0%, transparent 60%);
+  background-size: 100% 100%, 200% 200%, 200% 200%, 200% 200%;
   animation: subtle-float 30s ease-in-out infinite;
   pointer-events: none;
-  z-index: -1;
+  z-index: -2;
 }
 
-/* Modern Elixir Glow Effects */
+/* Premium Grain/Noise Overlay */
 body::after {
   content: '';
   position: fixed;
@@ -94,15 +80,9 @@ body::after {
   left: 0;
   width: 100%;
   height: 100%;
-  background: 
-    /* Subtle elixir glows - Modern style */
-    radial-gradient(circle at 15% 20%, rgba(255, 0, 255, 0.12) 0%, transparent 40%),
-    radial-gradient(circle at 85% 50%, rgba(139, 92, 246, 0.1) 0%, transparent 45%),
-    radial-gradient(circle at 50% 70%, rgba(255, 0, 255, 0.08) 0%, transparent 38%),
-    radial-gradient(circle at 70% 15%, rgba(168, 85, 247, 0.1) 0%, transparent 42%),
-    radial-gradient(circle at 30% 80%, rgba(255, 0, 255, 0.08) 0%, transparent 35%);
-  background-size: 400% 400%, 350% 350%, 380% 380%, 420% 420%, 360% 360%;
-  animation: elixir-float 25s ease-in-out infinite;
+  opacity: 0.04;
+  background-image: 
+    url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
   pointer-events: none;
   z-index: -1;
 }
@@ -178,21 +158,21 @@ body::after {
   }
 }
 
-/* Modern Glassmorphism - Clash Royale Theme */
+/* Premium Glassmorphism - Enhanced */
 .glass {
   background: linear-gradient(135deg, 
-    rgba(15, 23, 42, 0.85) 0%, 
-    rgba(30, 41, 59, 0.75) 50%,
-    rgba(15, 23, 42, 0.85) 100%);
-  backdrop-filter: blur(28px) saturate(180%);
-  -webkit-backdrop-filter: blur(28px) saturate(180%);
-  border: 1px solid rgba(255, 0, 255, 0.2);
+    rgba(15, 23, 42, 0.7) 0%, 
+    rgba(30, 41, 59, 0.6) 50%,
+    rgba(15, 23, 42, 0.7) 100%);
+  backdrop-filter: blur(12px) saturate(180%);
+  -webkit-backdrop-filter: blur(12px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   box-shadow: 
-    0 8px 32px rgba(0, 0, 0, 0.4),
-    0 2px 8px rgba(0, 0, 0, 0.2),
-    inset 0 1px 0 rgba(255, 255, 255, 0.15),
+    0 8px 32px rgba(0, 0, 0, 0.5),
+    0 2px 8px rgba(0, 0, 0, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1),
     inset 0 -1px 0 rgba(0, 0, 0, 0.2),
-    0 0 20px rgba(255, 0, 255, 0.1);
+    0 0 0 1px rgba(139, 92, 246, 0.1);
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   will-change: transform, box-shadow, border-color;
   position: relative;
@@ -206,18 +186,19 @@ body::after {
   left: -50%;
   width: 200%;
   height: 200%;
-  background: radial-gradient(circle, rgba(255, 0, 255, 0.1) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(139, 92, 246, 0.08) 0%, transparent 70%);
   animation: elixir-bubble 4s ease-in-out infinite;
   pointer-events: none;
 }
 
 .glass:hover {
-  border-color: rgba(255, 255, 255, 0.3);
+  border-color: rgba(255, 255, 255, 0.2);
   box-shadow: 
-    0 16px 64px rgba(0, 0, 0, 0.5),
-    0 8px 24px rgba(0, 0, 0, 0.3),
-    inset 0 1px 0 rgba(255, 255, 255, 0.25),
-    0 0 0 1px rgba(139, 92, 246, 0.1);
+    0 16px 64px rgba(0, 0, 0, 0.6),
+    0 8px 24px rgba(0, 0, 0, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.15),
+    0 0 0 1px rgba(139, 92, 246, 0.2),
+    0 0 40px rgba(139, 92, 246, 0.15);
   transform: translateY(-2px);
 }
 
@@ -347,16 +328,17 @@ body::after {
   }
 }
 
-/* Modern gradient text effects */
+/* Premium Gradient Text Effects */
 .gradient-text {
-  background: linear-gradient(135deg, #FF00FF 0%, #FF00FF 25%, #8B00FF 50%, #FF00FF 75%, #FF00FF 100%);
+  background: linear-gradient(135deg, #a855f7 0%, #ec4899 50%, #06b6d4 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
   background-size: 200% 200%;
   animation: gradient-shift 3s ease infinite;
-  filter: drop-shadow(0 0 10px rgba(255, 0, 255, 0.7)) drop-shadow(0 0 20px rgba(255, 0, 255, 0.4));
-  text-shadow: 0 0 30px rgba(255, 0, 255, 0.5);
+  filter: drop-shadow(0 0 8px rgba(168, 85, 247, 0.5));
+  letter-spacing: 0.02em;
+  font-weight: 700;
 }
 
 .gradient-text-gold {
@@ -628,8 +610,118 @@ html {
 .elixir-drop:nth-child(7) { left: 60%; animation-delay: 0.7s; width: 12px; height: 16px; }
 .elixir-drop:nth-child(8) { left: 80%; animation-delay: 0.8s; width: 10px; height: 14px; }
 
+/* Premium Button Shine Animation */
+@keyframes button-shine {
+  0% {
+    transform: translateX(-100%) translateY(-100%) rotate(45deg);
+  }
+  100% {
+    transform: translateX(200%) translateY(200%) rotate(45deg);
+  }
+}
+
+.btn-premium {
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.btn-premium::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(
+    45deg,
+    transparent 30%,
+    rgba(255, 255, 255, 0.3) 50%,
+    transparent 70%
+  );
+  animation: button-shine 3s ease-in-out infinite;
+  pointer-events: none;
+}
+
+.btn-premium:hover {
+  transform: scale(1.05);
+  box-shadow: 
+    0 8px 24px rgba(139, 92, 246, 0.4),
+    0 0 0 1px rgba(255, 255, 255, 0.1);
+}
+
+/* Premium Input Styles */
+.input-premium {
+  background: rgba(15, 23, 42, 0.6);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.input-premium:focus {
+  outline: none;
+  border-color: rgba(139, 92, 246, 0.5);
+  box-shadow: 
+    0 0 0 3px rgba(139, 92, 246, 0.1),
+    0 0 20px rgba(139, 92, 246, 0.2);
+  background: rgba(15, 23, 42, 0.8);
+}
+
+/* Scroll Reveal Animation */
+@keyframes scroll-reveal {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.scroll-reveal {
+  animation: scroll-reveal 0.6s ease-out forwards;
+  opacity: 0;
+}
+
+/* Floating Animation */
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-10px) rotate(2deg);
+  }
+}
+
+.float-animation {
+  animation: float 3s ease-in-out infinite;
+}
+
+/* Premium Typography */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-rajdhani), var(--font-space-grotesk), var(--font-geist-sans), sans-serif;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-wrap: balance;
+}
+
+body, p, span, div {
+  font-family: var(--font-inter), system-ui, sans-serif;
+  letter-spacing: 0.01em;
+}
+
 @layer utilities {
   .text-balance {
     text-wrap: balance;
+  }
+  
+  .font-display {
+    font-family: var(--font-rajdhani), var(--font-space-grotesk), sans-serif;
+  }
+  
+  .font-body {
+    font-family: var(--font-inter), system-ui, sans-serif;
   }
 }

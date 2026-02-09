@@ -60,10 +60,10 @@ export function Overview() {
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2, duration: 0.8 }}
-              className="text-4xl sm:text-5xl md:text-6xl lg:text-6xl xl:text-7xl font-bold mb-4 sm:mb-6 leading-tight px-2"
+              className="text-4xl sm:text-5xl md:text-6xl lg:text-6xl xl:text-7xl font-display font-bold mb-4 sm:mb-6 leading-tight px-2 text-balance"
             >
               <span className="block text-white mb-1 sm:mb-2">#1 Place for</span>
-              <span className="block gradient-text-gold break-words">Clash Royale</span>
+              <span className="block gradient-text break-words">Clash Royale</span>
               <span className="block text-white break-words drop-shadow-lg">Tournaments & 1v1s</span>
             </motion.h1>
 
@@ -92,9 +92,9 @@ export function Overview() {
             >
               <Link
                 href="/arena"
-                className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white rounded-xl font-semibold transition-all shadow-lg shadow-green-600/30"
+                className="btn-premium inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-lg font-display font-semibold shadow-lg shadow-green-600/30"
               >
-                <Trophy className="w-5 h-5" />
+                <Trophy className="w-5 h-5 float-animation" />
                 1v1 Betting Arena
               </Link>
             </motion.div>
@@ -126,7 +126,7 @@ export function Overview() {
           >
             <div className="glass rounded-3xl p-8 sm:p-12 md:p-16 border border-white/10 card-modern">
               <div className="text-center">
-                <h2 className="text-3xl sm:text-4xl md:text-4xl lg:text-5xl font-bold text-white mb-3 sm:mb-4 px-2">
+                <h2 className="text-3xl sm:text-4xl md:text-4xl lg:text-5xl font-display font-bold text-white mb-3 sm:mb-4 px-2 text-balance">
                   Live Prize Pool
                 </h2>
                 <motion.p
@@ -161,7 +161,7 @@ export function Overview() {
             transition={{ delay: 0.3, duration: 0.6 }}
             className="max-w-6xl mx-auto"
           >
-            <h2 className="text-3xl sm:text-4xl md:text-4xl lg:text-5xl font-bold text-white mb-3 sm:mb-4 text-center px-4">
+            <h2 className="text-3xl sm:text-4xl md:text-4xl lg:text-5xl font-display font-bold gradient-text mb-3 sm:mb-4 text-center px-4 text-balance">
               How It Works
             </h2>
             <p className="text-base sm:text-lg md:text-xl text-slate-400 mb-8 sm:mb-12 text-center max-w-3xl mx-auto px-4">
@@ -172,7 +172,7 @@ export function Overview() {
               {/* Step 1 */}
               <div className="glass rounded-2xl p-4 sm:p-6 md:p-8 card-modern">
                 <div className="text-4xl sm:text-5xl font-bold text-game-gold mb-3 sm:mb-4">1</div>
-                <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-white mb-2 sm:mb-3">Buy & Hold $ELIXIR</h3>
+                <h3 className="text-lg sm:text-xl md:text-2xl font-display font-bold text-white mb-2 sm:mb-3">Buy & Hold $ELIXIR</h3>
                 <p className="text-slate-400 text-xs sm:text-sm md:text-base leading-relaxed">
                   Purchase $ELIXIR tokens on Pump.fun or Jupiter. Hold the minimum amount required for your desired tier:
                 </p>
@@ -185,7 +185,7 @@ export function Overview() {
               {/* Step 2 */}
               <div className="glass rounded-2xl p-4 sm:p-6 md:p-8 card-modern">
                 <div className="text-4xl sm:text-5xl font-bold text-purple-400 mb-3 sm:mb-4">2</div>
-                <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-white mb-2 sm:mb-3">Connect Wallet</h3>
+                <h3 className="text-lg sm:text-xl md:text-2xl font-display font-bold text-white mb-2 sm:mb-3">Connect Wallet</h3>
                 <p className="text-slate-400 text-xs sm:text-sm md:text-base leading-relaxed">
                   Connect your Solana wallet (Phantom, Solflare, etc.) to verify your token balance and unlock tournament access.
                 </p>
@@ -196,7 +196,7 @@ export function Overview() {
               {/* Step 3 */}
               <div className="glass rounded-2xl p-4 sm:p-6 md:p-8 card-modern">
                 <div className="text-4xl sm:text-5xl font-bold text-pink-400 mb-3 sm:mb-4">3</div>
-                <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-white mb-2 sm:mb-3">Sign Up & Compete</h3>
+                <h3 className="text-lg sm:text-xl md:text-2xl font-display font-bold text-white mb-2 sm:mb-3">Sign Up & Compete</h3>
                 <p className="text-slate-400 text-xs sm:text-sm md:text-base leading-relaxed">
                   Enter your Clash Royale player tag, join the tournament, and compete! Remember: you must maintain your token 
                   balance throughout the entire tournament to be eligible for prizes.

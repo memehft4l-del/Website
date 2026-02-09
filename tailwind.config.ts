@@ -23,8 +23,9 @@ const config: Config = {
         },
       },
       fontFamily: {
-        sans: ["var(--font-geist-sans)", "var(--font-inter)", "system-ui", "sans-serif"],
-        heading: ["var(--font-geist-sans)", "system-ui", "sans-serif"],
+        sans: ["var(--font-inter)", "system-ui", "sans-serif"],
+        heading: ["var(--font-rajdhani)", "var(--font-space-grotesk)", "var(--font-geist-sans)", "system-ui", "sans-serif"],
+        display: ["var(--font-rajdhani)", "var(--font-space-grotesk)", "sans-serif"],
         body: ["var(--font-inter)", "system-ui", "sans-serif"],
       },
       boxShadow: {

@@ -141,7 +141,7 @@ export function TournamentSignupForm({ tier, onSignupSuccess }: TournamentSignup
             value={username}
             onChange={(e) => setUsername(e.target.value)}
             placeholder="#ABC123XYZ (your player tag)"
-            className="w-full px-4 py-2 bg-slate-800 border border-white/10 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+            className="input-premium w-full px-4 py-2 rounded-lg text-white placeholder-slate-500"
             disabled={isSubmitting || status === "success"}
             required
           />
@@ -238,11 +238,11 @@ export function TournamentSignupForm({ tier, onSignupSuccess }: TournamentSignup
           type="submit"
           disabled={isSubmitting || status === "success"}
           className={`
-            w-full px-4 py-3 rounded-lg font-semibold transition-all duration-200
+            btn-premium w-full px-4 py-3 rounded-lg font-display font-semibold
             ${
               isSubmitting || status === "success"
                 ? "bg-slate-700 text-slate-400 cursor-not-allowed"
-                : "bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white shadow-lg shadow-purple-600/40 border border-purple-400/30 backdrop-blur-sm hover:scale-[1.02] hover:-translate-y-0.5 active:scale-[0.98] active:translate-y-0"
+                : "bg-gradient-to-r from-purple-600 to-pink-600 text-white shadow-lg shadow-purple-600/40 border border-purple-400/30"
             }
           `}
         >
