@@ -56,6 +56,7 @@ export const DEFAULT_WAGER_AMOUNT = 0.1;
 export const TIER_THRESHOLDS = {
   MINNOW: 0,
   SQUIRE: 500_000,
+  DAILY: 750_000, // Daily tournament tier
   WHALE: 2_500_000,
 } as const;
 
@@ -64,7 +65,7 @@ export const MAX_ELIXIR_TOKENS = 15_000_000;
 
 // Tournament Configuration
 export interface TournamentConfig {
-  squireArena: {
+  dailyTournament: {
     tag: string;
     password: string;
   };
@@ -75,9 +76,9 @@ export interface TournamentConfig {
 }
 
 export const TOURNAMENT_CONFIG: TournamentConfig = {
-  squireArena: {
-    tag: "#SQUIRE2024",
-    password: "SquirePass123!",
+  dailyTournament: {
+    tag: "#DAILY2024",
+    password: "DailyPass123!",
   },
   whaleWar: {
     tag: "#WHALE2024",

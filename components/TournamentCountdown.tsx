@@ -15,40 +15,24 @@ export function TournamentCountdown() {
         const now = new Date();
         const nowUTC = new Date(now.toISOString());
         
-        // Tournaments are biweekly on Wednesdays and Saturdays at 3PM UTC (prep) and 4PM UTC (start)
-        // Find next Wednesday or Saturday
-        const currentDay = nowUTC.getUTCDay(); // 0 = Sunday, 3 = Wednesday, 6 = Saturday
+        // Tournaments are daily at 3PM UTC (prep) and 4PM UTC (start)
+        // Find next tournament (today if before 8PM UTC, otherwise tomorrow)
         let daysUntilNext = 0;
         let nextDayName = "";
         
-        if (currentDay === 3) { // Wednesday
-          // Check if it's before 3PM UTC, if so tournament is today
-          if (nowUTC.getUTCHours() < 15) {
-            daysUntilNext = 0;
-            nextDayName = "Wednesday";
-          } else {
-            // Next is Saturday (3 days)
-            daysUntilNext = 3;
-            nextDayName = "Saturday";
-          }
-        } else if (currentDay === 6) { // Saturday
-          // Check if it's before 3PM UTC, if so tournament is today
-          if (nowUTC.getUTCHours() < 15) {
-            daysUntilNext = 0;
-            nextDayName = "Saturday";
-          } else {
-            // Next is Wednesday (4 days)
-            daysUntilNext = 4;
-            nextDayName = "Wednesday";
-          }
-        } else if (currentDay < 3) {
-          // Sunday, Monday, Tuesday -> next is Wednesday
-          daysUntilNext = 3 - currentDay;
-          nextDayName = "Wednesday";
+        const currentHour = nowUTC.getUTCHours();
+        const dayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+        
+        // If it's before 8PM UTC, tournament is today
+        if (currentHour < 20) {
+          daysUntilNext = 0;
+          nextDayName = dayNames[nowUTC.getUTCDay()];
         } else {
-          // Thursday, Friday -> next is Saturday
-          daysUntilNext = 6 - currentDay;
-          nextDayName = "Saturday";
+          // Tournament ended today, next one is tomorrow
+          daysUntilNext = 1;
+          const tomorrow = new Date(nowUTC);
+          tomorrow.setUTCDate(tomorrow.getUTCDate() + 1);
+          nextDayName = dayNames[tomorrow.getUTCDay()];
         }
         
         let nextPrep = new Date(nowUTC);
@@ -61,23 +45,17 @@ export function TournamentCountdown() {
         let nextEnd = new Date(nextStart);
         nextEnd.setUTCHours(20, 0, 0, 0); // 8PM UTC tournament end
         
-        // If we've passed today's tournament time, move to next biweekly occurrence
-        if (daysUntilNext === 0 && nowUTC.getUTCHours() >= 20) {
-          // Tournament ended today, find next one (14 days later)
-          nextPrep.setUTCDate(nextPrep.getUTCDate() + 14);
-          nextStart.setUTCDate(nextStart.getUTCDate() + 14);
-          nextEnd.setUTCDate(nextEnd.getUTCDate() + 14);
-          nextDayName = nextPrep.getUTCDay() === 3 ? "Wednesday" : "Saturday";
-        }
-        
         setNextDay(nextDayName);
 
         // Determine current phase
         if (nowUTC >= nextEnd) {
-          // Tournament ended, find next one
-          nextPrep.setUTCDate(nextPrep.getUTCDate() + 14);
-          nextStart.setUTCDate(nextStart.getUTCDate() + 14);
-          nextEnd.setUTCDate(nextEnd.getUTCDate() + 14);
+          // Tournament ended, find next one (tomorrow)
+          nextPrep.setUTCDate(nextPrep.getUTCDate() + 1);
+          nextStart.setUTCDate(nextStart.getUTCDate() + 1);
+          nextEnd.setUTCDate(nextEnd.getUTCDate() + 1);
+          const tomorrow = new Date(nowUTC);
+          tomorrow.setUTCDate(tomorrow.getUTCDate() + 1);
+          setNextDay(dayNames[tomorrow.getUTCDay()]);
           setPhase("upcoming");
         } else if (nowUTC >= nextStart) {
           setPhase("active");
@@ -155,7 +133,7 @@ export function TournamentCountdown() {
           <span>Tournament Start (4PM UTC): {tournamentTimeRemaining}</span>
         </div>
         <div className="text-slate-400 text-xs mt-1">
-          Tournament runs 4 hours (until 8PM UTC) • Biweekly on Wednesdays & Saturdays
+          Tournament runs 4 hours (until 8PM UTC) • Daily tournaments every day
         </div>
       </div>
     </div>

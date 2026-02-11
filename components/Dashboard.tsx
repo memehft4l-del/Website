@@ -47,8 +47,8 @@ export function Dashboard() {
     switch (tier) {
       case "WHALE":
         return "text-game-gold border-game-gold";
-      case "SQUIRE":
-        return "text-slate-400 border-slate-400";
+      case "DAILY":
+        return "text-purple-400 border-purple-400";
       default:
         return "text-slate-600 border-slate-600";
     }
@@ -58,16 +58,16 @@ export function Dashboard() {
     switch (tier) {
       case "WHALE":
         return <Crown className="w-7 h-7 text-game-gold" />;
-      case "SQUIRE":
-        return <Shield className="w-7 h-7 text-slate-400" />;
+      case "DAILY":
+        return <Shield className="w-7 h-7 text-purple-400" />;
       default:
         return <Lock className="w-7 h-7 text-slate-600" />;
     }
   };
 
   const getNextTierThreshold = () => {
-    if (tier === "MINNOW") return TIER_THRESHOLDS.SQUIRE;
-    if (tier === "SQUIRE") return TIER_THRESHOLDS.WHALE;
+    if (tier === "MINNOW") return TIER_THRESHOLDS.DAILY;
+    if (tier === "DAILY") return TIER_THRESHOLDS.WHALE;
     return null;
   };
 
@@ -75,12 +75,12 @@ export function Dashboard() {
     const nextThreshold = getNextTierThreshold();
     if (!nextThreshold) return 100;
     if (tier === "MINNOW") {
-      return Math.min((balance / TIER_THRESHOLDS.SQUIRE) * 100, 100);
+      return Math.min((balance / TIER_THRESHOLDS.DAILY) * 100, 100);
     }
-    if (tier === "SQUIRE") {
+    if (tier === "DAILY") {
       const progress =
-        ((balance - TIER_THRESHOLDS.SQUIRE) /
-          (TIER_THRESHOLDS.WHALE - TIER_THRESHOLDS.SQUIRE)) *
+        ((balance - TIER_THRESHOLDS.DAILY) /
+          (TIER_THRESHOLDS.WHALE - TIER_THRESHOLDS.DAILY)) *
         100;
       return Math.min(progress, 100);
     }
@@ -226,9 +226,9 @@ export function Dashboard() {
         </motion.div>
 
         {/* Tournament Cards - Only show the highest tier tournament user qualifies for */}
-        <div className={tier === "WHALE" ? "max-w-2xl mx-auto" : tier === "SQUIRE" ? "max-w-2xl mx-auto" : "grid md:grid-cols-2 gap-6"}>
-          {/* Squire Arena Card - Only show if user is SQUIRE tier (not WHALE) */}
-          {tier === "SQUIRE" && (
+        <div className={tier === "WHALE" ? "max-w-2xl mx-auto" : tier === "DAILY" ? "max-w-2xl mx-auto" : "grid md:grid-cols-2 gap-6"}>
+          {/* Daily Tournament Card - Only show if user is DAILY tier (not WHALE) */}
+          {tier === "DAILY" && (
             <TiltCard intensity={8}>
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
@@ -276,7 +276,7 @@ export function Dashboard() {
                       <div>
                         <div className="text-green-400 text-xs font-semibold mb-1">Eligible to Compete</div>
                         <div className="text-slate-300 text-xs">
-                          Maintain at least {formatBalance(TIER_THRESHOLDS.SQUIRE)} tokens during the tournament to receive prizes.
+                          Maintain at least {formatBalance(TIER_THRESHOLDS.DAILY)} tokens during the tournament to receive prizes.
                         </div>
                       </div>
                     </div>
@@ -366,7 +366,7 @@ export function Dashboard() {
                     <Lock className="w-16 h-16 mx-auto text-slate-700 mb-4" />
                     <p className="text-slate-400 mb-2 font-semibold">Access Denied</p>
                     <p className="text-slate-500 text-sm">
-                      Hold at least {formatBalance(TIER_THRESHOLDS.SQUIRE)} tokens
+                      Hold at least {formatBalance(TIER_THRESHOLDS.DAILY)} tokens
                       to unlock
                     </p>
                   </div>
@@ -402,7 +402,7 @@ export function Dashboard() {
         </div>
 
         {/* Tournament Signup Form - Only show for the highest tier user qualifies for */}
-        {tier === "SQUIRE" && (
+        {tier === "DAILY" && (
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -417,7 +417,7 @@ export function Dashboard() {
                 Sign up early! Your Clash Royale tag will be visible in the Tournaments Monitor.
               </p>
             </div>
-            <TournamentSignupForm tier="SQUIRE" />
+            <TournamentSignupForm tier="DAILY" />
           </motion.div>
         )}
 

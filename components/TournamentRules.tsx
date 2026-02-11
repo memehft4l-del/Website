@@ -108,7 +108,7 @@ export function TournamentRules() {
             <div>
               <h4 className="text-sm font-semibold text-blue-400 mb-1">Regular Tournament Schedule</h4>
               <p className="text-slate-300 text-xs leading-relaxed">
-                Tournaments are held biweekly on <span className="font-semibold text-white">Wednesdays and Saturdays</span>. 
+                Tournaments are held <span className="font-semibold text-white">daily</span>. 
                 Stay tuned for surprise announcement tournaments announced on X (Twitter) and other platforms. 
                 These special tournaments will have different prizes and operate with unique formats based on demand and player participation.
               </p>

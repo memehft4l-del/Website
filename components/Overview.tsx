@@ -177,7 +177,7 @@ export function Overview() {
                   Purchase $ELIXIR tokens on Pump.fun or Jupiter. Hold the minimum amount required for your desired tier:
                 </p>
                 <ul className="mt-3 sm:mt-4 space-y-1 sm:space-y-2 text-xs sm:text-sm text-slate-300">
-                  <li>• <span className="text-purple-400 font-semibold">Squire:</span> 500K+ tokens</li>
+                  <li>• <span className="text-purple-400 font-semibold">Daily:</span> 750K+ tokens</li>
                   <li>• <span className="text-game-gold font-semibold">Whale:</span> 2.5M+ tokens</li>
                   <li>• <span className="text-pink-400 font-semibold">TGE:</span> 500K+ tokens</li>
                 </ul>
@@ -231,7 +231,7 @@ export function Overview() {
                   <div className="flex-1 min-w-0">
                     <h4 className="text-lg sm:text-xl font-bold text-white mb-1 sm:mb-2">Wait for Tournament Signup</h4>
                     <p className="text-slate-300 text-xs sm:text-sm md:text-base leading-relaxed">
-                      Tournaments are held biweekly on Wednesdays and Saturdays. Signup opens during the preparation phase 
+                      Tournaments are held daily. Signup opens during the preparation phase 
                       (3 PM UTC). Check the countdown timer on the Dashboard to know when signup opens.
                     </p>
                   </div>

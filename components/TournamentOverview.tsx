@@ -45,7 +45,7 @@ export function TournamentOverview() {
             Clash Royale Tournaments
           </h1>
           <p className="text-xl text-slate-300 max-w-2xl mx-auto">
-            Compete in biweekly tournaments, climb the leaderboard, and win SOL prizes!
+            Compete in daily tournaments, climb the leaderboard, and win SOL prizes!
           </p>
         </motion.div>
 
@@ -74,7 +74,7 @@ export function TournamentOverview() {
               <h3 className="text-lg font-bold text-white">Schedule</h3>
             </div>
             <p className="text-slate-300 text-sm leading-relaxed">
-              Biweekly tournaments on <span className="font-semibold text-white">Wednesdays and Saturdays</span> at 3PM UTC (1-hour prep) + 4-hour tournament (4PM-8PM UTC)
+              Daily tournaments every day at 3PM UTC (1-hour prep) + 4-hour tournament (4PM-8PM UTC)
             </p>
           </motion.div>
 

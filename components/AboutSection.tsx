@@ -57,7 +57,7 @@ export function AboutSection() {
             </div>
             <div className="space-y-3 text-slate-300 leading-relaxed">
               <p>
-                Regular tournaments occur <span className="font-semibold text-white">biweekly on Wednesdays and Saturdays</span> with a 
+                Regular tournaments occur <span className="font-semibold text-white">daily</span> with a 
                 <span className="font-semibold text-white"> 1-hour preparation phase</span> starting at 
                 <span className="font-semibold text-white"> 3PM UTC</span>, followed by a <span className="font-semibold text-white">4-hour tournament</span> from 
                 <span className="font-semibold text-white"> 4PM to 8PM UTC</span>.
