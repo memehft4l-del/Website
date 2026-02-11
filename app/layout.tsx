@@ -1,26 +1,20 @@
 import type { Metadata } from "next";
 import { GeistSans } from "geist/font/sans";
-import { Inter, Rajdhani, Space_Grotesk } from "next/font/google";
+import { Sora, DM_Sans } from "next/font/google";
 import "./globals.css";
 import { WalletProvider } from "@/components/WalletProvider";
 
-const inter = Inter({
+const sora = Sora({
   subsets: ["latin"],
-  variable: "--font-inter",
+  weight: ["300", "400", "500", "600", "700", "800"],
+  variable: "--font-sora",
   display: "swap",
 });
 
-const rajdhani = Rajdhani({
+const dmSans = DM_Sans({
   subsets: ["latin"],
   weight: ["300", "400", "500", "600", "700"],
-  variable: "--font-rajdhani",
-  display: "swap",
-});
-
-const spaceGrotesk = Space_Grotesk({
-  subsets: ["latin"],
-  weight: ["300", "400", "500", "600", "700"],
-  variable: "--font-space-grotesk",
+  variable: "--font-dm-sans",
   display: "swap",
 });
 
@@ -51,7 +45,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="dark">
-      <body className={`${GeistSans.variable} ${inter.variable} ${rajdhani.variable} ${spaceGrotesk.variable} font-sans`} style={{ backgroundColor: '#0F172A' }}>
+      <body className={`${GeistSans.variable} ${sora.variable} ${dmSans.variable} font-sans`} style={{ backgroundColor: '#0F172A' }}>
         <WalletProvider>{children}</WalletProvider>
       </body>
     </html>

@@ -23,10 +23,10 @@ const config: Config = {
         },
       },
       fontFamily: {
-        sans: ["var(--font-inter)", "system-ui", "sans-serif"],
-        heading: ["var(--font-rajdhani)", "var(--font-space-grotesk)", "var(--font-geist-sans)", "system-ui", "sans-serif"],
-        display: ["var(--font-rajdhani)", "var(--font-space-grotesk)", "sans-serif"],
-        body: ["var(--font-inter)", "system-ui", "sans-serif"],
+        sans: ["var(--font-dm-sans)", "system-ui", "sans-serif"],
+        heading: ["var(--font-sora)", "var(--font-geist-sans)", "system-ui", "sans-serif"],
+        display: ["var(--font-sora)", "sans-serif"],
+        body: ["var(--font-dm-sans)", "system-ui", "sans-serif"],
       },
       boxShadow: {
         "game-button": "0 4px 0 rgba(0, 0, 0, 0.3), 0 8px 16px rgba(0, 0, 0, 0.2)",
