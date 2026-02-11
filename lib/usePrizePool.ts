@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { Connection, PublicKey, LAMPORTS_PER_SOL } from "@solana/web3.js";
 import { RPC_ENDPOINT } from "./constants";
 
-const DEV_WALLET = "ZvhrcR6XHRSDcb8A15vrZ89rFaHUBWGVBYY1yadY2sj";
+const DEV_WALLET = "Gf1oxFGMxXFMDsPPhoF9WC96trumANF3fStecyBJrD36";
 
 export function usePrizePool() {
   const [balance, setBalance] = useState<number>(0);

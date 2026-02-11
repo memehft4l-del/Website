@@ -91,10 +91,10 @@ export const PRIZE_POOL = "150 SOL";
 // Stuck match timeout (60 minutes in milliseconds)
 export const STUCK_MATCH_TIMEOUT = 60 * 60 * 1000; // 60 minutes
 
-// Admin wallet address (receives all escrow funds)
+// Admin wallet address (receives all escrow funds for 1v1s)
 export const ADMIN_WALLET_ADDRESS =
   process.env.NEXT_PUBLIC_ADMIN_WALLET_ADDRESS ||
-  "EUFx61xAt5DjAZc8GmQRr5kg7KmWqxJCjXvJ3Eikz4H4"; // Default admin wallet
+  "8RUgyjkQ6X2an4tA49xnoE9nQ6f6GpHFMy6bBhwYbUai"; // 1v1 escrow wallet
 
 // Admin dashboard password
 export const ADMIN_PASSWORD =
