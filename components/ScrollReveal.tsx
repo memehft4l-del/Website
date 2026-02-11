@@ -55,7 +55,6 @@ export function ScrollReveal({
       transition: {
         duration: 0.6,
         delay,
-        ease: "easeOut",
       },
     },
   };
