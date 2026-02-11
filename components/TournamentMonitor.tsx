@@ -62,8 +62,8 @@ export function TournamentMonitor() {
     switch (tier) {
       case "WHALE":
         return <Crown className="w-5 h-5 text-game-gold" />;
-      case "SQUIRE":
-        return <Shield className="w-5 h-5 text-slate-400" />;
+      case "DAILY":
+        return <Shield className="w-5 h-5 text-purple-400" />;
       default:
         return null;
     }
@@ -73,8 +73,8 @@ export function TournamentMonitor() {
     switch (tier) {
       case "WHALE":
         return "text-game-gold border-game-gold";
-      case "SQUIRE":
-        return "text-slate-400 border-slate-400";
+      case "DAILY":
+        return "text-purple-400 border-purple-400";
       default:
         return "text-slate-600 border-slate-600";
     }
@@ -82,7 +82,7 @@ export function TournamentMonitor() {
 
   // Calculate tournament statistics
   const totalSignups = signups.length;
-  const squireCount = signups.filter((s) => s.tier === "SQUIRE").length;
+  const dailyCount = signups.filter((s) => s.tier === "DAILY").length;
   const whaleCount = signups.filter((s) => s.tier === "WHALE").length;
 
   return (
@@ -110,9 +110,9 @@ export function TournamentMonitor() {
           <div className="glass rounded-lg p-4 border border-white/5">
             <div className="flex items-center gap-2 mb-2">
               <Shield className="w-5 h-5 text-slate-400" />
-              <div className="text-slate-400 text-sm font-medium">Squire Arena</div>
+              <div className="text-purple-400 text-sm font-medium">Daily Tournament</div>
             </div>
-            <div className="text-3xl font-bold text-white">{squireCount}</div>
+            <div className="text-3xl font-bold text-white">{dailyCount}</div>
           </div>
 
           <div className="glass rounded-lg p-4 border border-white/5">

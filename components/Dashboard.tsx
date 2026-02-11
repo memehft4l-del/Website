@@ -261,13 +261,13 @@ export function Dashboard() {
                       Tournament Tag
                     </div>
                     <div className="text-white font-mono text-xl font-bold">
-                      {TOURNAMENT_CONFIG.squireArena.tag}
+                      {TOURNAMENT_CONFIG.dailyTournament.tag}
                     </div>
                   </div>
                   <div className="glass rounded-lg p-4 border border-white/5">
                     <div className="text-slate-400 text-sm mb-1 font-medium">Password</div>
                     <div className="text-white font-mono text-xl font-bold">
-                      {TOURNAMENT_CONFIG.squireArena.password}
+                      {TOURNAMENT_CONFIG.dailyTournament.password}
                     </div>
                   </div>
                   <div className="glass rounded-lg p-4 border border-green-500/20 bg-green-500/5">
