@@ -25,10 +25,18 @@ export function MobileMenu({ activeTab, onTabChange, connected }: MobileMenuProp
     <>
       {/* Hamburger Button */}
       <button
-        onClick={() => setIsOpen(!isOpen)}
-        className="md:hidden glass rounded-lg p-3 hover:bg-white/10 transition-colors touch-manipulation relative z-50"
+        onClick={(e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          setIsOpen(!isOpen);
+        }}
+        onTouchStart={(e) => {
+          e.stopPropagation();
+        }}
+        className="md:hidden glass rounded-lg p-3 hover:bg-white/10 active:bg-white/20 transition-colors touch-manipulation relative z-50 flex-shrink-0"
         aria-label="Toggle menu"
         type="button"
+        style={{ WebkitTapHighlightColor: 'transparent' }}
       >
         {isOpen ? (
           <X className="w-6 h-6 text-white" />
@@ -71,9 +79,16 @@ export function MobileMenu({ activeTab, onTabChange, connected }: MobileMenuProp
                       <span className="text-xl sm:text-2xl font-bold gradient-text-gold">$ELIXIR</span>
                     </div>
                     <button
-                      onClick={() => setIsOpen(false)}
-                      className="glass rounded-lg p-2.5 sm:p-3 hover:bg-white/10 transition-colors touch-manipulation flex-shrink-0"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        setIsOpen(false);
+                      }}
+                      onTouchStart={(e) => e.stopPropagation()}
+                      className="glass rounded-lg p-2.5 sm:p-3 hover:bg-white/10 active:bg-white/20 transition-colors touch-manipulation flex-shrink-0"
                       aria-label="Close menu"
+                      type="button"
+                      style={{ WebkitTapHighlightColor: 'transparent' }}
                     >
                       <X className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
                     </button>
@@ -86,10 +101,14 @@ export function MobileMenu({ activeTab, onTabChange, connected }: MobileMenuProp
                       return (
                         <button
                           key={item.id}
-                          onClick={() => {
+                          onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
                             onTabChange(item.id as any);
                             setIsOpen(false);
                           }}
+                          onTouchStart={(e) => e.stopPropagation()}
+                          type="button"
                           className={`
                             w-full flex items-center gap-3 px-4 py-4 rounded-xl font-semibold text-base transition-all touch-manipulation min-h-[56px] active:scale-[0.98]
                             ${
@@ -98,6 +117,7 @@ export function MobileMenu({ activeTab, onTabChange, connected }: MobileMenuProp
                                 : "text-slate-300 bg-white/5 hover:text-white hover:bg-white/10 active:bg-white/15 border border-transparent"
                             }
                           `}
+                          style={{ WebkitTapHighlightColor: 'transparent' }}
                         >
                           <Icon className="w-5 h-5 flex-shrink-0" />
                           <span className="flex-1 text-left">{item.label}</span>
@@ -106,24 +126,39 @@ export function MobileMenu({ activeTab, onTabChange, connected }: MobileMenuProp
                     })}
                     <Link
                       href="/rules"
-                      onClick={() => setIsOpen(false)}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setIsOpen(false);
+                      }}
+                      onTouchStart={(e) => e.stopPropagation()}
                       className="w-full flex items-center gap-3 px-4 py-4 rounded-xl font-semibold text-base transition-all text-slate-300 bg-white/5 hover:text-white hover:bg-white/10 active:bg-white/15 active:scale-[0.98] touch-manipulation min-h-[56px] border border-transparent"
+                      style={{ WebkitTapHighlightColor: 'transparent' }}
                     >
                       <BookOpen className="w-5 h-5 flex-shrink-0" />
                       <span className="flex-1 text-left">Rules</span>
                     </Link>
                     <Link
                       href="/leaderboard"
-                      onClick={() => setIsOpen(false)}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setIsOpen(false);
+                      }}
+                      onTouchStart={(e) => e.stopPropagation()}
                       className="w-full flex items-center gap-3 px-4 py-4 rounded-xl font-semibold text-base transition-all text-slate-300 bg-white/5 hover:text-white hover:bg-white/10 active:bg-white/15 active:scale-[0.98] touch-manipulation min-h-[56px] border border-transparent"
+                      style={{ WebkitTapHighlightColor: 'transparent' }}
                     >
                       <BarChart3 className="w-5 h-5 flex-shrink-0" />
                       <span className="flex-1 text-left">Leaderboard</span>
                     </Link>
                     <Link
                       href="/arena"
-                      onClick={() => setIsOpen(false)}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setIsOpen(false);
+                      }}
+                      onTouchStart={(e) => e.stopPropagation()}
                       className="w-full flex items-center gap-3 px-4 py-4 rounded-xl font-bold text-base transition-all bg-gradient-to-r from-green-500 via-emerald-500 to-green-600 text-white shadow-xl shadow-green-500/50 border border-green-300/50 active:scale-[0.98] touch-manipulation min-h-[56px] relative overflow-hidden group mt-2"
+                      style={{ WebkitTapHighlightColor: 'transparent' }}
                     >
                       {/* Content */}
                       <Trophy className="w-5 h-5 flex-shrink-0 relative z-10" />
