@@ -33,10 +33,14 @@ export function MobileMenu({ activeTab, onTabChange, connected }: MobileMenuProp
         onTouchStart={(e) => {
           e.stopPropagation();
         }}
-        className="md:hidden glass rounded-lg p-3 hover:bg-white/10 active:bg-white/20 transition-colors touch-manipulation relative z-50 flex-shrink-0"
+        onTouchEnd={(e) => {
+          e.stopPropagation();
+        }}
+        className="md:hidden glass rounded-lg p-2.5 min-w-[44px] min-h-[44px] flex items-center justify-center hover:bg-white/10 active:bg-white/20 transition-colors touch-manipulation relative z-50 flex-shrink-0"
         aria-label="Toggle menu"
+        aria-expanded={isOpen}
         type="button"
-        style={{ WebkitTapHighlightColor: 'transparent' }}
+        style={{ WebkitTapHighlightColor: 'transparent', touchAction: 'manipulation' }}
       >
         {isOpen ? (
           <X className="w-6 h-6 text-white" />
