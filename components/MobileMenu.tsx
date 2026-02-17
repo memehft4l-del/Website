@@ -26,8 +26,9 @@ export function MobileMenu({ activeTab, onTabChange, connected }: MobileMenuProp
       {/* Hamburger Button */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="md:hidden glass rounded-lg p-3 hover:bg-white/10 transition-colors touch-manipulation"
+        className="md:hidden glass rounded-lg p-3 hover:bg-white/10 transition-colors touch-manipulation relative z-50"
         aria-label="Toggle menu"
+        type="button"
       >
         {isOpen ? (
           <X className="w-6 h-6 text-white" />
@@ -50,7 +51,7 @@ export function MobileMenu({ activeTab, onTabChange, connected }: MobileMenuProp
               exit={{ opacity: 0 }}
               transition={{ duration: 0.15 }}
               onClick={() => setIsOpen(false)}
-              className="fixed inset-0 bg-black/50 backdrop-blur-sm z-40 md:hidden"
+              className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[60] md:hidden"
               style={{ willChange: "opacity" }}
             />
             <motion.div
@@ -58,7 +59,8 @@ export function MobileMenu({ activeTab, onTabChange, connected }: MobileMenuProp
               animate={{ x: 0 }}
               exit={{ x: "100%" }}
               transition={{ type: "tween", duration: 0.2, ease: "easeOut" }}
-              className="fixed top-0 right-0 h-full w-full sm:w-96 glass border-l border-white/10 z-50 md:hidden flex flex-col"
+              onClick={(e) => e.stopPropagation()}
+              className="fixed top-0 right-0 h-full w-full sm:w-96 glass border-l border-white/10 z-[70] md:hidden flex flex-col"
               style={{ willChange: "transform" }}
             >
               <div className="flex-1 overflow-y-auto">
