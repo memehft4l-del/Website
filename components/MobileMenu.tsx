@@ -72,33 +72,34 @@ export function MobileMenu({ activeTab, onTabChange, connected }: MobileMenuProp
               exit={{ x: "100%" }}
               transition={{ type: "tween", duration: 0.2, ease: "easeOut" }}
               onClick={(e) => e.stopPropagation()}
-              className="fixed top-0 right-0 h-full w-full sm:w-96 glass border-l border-white/10 z-[70] md:hidden flex flex-col"
+              className="fixed top-0 right-0 h-screen w-full sm:w-96 glass border-l border-white/10 z-[70] md:hidden flex flex-col overflow-hidden"
               style={{ willChange: "transform" }}
             >
-              <div className="flex-1 overflow-y-auto">
-                <div className="p-4 sm:p-6 pt-20 pb-6 flex flex-col min-h-full">
-                  <div className="flex items-center justify-between mb-8 flex-shrink-0">
-                    <div className="flex flex-col leading-tight">
-                      <span className="text-xs sm:text-sm font-semibold text-white/80">Elixir Pump</span>
-                      <span className="text-xl sm:text-2xl font-bold gradient-text-gold">$ELIXIR</span>
-                    </div>
-                    <button
-                      onClick={(e) => {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        setIsOpen(false);
-                      }}
-                      onTouchStart={(e) => e.stopPropagation()}
-                      className="glass rounded-lg p-2.5 sm:p-3 hover:bg-white/10 active:bg-white/20 transition-colors touch-manipulation flex-shrink-0"
-                      aria-label="Close menu"
-                      type="button"
-                      style={{ WebkitTapHighlightColor: 'transparent' }}
-                    >
-                      <X className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
-                    </button>
-                  </div>
+              {/* Header - Fixed at top */}
+              <div className="flex items-center justify-between p-4 sm:p-6 flex-shrink-0 border-b border-white/10">
+                <div className="flex flex-col leading-tight">
+                  <span className="text-xs sm:text-sm font-semibold text-white/80">Elixir Pump</span>
+                  <span className="text-xl sm:text-2xl font-bold gradient-text-gold">$ELIXIR</span>
+                </div>
+                <button
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    setIsOpen(false);
+                  }}
+                  onTouchStart={(e) => e.stopPropagation()}
+                  className="glass rounded-lg p-2.5 sm:p-3 hover:bg-white/10 active:bg-white/20 transition-colors touch-manipulation flex-shrink-0 min-w-[44px] min-h-[44px] flex items-center justify-center"
+                  aria-label="Close menu"
+                  type="button"
+                  style={{ WebkitTapHighlightColor: 'transparent', touchAction: 'manipulation' }}
+                >
+                  <X className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
+                </button>
+              </div>
 
-                  <nav className="space-y-3 flex-1">
+              {/* Scrollable Content */}
+              <div className="flex-1 overflow-y-auto overscroll-contain">
+                <nav className="p-4 sm:p-6 space-y-3">
                     {menuItems.map((item) => {
                       const Icon = item.icon;
                       const isActive = activeTab === item.id;
@@ -173,7 +174,6 @@ export function MobileMenu({ activeTab, onTabChange, connected }: MobileMenuProp
                     </Link>
                   </nav>
                 </div>
-              </div>
             </motion.div>
           </>
         )}
