@@ -78,59 +78,60 @@ export function MobileMenu({ activeTab, onTabChange, connected }: MobileMenuProp
                   </div>
 
                   <nav className="space-y-3 flex-1">
-                  {menuItems.map((item) => {
-                    const Icon = item.icon;
-                    const isActive = activeTab === item.id;
-                    return (
-                      <button
-                        key={item.id}
-                        onClick={() => {
-                          onTabChange(item.id as any);
-                          setIsOpen(false);
-                        }}
-                        className={`
-                          w-full flex items-center gap-3 px-4 py-4 rounded-xl font-semibold text-base transition-all touch-manipulation min-h-[56px] active:scale-[0.98]
-                          ${
-                            isActive
-                              ? "bg-gradient-to-r from-purple-600 to-pink-600 text-white shadow-lg shadow-purple-600/40 border border-purple-400/30"
-                              : "text-slate-300 bg-white/5 hover:text-white hover:bg-white/10 active:bg-white/15 border border-transparent"
-                          }
-                        `}
-                      >
-                        <Icon className="w-5 h-5 flex-shrink-0" />
-                        <span className="flex-1 text-left">{item.label}</span>
-                      </button>
-                    );
-                  })}
-                  <Link
-                    href="/rules"
-                    onClick={() => setIsOpen(false)}
-                    className="w-full flex items-center gap-3 px-4 py-4 rounded-xl font-semibold text-base transition-all text-slate-300 bg-white/5 hover:text-white hover:bg-white/10 active:bg-white/15 active:scale-[0.98] touch-manipulation min-h-[56px] border border-transparent"
-                  >
-                    <BookOpen className="w-5 h-5 flex-shrink-0" />
-                    <span className="flex-1 text-left">Rules</span>
-                  </Link>
-                  <Link
-                    href="/leaderboard"
-                    onClick={() => setIsOpen(false)}
-                    className="w-full flex items-center gap-3 px-4 py-4 rounded-xl font-semibold text-base transition-all text-slate-300 bg-white/5 hover:text-white hover:bg-white/10 active:bg-white/15 active:scale-[0.98] touch-manipulation min-h-[56px] border border-transparent"
-                  >
-                    <BarChart3 className="w-5 h-5 flex-shrink-0" />
-                    <span className="flex-1 text-left">Leaderboard</span>
-                  </Link>
-                  <Link
-                    href="/arena"
-                    onClick={() => setIsOpen(false)}
-                    className="w-full flex items-center gap-3 px-4 py-4 rounded-xl font-bold text-base transition-all bg-gradient-to-r from-green-500 via-emerald-500 to-green-600 text-white shadow-xl shadow-green-500/50 border border-green-300/50 active:scale-[0.98] touch-manipulation min-h-[56px] relative overflow-hidden group mt-2"
-                  >
-                    {/* Content */}
-                    <Trophy className="w-5 h-5 flex-shrink-0 relative z-10" />
-                    <span className="flex-1 text-left relative z-10 tracking-wide">Go to Arena</span>
-                    
-                    {/* Pulsing indicator */}
-                    <span className="absolute -top-1 -right-1 w-3 h-3 bg-yellow-400 rounded-full animate-pulse shadow-lg shadow-yellow-400/70 z-10 ring-2 ring-yellow-300/50"></span>
-                  </Link>
-                </nav>
+                    {menuItems.map((item) => {
+                      const Icon = item.icon;
+                      const isActive = activeTab === item.id;
+                      return (
+                        <button
+                          key={item.id}
+                          onClick={() => {
+                            onTabChange(item.id as any);
+                            setIsOpen(false);
+                          }}
+                          className={`
+                            w-full flex items-center gap-3 px-4 py-4 rounded-xl font-semibold text-base transition-all touch-manipulation min-h-[56px] active:scale-[0.98]
+                            ${
+                              isActive
+                                ? "bg-gradient-to-r from-purple-600 to-pink-600 text-white shadow-lg shadow-purple-600/40 border border-purple-400/30"
+                                : "text-slate-300 bg-white/5 hover:text-white hover:bg-white/10 active:bg-white/15 border border-transparent"
+                            }
+                          `}
+                        >
+                          <Icon className="w-5 h-5 flex-shrink-0" />
+                          <span className="flex-1 text-left">{item.label}</span>
+                        </button>
+                      );
+                    })}
+                    <Link
+                      href="/rules"
+                      onClick={() => setIsOpen(false)}
+                      className="w-full flex items-center gap-3 px-4 py-4 rounded-xl font-semibold text-base transition-all text-slate-300 bg-white/5 hover:text-white hover:bg-white/10 active:bg-white/15 active:scale-[0.98] touch-manipulation min-h-[56px] border border-transparent"
+                    >
+                      <BookOpen className="w-5 h-5 flex-shrink-0" />
+                      <span className="flex-1 text-left">Rules</span>
+                    </Link>
+                    <Link
+                      href="/leaderboard"
+                      onClick={() => setIsOpen(false)}
+                      className="w-full flex items-center gap-3 px-4 py-4 rounded-xl font-semibold text-base transition-all text-slate-300 bg-white/5 hover:text-white hover:bg-white/10 active:bg-white/15 active:scale-[0.98] touch-manipulation min-h-[56px] border border-transparent"
+                    >
+                      <BarChart3 className="w-5 h-5 flex-shrink-0" />
+                      <span className="flex-1 text-left">Leaderboard</span>
+                    </Link>
+                    <Link
+                      href="/arena"
+                      onClick={() => setIsOpen(false)}
+                      className="w-full flex items-center gap-3 px-4 py-4 rounded-xl font-bold text-base transition-all bg-gradient-to-r from-green-500 via-emerald-500 to-green-600 text-white shadow-xl shadow-green-500/50 border border-green-300/50 active:scale-[0.98] touch-manipulation min-h-[56px] relative overflow-hidden group mt-2"
+                    >
+                      {/* Content */}
+                      <Trophy className="w-5 h-5 flex-shrink-0 relative z-10" />
+                      <span className="flex-1 text-left relative z-10 tracking-wide">Go to Arena</span>
+                      
+                      {/* Pulsing indicator */}
+                      <span className="absolute -top-1 -right-1 w-3 h-3 bg-yellow-400 rounded-full animate-pulse shadow-lg shadow-yellow-400/70 z-10 ring-2 ring-yellow-300/50"></span>
+                    </Link>
+                  </nav>
+                </div>
               </div>
             </motion.div>
           </>
@@ -139,4 +140,3 @@ export function MobileMenu({ activeTab, onTabChange, connected }: MobileMenuProp
     </>
   );
 }
-
