@@ -12,6 +12,9 @@ import {
   AlertCircle,
   Info,
   Loader2,
+  Clock,
+  Users,
+  XCircle,
 } from "lucide-react";
 import { motion } from "framer-motion";
 import { TiltCard } from "./TiltCard";
@@ -105,6 +108,57 @@ export function TGETournament() {
 
         <div className="pt-6 border-t border-white/10">
           <TournamentCountdown />
+        </div>
+      </motion.div>
+
+      {/* Tournament Format Details */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.15 }}
+        className="glass rounded-2xl p-6 mb-8 border border-blue-500/30 bg-blue-500/10"
+      >
+        <div className="flex items-center gap-3 mb-4">
+          <Info className="w-6 h-6 text-blue-400" />
+          <h2 className="text-2xl font-bold text-white">Tournament Format</h2>
+        </div>
+        <div className="grid md:grid-cols-2 gap-4">
+          <div className="glass rounded-lg p-4 border border-white/5 bg-white/5">
+            <div className="flex items-center gap-2 mb-2">
+              <Users className="w-5 h-5 text-purple-400" />
+              <div className="text-slate-400 text-sm font-medium">Game Mode</div>
+            </div>
+            <div className="text-white font-bold text-lg">Triple Draft</div>
+          </div>
+          <div className="glass rounded-lg p-4 border border-white/5 bg-white/5">
+            <div className="flex items-center gap-2 mb-2">
+              <Clock className="w-5 h-5 text-yellow-400" />
+              <div className="text-slate-400 text-sm font-medium">Prep Phase</div>
+            </div>
+            <div className="text-white font-bold text-lg">1 Hour</div>
+          </div>
+          <div className="glass rounded-lg p-4 border border-white/5 bg-white/5">
+            <div className="flex items-center gap-2 mb-2">
+              <Clock className="w-5 h-5 text-green-400" />
+              <div className="text-slate-400 text-sm font-medium">Tournament Duration</div>
+            </div>
+            <div className="text-white font-bold text-lg">2 Hours</div>
+          </div>
+          <div className="glass rounded-lg p-4 border border-white/5 bg-white/5">
+            <div className="flex items-center gap-2 mb-2">
+              <XCircle className="w-5 h-5 text-red-400" />
+              <div className="text-slate-400 text-sm font-medium">Elimination</div>
+            </div>
+            <div className="text-white font-bold text-lg">3 Losses = Out</div>
+          </div>
+        </div>
+        <div className="mt-4 pt-4 border-t border-white/10">
+          <p className="text-slate-300 text-sm leading-relaxed">
+            The TGE Tournament will be played in <span className="font-semibold text-white">Triple Draft</span> format. 
+            There will be a <span className="font-semibold text-white">1-hour preparation phase</span> before the tournament begins, 
+            followed by a <span className="font-semibold text-white">2-hour tournament</span>. 
+            Players are eliminated after <span className="font-semibold text-white">3 losses</span>.
+          </p>
         </div>
       </motion.div>
 
