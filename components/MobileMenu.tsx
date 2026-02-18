@@ -5,6 +5,7 @@ import { createPortal } from "react-dom";
 import { X, Home, LayoutDashboard, Users, Rocket, BookOpen, Trophy, BarChart3 } from "lucide-react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
+import { DisconnectWalletButton } from "./DisconnectWalletButton";
 
 interface MobileMenuProps {
   activeTab: "overview" | "dashboard" | "tournaments" | "tge";

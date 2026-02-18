@@ -3,6 +3,7 @@
 import { useWallet } from "@solana/wallet-adapter-react";
 import { Home, LayoutDashboard, Trophy, Users, Rocket, BookOpen, BarChart3 } from "lucide-react";
 import { DynamicWalletButton } from "./DynamicWalletButton";
+import { DisconnectWalletButton } from "./DisconnectWalletButton";
 import { MobileMenu } from "./MobileMenu";
 import Link from "next/link";
 import { motion } from "framer-motion";
@@ -185,6 +186,7 @@ export function Navigation({ activeTab, onTabChange }: NavigationProps) {
                 <span className="absolute -top-0.5 -right-0.5 w-2 h-2 bg-yellow-400 rounded-full animate-pulse shadow-lg shadow-yellow-400/70 z-10 ring-1 ring-yellow-300/50"></span>
               </Link>
             </motion.div>
+            {connected && <DisconnectWalletButton />}
             <DynamicWalletButton className="!bg-gradient-to-r !from-purple-600 !to-pink-600 hover:!from-purple-700 hover:!to-pink-700 !rounded-lg !px-3 !py-2 !font-semibold !text-xs !transition-all !shadow-lg !shadow-purple-600/40 !border !border-purple-400/30" />
           </div>
         </div>
