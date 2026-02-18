@@ -628,6 +628,29 @@ export default function ArenaPage() {
       </div>
 
       <div className="py-12 px-4 sm:px-6 lg:px-8">
+        {/* Under Construction Banner */}
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="max-w-4xl mx-auto mb-8"
+        >
+          <div className="glass rounded-xl p-6 border border-yellow-500/30 bg-yellow-500/10">
+            <div className="flex items-start gap-4">
+              <div className="p-3 bg-yellow-500/20 rounded-lg border border-yellow-500/30 flex-shrink-0">
+                <AlertCircle className="w-6 h-6 text-yellow-400" />
+              </div>
+              <div className="flex-1">
+                <h2 className="text-yellow-300 font-bold text-xl mb-2 font-display">1v1 Betting Arena - Under Construction</h2>
+                <p className="text-yellow-200/90 text-base mb-3 font-body">
+                  We're currently building an amazing 1v1 betting experience! The Arena is under construction and will be available soon.
+                </p>
+                <p className="text-yellow-200/80 text-sm font-body">
+                  Stay tuned for updates on when you can start placing bets and challenging other players to 1v1 matches.
+                </p>
+              </div>
+            </div>
+          </div>
+        </motion.div>
         <div className="max-w-7xl mx-auto">
         {/* Header */}
         <motion.div

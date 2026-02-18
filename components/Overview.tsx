@@ -153,9 +153,23 @@ export function Overview() {
               transition={{ delay: 0.6, duration: 0.8 }}
               className="mb-8"
             >
+              <div className="glass rounded-xl p-6 border border-yellow-500/30 bg-yellow-500/10 max-w-md mx-auto mb-4">
+                <div className="flex items-start gap-3">
+                  <div className="p-2 bg-yellow-500/20 rounded-lg border border-yellow-500/30 flex-shrink-0">
+                    <AlertCircle className="w-5 h-5 text-yellow-400" />
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="text-yellow-300 font-bold text-lg mb-1 font-display">Under Construction</h3>
+                    <p className="text-yellow-200/90 text-sm font-body">
+                      The 1v1 Betting Arena is currently under construction. Check back soon for exciting 1v1 battles!
+                    </p>
+                  </div>
+                </div>
+              </div>
               <Link
                 href="/arena"
-                className="btn-premium inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-lg font-display font-semibold shadow-lg shadow-green-600/30"
+                className="btn-premium inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-green-600/50 to-emerald-600/50 text-white/70 rounded-lg font-display font-semibold shadow-lg shadow-green-600/20 opacity-60 cursor-not-allowed pointer-events-none"
+                onClick={(e) => e.preventDefault()}
               >
                 <Trophy className="w-5 h-5 float-animation" />
                 1v1 Betting Arena
