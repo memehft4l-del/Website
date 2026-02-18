@@ -1,11 +1,10 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { motion } from "framer-motion";
-import { CheckCircle, XCircle, Loader2, Trophy, Info, Smartphone, User, Copy } from "lucide-react";
+import { CheckCircle, XCircle, Loader2, Trophy, Info, Copy } from "lucide-react";
 import { supabase, TournamentSignup } from "@/lib/supabase";
 import { useWallet } from "@solana/wallet-adapter-react";
-import { getPlayerStats, PlayerStats } from "@/lib/clashRoyale/getPlayerStats";
 import { TOURNAMENT_CONFIG, TIER_THRESHOLDS } from "@/lib/constants";
 
 interface TournamentSignupFormProps {
@@ -19,44 +18,6 @@ export function TournamentSignupForm({ tier, onSignupSuccess }: TournamentSignup
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [status, setStatus] = useState<"idle" | "success" | "error">("idle");
   const [errorMessage, setErrorMessage] = useState("");
-  const [playerStats, setPlayerStats] = useState<PlayerStats | null>(null);
-  const [loadingStats, setLoadingStats] = useState(false);
-  const [statsError, setStatsError] = useState<string | null>(null);
-  const [showTournamentDetails, setShowTournamentDetails] = useState(false);
-
-  // Fetch player stats when tag is entered
-  useEffect(() => {
-    const fetchStats = async () => {
-      const trimmedTag = username.trim();
-      if (!trimmedTag || trimmedTag.length < 3) {
-        setPlayerStats(null);
-        setStatsError(null);
-        setShowTournamentDetails(false);
-        return;
-      }
-
-      // Debounce: wait 800ms after user stops typing
-      const timeoutId = setTimeout(async () => {
-        setLoadingStats(true);
-        setStatsError(null);
-        try {
-          const stats = await getPlayerStats(trimmedTag);
-          setPlayerStats(stats);
-          setShowTournamentDetails(true); // Show tournament details only after valid tag is verified
-        } catch (error: any) {
-          setPlayerStats(null);
-          setStatsError(error.message);
-          setShowTournamentDetails(false);
-        } finally {
-          setLoadingStats(false);
-        }
-      }, 800);
-
-      return () => clearTimeout(timeoutId);
-    };
-
-    fetchStats();
-  }, [username]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -70,12 +31,6 @@ export function TournamentSignupForm({ tier, onSignupSuccess }: TournamentSignup
     if (!username.trim()) {
       setStatus("error");
       setErrorMessage("Please enter your Clash Royale player tag");
-      return;
-    }
-
-    if (!playerStats) {
-      setStatus("error");
-      setErrorMessage("Please verify your player tag first");
       return;
     }
 
@@ -107,8 +62,6 @@ export function TournamentSignupForm({ tier, onSignupSuccess }: TournamentSignup
       } else {
         setStatus("success");
         setUsername("");
-        setPlayerStats(null);
-        setShowTournamentDetails(false);
         onSignupSuccess?.();
         
         // Reset success message after 3 seconds
@@ -194,50 +147,10 @@ export function TournamentSignupForm({ tier, onSignupSuccess }: TournamentSignup
           disabled={isSubmitting || status === "success"}
           required
         />
-
-        {/* Player Stats Display */}
-        {loadingStats && (
-          <div className="mt-3 p-3 bg-slate-800/50 rounded-lg border border-purple-500/20">
-            <div className="flex items-center gap-2 text-purple-300 text-sm">
-              <Loader2 className="w-4 h-4 animate-spin" />
-              Verifying player tag...
-            </div>
-          </div>
-        )}
-
-        {statsError && (
-          <div className="mt-3 p-3 bg-red-500/10 border border-red-500/30 rounded-lg">
-            <p className="text-red-400 text-sm">{statsError}</p>
-          </div>
-        )}
-
-        {playerStats && !loadingStats && (
-          <motion.div
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="mt-3 p-4 bg-gradient-to-r from-green-500/10 to-emerald-500/10 border border-green-500/30 rounded-lg"
-          >
-            <div className="flex items-center gap-2 mb-3">
-              <CheckCircle className="w-5 h-5 text-green-400" />
-              <h4 className="text-white font-semibold">{playerStats.name}</h4>
-              <span className="text-slate-400 text-xs">{playerStats.tag}</span>
-            </div>
-            <div className="grid grid-cols-2 gap-3">
-              <div className="bg-slate-900/50 rounded p-2">
-                <div className="text-slate-400 text-xs mb-1">Trophies</div>
-                <div className="text-white font-bold text-lg">{playerStats.trophies.toLocaleString()}</div>
-              </div>
-              <div className="bg-slate-900/50 rounded p-2">
-                <div className="text-slate-400 text-xs mb-1">Level</div>
-                <div className="text-white font-bold text-lg">{playerStats.level}</div>
-              </div>
-            </div>
-          </motion.div>
-        )}
       </div>
 
-      {/* Step 2: Tournament Details (Only shown after valid tag) */}
-      {showTournamentDetails && playerStats && (
+      {/* Tournament Details */}
+      {username.trim() && (
         <motion.div
           initial={{ opacity: 0, height: 0 }}
           animate={{ opacity: 1, height: "auto" }}
@@ -315,11 +228,11 @@ export function TournamentSignupForm({ tier, onSignupSuccess }: TournamentSignup
       <button
         type="submit"
         onClick={handleSubmit}
-        disabled={isSubmitting || status === "success" || !playerStats}
+        disabled={isSubmitting || status === "success" || !username.trim()}
         className={`
           btn-premium w-full px-4 py-3 rounded-lg font-display font-semibold transition-all
           ${
-            isSubmitting || status === "success" || !playerStats
+            isSubmitting || status === "success" || !username.trim()
               ? "bg-slate-700 text-slate-400 cursor-not-allowed"
               : "bg-gradient-to-r from-purple-600 to-pink-600 text-white shadow-lg shadow-purple-600/40 border border-purple-400/30 hover:shadow-purple-600/60"
           }
@@ -332,7 +245,7 @@ export function TournamentSignupForm({ tier, onSignupSuccess }: TournamentSignup
           </span>
         ) : status === "success" ? (
           "Signed Up!"
-        ) : !playerStats ? (
+        ) : !username.trim() ? (
           "Enter Player Tag First"
         ) : (
           "Sign Up for Tournament"
