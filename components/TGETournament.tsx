@@ -248,7 +248,7 @@ export function TGETournament() {
               Sign up early! Your Clash Royale tag will be visible in the Tournaments Monitor.
             </p>
           </div>
-          <TournamentSignupForm tier="TGE" />
+          <TournamentSignupForm tier="TOURNAMENT" />
         </motion.div>
       )}
     </div>
