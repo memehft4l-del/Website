@@ -172,7 +172,7 @@ export function TournamentOverview() {
                     Token Requirement
                   </h3>
                   <p className="text-slate-300 mb-4">
-                    You need to hold at least <span className="font-semibold text-yellow-400">{formatBalance(TIER_THRESHOLDS.DAILY)} tokens</span> to participate in tournaments.
+                    You need to hold at least <span className="font-semibold text-yellow-400">{formatBalance(TIER_THRESHOLDS.TOURNAMENT)} tokens</span> to participate in tournaments.
                   </p>
                   <p className="text-slate-400 text-sm">
                     Current balance: {isLoading ? "Loading..." : formatBalance(balance || 0)} tokens
