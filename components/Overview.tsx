@@ -1,6 +1,6 @@
 "use client";
 
-import { Trophy, Coins, Copy, Check, Shield } from "lucide-react";
+import { Trophy, Coins, Copy, Check, Shield, ExternalLink, Twitter, TrendingUp } from "lucide-react";
 import { motion } from "framer-motion";
 import { TiltCard } from "@/components/TiltCard";
 import { DynamicWalletButton } from "@/components/DynamicWalletButton";
@@ -84,6 +84,69 @@ export function Overview() {
             >
               Think you're the best? Place bets on yourself and play 1v1s against other real players to win SOL.
             </motion.p>
+
+            {/* Social Links & Contract Address - Top of Page */}
+            {tokenInfo && (
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.5, duration: 0.8 }}
+                className="flex flex-wrap items-center justify-center gap-3 sm:gap-4 mb-8 px-4"
+              >
+                {tokenInfo.twitter_url && (
+                  <motion.a
+                    href={tokenInfo.twitter_url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    className="glass rounded-lg px-4 py-2 border border-white/10 hover:border-blue-400/50 transition-all flex items-center gap-2 group"
+                  >
+                    <Twitter className="w-4 h-4 text-blue-400" />
+                    <span className="text-sm text-slate-300 font-medium">Twitter</span>
+                    <ExternalLink className="w-3 h-3 text-slate-400 group-hover:text-white" />
+                  </motion.a>
+                )}
+                {tokenInfo.dexscreener_url && (
+                  <motion.a
+                    href={tokenInfo.dexscreener_url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    className="glass rounded-lg px-4 py-2 border border-white/10 hover:border-green-400/50 transition-all flex items-center gap-2 group"
+                  >
+                    <TrendingUp className="w-4 h-4 text-green-400" />
+                    <span className="text-sm text-slate-300 font-medium">DexScreener</span>
+                    <ExternalLink className="w-3 h-3 text-slate-400 group-hover:text-white" />
+                  </motion.a>
+                )}
+                <motion.button
+                  onClick={() => {
+                    navigator.clipboard.writeText(tokenInfo.contract_address);
+                    setCopied(true);
+                    setTimeout(() => setCopied(false), 2000);
+                  }}
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  className="glass rounded-lg px-4 py-2 border border-white/10 hover:border-purple-400/50 transition-all flex items-center gap-2 group"
+                >
+                  {copied ? (
+                    <>
+                      <Check className="w-4 h-4 text-green-400" />
+                      <span className="text-sm text-green-400 font-medium">Copied!</span>
+                    </>
+                  ) : (
+                    <>
+                      <Copy className="w-4 h-4 text-purple-400" />
+                      <span className="text-sm text-slate-300 font-medium">
+                        CA: {tokenInfo.contract_address.slice(0, 4)}...{tokenInfo.contract_address.slice(-4)}
+                      </span>
+                    </>
+                  )}
+                </motion.button>
+              </motion.div>
+            )}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
