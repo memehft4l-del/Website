@@ -55,6 +55,28 @@ body.menu-open {
   height: 100% !important;
 }
 
+/* Mobile menu fixes */
+@media (max-width: 768px) {
+  /* Ensure menu renders above everything */
+  [data-mobile-menu] {
+    position: fixed !important;
+    z-index: 9999 !important;
+    top: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    width: 85vw !important;
+    max-width: 384px !important;
+    height: 100vh !important;
+    max-height: 100vh !important;
+    overflow: hidden !important;
+  }
+  
+  /* Prevent any parent from clipping */
+  body > * {
+    overflow-x: hidden;
+  }
+}
+
 /* Premium Dark Background with Deep Gradients */
 body::before {
   content: '';
