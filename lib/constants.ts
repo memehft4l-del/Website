@@ -55,9 +55,7 @@ export const DEFAULT_WAGER_AMOUNT = 0.1;
 // Tier Thresholds
 export const TIER_THRESHOLDS = {
   MINNOW: 0,
-  SQUIRE: 500_000,
-  DAILY: 750_000, // Daily tournament tier
-  WHALE: 2_500_000,
+  TOURNAMENT: 750_000, // Single tournament tier - 750k tokens required
 } as const;
 
 // Maximum tokens for Elixir Bar (15 million)
@@ -65,24 +63,16 @@ export const MAX_ELIXIR_TOKENS = 15_000_000;
 
 // Tournament Configuration
 export interface TournamentConfig {
-  dailyTournament: {
-    tag: string;
-    password: string;
-  };
-  whaleWar: {
+  tournament: {
     tag: string;
     password: string;
   };
 }
 
 export const TOURNAMENT_CONFIG: TournamentConfig = {
-  dailyTournament: {
-    tag: "#DAILY2024",
-    password: "DailyPass123!",
-  },
-  whaleWar: {
-    tag: "#WHALE2024",
-    password: "WhalePass456!",
+  tournament: {
+    tag: "#ELIXIR2024",
+    password: "ElixirPass123!",
   },
 };
 

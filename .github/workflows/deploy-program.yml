@@ -1,0 +1,178 @@
+name: Build and Deploy Solana Program
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'programs/**'
+      - 'Cargo.toml'
+      - 'Anchor.toml'
+  workflow_dispatch:
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Remove Cargo.lock from programs subdirectories
+        run: |
+          # Only remove Cargo.lock from programs subdirectories (keep root)
+          find programs -name "Cargo.lock" -type f -delete
+          echo "✓ Removed Cargo.lock files from programs subdirectories"
+      
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          components: rustfmt, clippy
+      
+      - name: Verify Cargo version
+        run: |
+          cargo --version
+          rustc --version
+          # Ensure we have a Cargo version that supports lock file version 4
+          CARGO_VERSION=$(cargo --version | awk '{print $2}')
+          echo "Cargo version: $CARGO_VERSION"
+      
+      - name: Install Solana CLI
+        run: |
+          # Install Solana 2.1.13 (supports lockfile version 4)
+          sh -c "$(curl -sSfL https://release.anza.xyz/v2.1.13/install)"
+          export PATH="$HOME/.local/share/solana/install/active_release/bin:$PATH"
+          echo "$HOME/.local/share/solana/install/active_release/bin" >> $GITHUB_PATH
+          
+          # Verify installation
+          solana --version
+          cargo-build-sbf --version || echo "cargo-build-sbf will be available after Solana install"
+          echo "✅ Solana CLI installed successfully"
+      
+      - name: Install Anchor
+        run: |
+          # Install avm (Anchor Version Manager) first
+          cargo install --git https://github.com/coral-xyz/anchor avm --locked --force
+          
+          # Add cargo bin to PATH for avm
+          export PATH="$HOME/.cargo/bin:$PATH"
+          echo "$HOME/.cargo/bin" >> $GITHUB_PATH
+          
+          # Install Anchor 0.32.1 using avm
+          avm install 0.32.1
+          avm use 0.32.1
+          
+          # Add Anchor to PATH
+          export PATH="$HOME/.avm/bin:$PATH"
+          echo "$HOME/.avm/bin" >> $GITHUB_PATH
+          
+          # Verify installation and version
+          anchor --version
+          echo "Anchor version: $(anchor --version)"
+          
+          # Verify Rust version compatibility
+          rustc --version
+          echo "Rust version check complete"
+      
+      - name: Setup Solana CLI
+        run: |
+          export PATH="$HOME/.local/share/solana/install/active_release/bin:$PATH"
+          solana config set --url devnet
+          solana-keygen new --no-bip39-passphrase -o ~/.config/solana/id.json || true
+      
+      - name: Airdrop SOL (Devnet)
+        run: |
+          export PATH="$HOME/.local/share/solana/install/active_release/bin:$PATH"
+          solana airdrop 2 $(solana address) --url devnet || true
+      
+      - name: Build Solana Program
+        run: |
+          # Setup all paths
+          export PATH="$HOME/.local/share/solana/install/active_release/bin:$PATH"
+          export PATH="$HOME/.avm/bin:$PATH"
+          export PATH="$HOME/.cargo/bin:$PATH"
+          
+          cd ${{ github.workspace }}
+          
+          # Verify versions
+          echo "=== Version Checks ==="
+          rustc --version
+          cargo --version
+          solana --version
+          
+          # Verify Anchor.toml
+          echo "=== Checking Anchor.toml ==="
+          cat programs/clash-royale-escrow/Anchor.toml | grep -A 1 "anchor_version" || echo "No anchor_version found"
+          
+          # Clean previous builds
+          echo "=== Cleaning Previous Builds ==="
+          rm -rf target/deploy/clash_royale_escrow.so
+          rm -f Cargo.lock
+          find programs -name "Cargo.lock" -delete
+          
+          # Build with Anchor (most reliable method)
+          echo "=== Building with Anchor ==="
+          avm use 0.32.1
+          anchor --version
+          
+          # Build the program
+          anchor build
+          
+          # Verify build output
+          echo "=== Verifying Build Output ==="
+          if [ -f "target/deploy/clash_royale_escrow.so" ]; then
+            echo "✅ Build successful!"
+            ls -lh target/deploy/clash_royale_escrow.so
+            ls -lh target/deploy/clash_royale_escrow-keypair.json || echo "Keypair file check skipped"
+          else
+            echo "❌ Build failed - no .so file found"
+            echo "Checking target directory:"
+            ls -la target/deploy/ || echo "target/deploy/ does not exist"
+            exit 1
+          fi
+      
+      - name: Verify Build Output
+        run: |
+          ls -lh target/deploy/*.so
+          ls -lh target/deploy/*-keypair.json
+      
+      - name: Deploy to Devnet
+        env:
+          SOLANA_PRIVATE_KEY: ${{ secrets.SOLANA_PRIVATE_KEY }}
+        run: |
+          export PATH="$HOME/.local/share/solana/install/active_release/bin:$PATH"
+          cd ${{ github.workspace }}
+          
+          # Set up keypair from secret if provided, otherwise use generated one
+          if [ -n "$SOLANA_PRIVATE_KEY" ]; then
+            echo "$SOLANA_PRIVATE_KEY" > ~/.config/solana/id.json
+          fi
+          
+          # Deploy the program
+          # Check if keypair exists, if not use the program ID directly
+          if [ -f "programs/clash-royale-escrow/target/deploy/clash_royale_escrow-keypair.json" ]; then
+            solana program deploy target/deploy/clash_royale_escrow.so \
+              --url devnet \
+              --program-id programs/clash-royale-escrow/target/deploy/clash_royale_escrow-keypair.json \
+              --max-signatures 1
+          else
+            echo "Keypair not found, deploying with program ID..."
+            solana program deploy target/deploy/clash_royale_escrow.so \
+              --url devnet \
+              --program-id CA4ADsMYjuCQMsGfHuxHzcn4s6VuiQCtT49MGCLANEvb \
+              --max-signatures 1
+          fi
+      
+      - name: Verify Deployment
+        run: |
+          export PATH="$HOME/.local/share/solana/install/active_release/bin:$PATH"
+          solana program show CA4ADsMYjuCQMsGfHuxHzcn4s6VuiQCtT49MGCLANEvb --url devnet
+      
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: program-artifacts
+          path: |
+            target/deploy/*.so
+            target/idl/*.json
+          retention-days: 30
+

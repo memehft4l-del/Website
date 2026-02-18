@@ -22,8 +22,7 @@ export function TournamentOverview() {
 
   const getTierForSignup = () => {
     if (!tier) return null;
-    if (tier === "WHALE") return "WHALE";
-    if (tier === "DAILY") return "DAILY";
+    if (tier === "TOURNAMENT") return "TOURNAMENT";
     return null;
   };
 

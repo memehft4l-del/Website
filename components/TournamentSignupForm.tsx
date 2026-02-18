@@ -8,7 +8,7 @@ import { useWallet } from "@solana/wallet-adapter-react";
 import { getPlayerStats, PlayerStats } from "@/lib/clashRoyale/getPlayerStats";
 
 interface TournamentSignupFormProps {
-  tier: "DAILY" | "WHALE" | "TGE";
+  tier: "TOURNAMENT";
   onSignupSuccess?: () => void;
 }
 

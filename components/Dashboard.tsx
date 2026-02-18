@@ -45,9 +45,7 @@ export function Dashboard() {
 
   const getTierColor = (tier: string) => {
     switch (tier) {
-      case "WHALE":
-        return "text-game-gold border-game-gold";
-      case "DAILY":
+      case "TOURNAMENT":
         return "text-purple-400 border-purple-400";
       default:
         return "text-slate-600 border-slate-600";
@@ -56,9 +54,7 @@ export function Dashboard() {
 
   const getTierIcon = (tier: string) => {
     switch (tier) {
-      case "WHALE":
-        return <Crown className="w-7 h-7 text-game-gold" />;
-      case "DAILY":
+      case "TOURNAMENT":
         return <Shield className="w-7 h-7 text-purple-400" />;
       default:
         return <Lock className="w-7 h-7 text-slate-600" />;
@@ -66,8 +62,7 @@ export function Dashboard() {
   };
 
   const getNextTierThreshold = () => {
-    if (tier === "MINNOW") return TIER_THRESHOLDS.DAILY;
-    if (tier === "DAILY") return TIER_THRESHOLDS.WHALE;
+    if (tier === "MINNOW") return TIER_THRESHOLDS.TOURNAMENT;
     return null;
   };
 
@@ -75,14 +70,7 @@ export function Dashboard() {
     const nextThreshold = getNextTierThreshold();
     if (!nextThreshold) return 100;
     if (tier === "MINNOW") {
-      return Math.min((balance / TIER_THRESHOLDS.DAILY) * 100, 100);
-    }
-    if (tier === "DAILY") {
-      const progress =
-        ((balance - TIER_THRESHOLDS.DAILY) /
-          (TIER_THRESHOLDS.WHALE - TIER_THRESHOLDS.DAILY)) *
-        100;
-      return Math.min(progress, 100);
+      return Math.min((balance / TIER_THRESHOLDS.TOURNAMENT) * 100, 100);
     }
     return 100;
   };
@@ -176,13 +164,13 @@ export function Dashboard() {
             />
             <div className="flex justify-between items-center mt-3">
               <span className="text-slate-400 text-xs font-medium">
-                {tier === "WHALE" 
+                {tier === "TOURNAMENT" 
                   ? "Maximum Tier Achieved" 
-                  : `Progress to ${tier === "MINNOW" ? "Squire" : "Whale"} Tier`}
+                  : "Progress to Tournament Tier"}
               </span>
               <span className="text-slate-400 text-xs font-medium">
-                {tier === "WHALE" 
-                  ? "All Arenas Unlocked" 
+                {tier === "TOURNAMENT" 
+                  ? "Tournament Unlocked" 
                   : tokensNeeded() > 0
                   ? `Buy ${formatBalance(tokensNeeded())} more tokens`
                   : "Unlocked!"}
@@ -225,10 +213,10 @@ export function Dashboard() {
           </motion.div>
         </motion.div>
 
-        {/* Tournament Cards - Only show the highest tier tournament user qualifies for */}
-        <div className={tier === "WHALE" ? "max-w-2xl mx-auto" : tier === "DAILY" ? "max-w-2xl mx-auto" : "grid md:grid-cols-2 gap-6"}>
-          {/* Daily Tournament Card - Only show if user is DAILY tier (not WHALE) */}
-          {tier === "DAILY" && (
+        {/* Tournament Card */}
+        <div className="max-w-2xl mx-auto">
+          {/* Tournament Card */}
+          {tier === "TOURNAMENT" && (
             <TiltCard intensity={8}>
               <motion.div
                 initial={{ opacity: 0, y: 20 }}

@@ -18,14 +18,14 @@ export interface TournamentSignup {
   id?: number;
   wallet_address: string;
   clash_royale_username: string;
-  tier: "DAILY" | "WHALE" | "TGE";
+  tier: "TOURNAMENT";
   created_at?: string;
 }
 
 // Tournament configs table type
 export interface TournamentConfig {
   id?: number;
-  tournament_type: "DAILY" | "WHALE" | "TGE";
+  tournament_type: "TOURNAMENT";
   tournament_tag: string;
   tournament_password: string;
   is_active: boolean;

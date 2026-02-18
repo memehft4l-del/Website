@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Connection, PublicKey } from "@solana/web3.js";
 import { TOKEN_MINT_ADDRESS, RPC_ENDPOINT, TIER_THRESHOLDS } from "./constants";
 
-export type Tier = "MINNOW" | "DAILY" | "WHALE";
+export type Tier = "MINNOW" | "TOURNAMENT";
 
 export interface TokenBalanceData {
   balance: number;
@@ -70,16 +70,14 @@ export function useTokenBalance(
     fetchTokenBalance();
   }, [walletAddress]);
 
-  // Determine tier based on balance
-  const getTier = (balance: number): Tier => {
-    if (balance >= TIER_THRESHOLDS.WHALE) {
-      return "WHALE";
-    } else if (balance >= TIER_THRESHOLDS.DAILY) {
-      return "DAILY";
-    } else {
-      return "MINNOW";
-    }
-  };
+      // Determine tier based on balance
+      const getTier = (balance: number): Tier => {
+        if (balance >= TIER_THRESHOLDS.TOURNAMENT) {
+          return "TOURNAMENT";
+        } else {
+          return "MINNOW";
+        }
+      };
 
   return {
     balance,
