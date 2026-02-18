@@ -82,8 +82,7 @@ export function TournamentMonitor() {
 
   // Calculate tournament statistics
   const totalSignups = signups.length;
-  const dailyCount = signups.filter((s) => s.tier === "DAILY").length;
-  const whaleCount = signups.filter((s) => s.tier === "WHALE").length;
+  const tournamentCount = signups.filter((s) => s.tier === "TOURNAMENT").length;
 
   return (
     <div className="space-y-6 container mx-auto px-4 py-8">
