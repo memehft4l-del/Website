@@ -1,6 +1,6 @@
 "use client";
 
-import { Trophy, Coins, Copy, Check, Shield, ExternalLink, Twitter, TrendingUp } from "lucide-react";
+import { Trophy, Coins, Copy, Check, Shield, ExternalLink, Twitter, TrendingUp, AlertCircle } from "lucide-react";
 import { motion } from "framer-motion";
 import { TiltCard } from "@/components/TiltCard";
 import { DynamicWalletButton } from "@/components/DynamicWalletButton";
