@@ -72,6 +72,35 @@ export async function getPlayerStats(
       if (response.status === 404) {
         throw new Error("Player not found. Please check the player tag.");
       }
+      if (response.status === 403) {
+        // Try to get more details from the response
+        let errorDetails = "";
+        let errorMessage = "";
+        try {
+          const errorData = await response.json();
+          errorMessage = errorData.message || errorData.error || errorData.reason || "";
+          errorDetails = errorData.message || errorData.error || errorData.reason || "";
+        } catch {
+          // If response isn't JSON, use status text
+          errorDetails = response.statusText;
+        }
+        
+        // Provide more helpful error message based on the error
+        if (errorMessage.toLowerCase().includes("authorization") || errorMessage.toLowerCase().includes("invalid")) {
+          throw new Error(
+            `API authorization failed. The Clash Royale API key on the proxy server may be invalid or expired. ` +
+            `Please contact support to update the API key.`
+          );
+        }
+        
+        throw new Error(
+          `API access denied (403). ${errorDetails ? `Reason: ${errorDetails}` : "This may be due to an invalid API key or rate limiting."} ` +
+          `Please contact support if this issue persists.`
+        );
+      }
+      if (response.status === 429) {
+        throw new Error("Rate limit exceeded. Please wait a moment and try again.");
+      }
       throw new Error(`Failed to fetch player data: ${response.status} ${response.statusText}`);
     }
 
