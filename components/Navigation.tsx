@@ -33,7 +33,7 @@ export function Navigation({ activeTab, onTabChange }: NavigationProps) {
   };
 
   return (
-    <nav className="sticky top-0 z-50 glass border-b border-white/10 backdrop-blur-xl transition-all duration-300 relative">
+    <nav className="sticky top-0 z-40 glass border-b border-white/10 backdrop-blur-xl transition-all duration-300 relative">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16 md:h-18 gap-4">
           {/* Logo/Brand - Enhanced */}
