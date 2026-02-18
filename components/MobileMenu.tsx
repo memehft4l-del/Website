@@ -54,32 +54,33 @@ export function MobileMenu({ activeTab, onTabChange, connected }: MobileMenuProp
       </button>
 
       {/* Mobile Menu Overlay */}
-      <AnimatePresence mode="wait">
+      <AnimatePresence>
         {isOpen && (
           <>
+            {/* Backdrop */}
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.15 }}
               onClick={() => setIsOpen(false)}
-              className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[60] md:hidden"
-              style={{ willChange: "opacity" }}
+              className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[60] md:hidden"
             />
+            
+            {/* Menu Panel */}
             <motion.div
               initial={{ x: "100%" }}
               animate={{ x: 0 }}
               exit={{ x: "100%" }}
-              transition={{ type: "tween", duration: 0.2, ease: "easeOut" }}
+              transition={{ type: "tween", duration: 0.25, ease: "easeOut" }}
               onClick={(e) => e.stopPropagation()}
-              className="fixed top-0 right-0 h-screen w-full sm:w-96 glass border-l border-white/10 z-[70] md:hidden flex flex-col overflow-hidden"
-              style={{ willChange: "transform" }}
+              className="fixed top-0 right-0 h-screen w-full max-w-sm glass border-l border-white/10 z-[70] md:hidden flex flex-col"
             >
-              {/* Header - Fixed at top */}
-              <div className="flex items-center justify-between p-4 sm:p-6 flex-shrink-0 border-b border-white/10">
-                <div className="flex flex-col leading-tight">
-                  <span className="text-xs sm:text-sm font-semibold text-white/80">Elixir Pump</span>
-                  <span className="text-xl sm:text-2xl font-bold gradient-text-gold">$ELIXIR</span>
+              {/* Fixed Header */}
+              <div className="flex items-center justify-between p-4 border-b border-white/10 bg-slate-900/80 backdrop-blur-xl flex-shrink-0">
+                <div className="flex flex-col">
+                  <span className="text-xs font-semibold text-white/80">Elixir Pump</span>
+                  <span className="text-xl font-bold gradient-text-gold">$ELIXIR</span>
                 </div>
                 <button
                   onClick={(e) => {
@@ -88,92 +89,92 @@ export function MobileMenu({ activeTab, onTabChange, connected }: MobileMenuProp
                     setIsOpen(false);
                   }}
                   onTouchStart={(e) => e.stopPropagation()}
-                  className="glass rounded-lg p-2.5 sm:p-3 hover:bg-white/10 active:bg-white/20 transition-colors touch-manipulation flex-shrink-0 min-w-[44px] min-h-[44px] flex items-center justify-center"
+                  className="glass rounded-lg p-2.5 hover:bg-white/10 active:bg-white/20 transition-colors touch-manipulation min-w-[44px] min-h-[44px] flex items-center justify-center"
                   aria-label="Close menu"
                   type="button"
                   style={{ WebkitTapHighlightColor: 'transparent', touchAction: 'manipulation' }}
                 >
-                  <X className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
+                  <X className="w-5 h-5 text-white" />
                 </button>
               </div>
 
-              {/* Scrollable Content */}
-              <div className="flex-1 overflow-y-auto overscroll-contain">
-                <nav className="p-4 sm:p-6 space-y-3">
-                    {menuItems.map((item) => {
-                      const Icon = item.icon;
-                      const isActive = activeTab === item.id;
-                      return (
-                        <button
-                          key={item.id}
-                          onClick={(e) => {
-                            e.preventDefault();
-                            e.stopPropagation();
-                            onTabChange(item.id as any);
-                            setIsOpen(false);
-                          }}
-                          onTouchStart={(e) => e.stopPropagation()}
-                          type="button"
-                          className={`
-                            w-full flex items-center gap-3 px-4 py-4 rounded-xl font-semibold text-base transition-all touch-manipulation min-h-[56px] active:scale-[0.98]
-                            ${
-                              isActive
-                                ? "bg-gradient-to-r from-purple-600 to-pink-600 text-white shadow-lg shadow-purple-600/40 border border-purple-400/30"
-                                : "text-slate-300 bg-white/5 hover:text-white hover:bg-white/10 active:bg-white/15 border border-transparent"
-                            }
-                          `}
-                          style={{ WebkitTapHighlightColor: 'transparent' }}
-                        >
-                          <Icon className="w-5 h-5 flex-shrink-0" />
-                          <span className="flex-1 text-left">{item.label}</span>
-                        </button>
-                      );
-                    })}
-                    <Link
-                      href="/rules"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setIsOpen(false);
-                      }}
-                      onTouchStart={(e) => e.stopPropagation()}
-                      className="w-full flex items-center gap-3 px-4 py-4 rounded-xl font-semibold text-base transition-all text-slate-300 bg-white/5 hover:text-white hover:bg-white/10 active:bg-white/15 active:scale-[0.98] touch-manipulation min-h-[56px] border border-transparent"
-                      style={{ WebkitTapHighlightColor: 'transparent' }}
-                    >
-                      <BookOpen className="w-5 h-5 flex-shrink-0" />
-                      <span className="flex-1 text-left">Rules</span>
-                    </Link>
-                    <Link
-                      href="/leaderboard"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setIsOpen(false);
-                      }}
-                      onTouchStart={(e) => e.stopPropagation()}
-                      className="w-full flex items-center gap-3 px-4 py-4 rounded-xl font-semibold text-base transition-all text-slate-300 bg-white/5 hover:text-white hover:bg-white/10 active:bg-white/15 active:scale-[0.98] touch-manipulation min-h-[56px] border border-transparent"
-                      style={{ WebkitTapHighlightColor: 'transparent' }}
-                    >
-                      <BarChart3 className="w-5 h-5 flex-shrink-0" />
-                      <span className="flex-1 text-left">Leaderboard</span>
-                    </Link>
-                    <Link
-                      href="/arena"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setIsOpen(false);
-                      }}
-                      onTouchStart={(e) => e.stopPropagation()}
-                      className="w-full flex items-center gap-3 px-4 py-4 rounded-xl font-bold text-base transition-all bg-gradient-to-r from-green-500 via-emerald-500 to-green-600 text-white shadow-xl shadow-green-500/50 border border-green-300/50 active:scale-[0.98] touch-manipulation min-h-[56px] relative overflow-hidden group mt-2"
-                      style={{ WebkitTapHighlightColor: 'transparent' }}
-                    >
-                      {/* Content */}
-                      <Trophy className="w-5 h-5 flex-shrink-0 relative z-10" />
-                      <span className="flex-1 text-left relative z-10 tracking-wide">Go to Arena</span>
-                      
-                      {/* Pulsing indicator */}
-                      <span className="absolute -top-1 -right-1 w-3 h-3 bg-yellow-400 rounded-full animate-pulse shadow-lg shadow-yellow-400/70 z-10 ring-2 ring-yellow-300/50"></span>
-                    </Link>
-                  </nav>
-                </div>
+              {/* Scrollable Menu Content */}
+              <div className="flex-1 overflow-y-auto overscroll-contain" style={{ WebkitOverflowScrolling: 'touch' }}>
+                <nav className="p-4 space-y-3">
+                  {menuItems.map((item) => {
+                    const Icon = item.icon;
+                    const isActive = activeTab === item.id;
+                    return (
+                      <button
+                        key={item.id}
+                        onClick={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          onTabChange(item.id as any);
+                          setIsOpen(false);
+                        }}
+                        onTouchStart={(e) => e.stopPropagation()}
+                        type="button"
+                        className={`
+                          w-full flex items-center gap-3 px-4 py-4 rounded-xl font-semibold text-base transition-all touch-manipulation min-h-[56px] active:scale-[0.98]
+                          ${
+                            isActive
+                              ? "bg-gradient-to-r from-purple-600 to-pink-600 text-white shadow-lg shadow-purple-600/40 border border-purple-400/30"
+                              : "text-slate-300 bg-white/5 hover:text-white hover:bg-white/10 active:bg-white/15 border border-transparent"
+                          }
+                        `}
+                        style={{ WebkitTapHighlightColor: 'transparent', touchAction: 'manipulation' }}
+                      >
+                        <Icon className="w-5 h-5 flex-shrink-0" />
+                        <span className="flex-1 text-left">{item.label}</span>
+                      </button>
+                    );
+                  })}
+                  
+                  <Link
+                    href="/rules"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setIsOpen(false);
+                    }}
+                    onTouchStart={(e) => e.stopPropagation()}
+                    className="w-full flex items-center gap-3 px-4 py-4 rounded-xl font-semibold text-base transition-all text-slate-300 bg-white/5 hover:text-white hover:bg-white/10 active:bg-white/15 active:scale-[0.98] touch-manipulation min-h-[56px] border border-transparent"
+                    style={{ WebkitTapHighlightColor: 'transparent', touchAction: 'manipulation' }}
+                  >
+                    <BookOpen className="w-5 h-5 flex-shrink-0" />
+                    <span className="flex-1 text-left">Rules</span>
+                  </Link>
+                  
+                  <Link
+                    href="/leaderboard"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setIsOpen(false);
+                    }}
+                    onTouchStart={(e) => e.stopPropagation()}
+                    className="w-full flex items-center gap-3 px-4 py-4 rounded-xl font-semibold text-base transition-all text-slate-300 bg-white/5 hover:text-white hover:bg-white/10 active:bg-white/15 active:scale-[0.98] touch-manipulation min-h-[56px] border border-transparent"
+                    style={{ WebkitTapHighlightColor: 'transparent', touchAction: 'manipulation' }}
+                  >
+                    <BarChart3 className="w-5 h-5 flex-shrink-0" />
+                    <span className="flex-1 text-left">Leaderboard</span>
+                  </Link>
+                  
+                  <Link
+                    href="/arena"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setIsOpen(false);
+                    }}
+                    onTouchStart={(e) => e.stopPropagation()}
+                    className="w-full flex items-center gap-3 px-4 py-4 rounded-xl font-bold text-base transition-all bg-gradient-to-r from-green-500 via-emerald-500 to-green-600 text-white shadow-xl shadow-green-500/50 border border-green-300/50 active:scale-[0.98] touch-manipulation min-h-[56px] relative overflow-hidden group mt-2"
+                    style={{ WebkitTapHighlightColor: 'transparent', touchAction: 'manipulation' }}
+                  >
+                    <Trophy className="w-5 h-5 flex-shrink-0 relative z-10" />
+                    <span className="flex-1 text-left relative z-10 tracking-wide">Go to Arena</span>
+                    <span className="absolute -top-1 -right-1 w-3 h-3 bg-yellow-400 rounded-full animate-pulse shadow-lg shadow-yellow-400/70 z-10 ring-2 ring-yellow-300/50"></span>
+                  </Link>
+                </nav>
+              </div>
             </motion.div>
           </>
         )}
